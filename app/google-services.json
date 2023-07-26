@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "547684386780",
+    "project_id": "habittracker-85f07",
+    "storage_bucket": "habittracker-85f07.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547684386780:android:bfa97cd917c6a7453a3119",
+        "android_client_info": {
+          "package_name": "com.lawlett.habittracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547684386780-d6020mjarjhdscrklp2j7549drm8cb9q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lawlett.habittracker",
+            "certificate_hash": "62785ad5392de9a26e1c886b758408cd795faea5"
+          }
+        },
+        {
+          "client_id": "547684386780-a4jo0jmhap40fu7jll20mo81i08fife9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN31XznWS12BtbFEdnj4WtyhS25W_dKHU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547684386780-3f9nl5h6hdbtsjdqct56ijkvmqtbgchu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
