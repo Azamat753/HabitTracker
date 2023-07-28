@@ -13,5 +13,5 @@ data class HabitModel(
     val title: String,
     val icon: String,
     val allDays: String,
-    val currentDay:Int=0,
+    val currentDay: Int = 0
 ) : Parcelable

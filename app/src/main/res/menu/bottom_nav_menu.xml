@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/mainFragment"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/main_selector"
         android:title="Главная" />
 
     <item
         android:id="@+id/friendsFragment"
-        android:icon="@drawable/ic_subscriptions"
+        android:icon="@drawable/subscription_selector"
         android:title="Подписки" />
 
     <item
         android:id="@+id/settingsFragment"
-        android:icon="@drawable/ic_setting"
+        android:icon="@drawable/setting_selector"
         android:title="Настройки" />
 
 </menu>

@@ -52,7 +52,7 @@ class GoogleSignInHelper(var fragment: Fragment) {
                 updateUI(account)
             }
         } else {
-            fragment.requireContext().showToast(task.exception.toString())
+            fragment.showToast(task.exception.toString())
         }
     }
 
@@ -60,9 +60,9 @@ class GoogleSignInHelper(var fragment: Fragment) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
-                fragment.requireContext().showToast("Success")
+                fragment.showToast("Success")
             } else {
-                fragment.requireContext().showToast(it.exception.toString())
+                fragment.showToast(it.exception.toString())
             }
         }
     }

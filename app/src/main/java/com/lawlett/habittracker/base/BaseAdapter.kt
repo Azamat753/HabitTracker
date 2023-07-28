@@ -16,7 +16,7 @@ abstract class BaseAdapter<T, Binding : ViewBinding>(
 ) : RecyclerView.Adapter<BaseAdapter<T, Binding>.BaseViewHolder>() {
 
     var listener: IBaseAdapterClickListener<T>? = null
-    var longListenerWithModel: IBaseAdapterLongClickListenerWithModel<T>? = null
+    var longListener: IBaseAdapterLongClickListenerWithModel<T>? = null
     private var _binding: Binding? = null
     val binding get() = _binding!!
     var lastPosition: Int = -1
@@ -66,7 +66,7 @@ abstract class BaseAdapter<T, Binding : ViewBinding>(
             itemView.setOnClickListener { listener?.onClick(model, adapterPosition) }
 
             itemView.setOnLongClickListener {
-                longListenerWithModel?.onLongClick(model, itemView, adapterPosition)
+                longListener?.onLongClick(model, itemView, adapterPosition)
                 return@setOnLongClickListener true
             }
         }

@@ -4,16 +4,41 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
 import com.lawlett.habittracker.databinding.CreateHabitDialogBinding
+import com.lawlett.habittracker.fragment.MainViewModel
+import com.lawlett.habittracker.helper.FirebaseHelper
+import com.lawlett.habittracker.models.HabitModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class CreateHabitDialog :
     BaseBottomSheetDialog<CreateHabitDialogBinding>(CreateHabitDialogBinding::inflate) {
+    private val viewModel: MainViewModel by viewModels()
 
+    @Inject
+    lateinit var firebaseHelper: FirebaseHelper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.emojiEd.addTextChangedListener(SmileyTextWatcher())
+        initClickers()
+    }
+
+    private fun initClickers() {
+        with(binding) {
+            emojiEd.addTextChangedListener(SmileyTextWatcher())
+            createBtn.setOnClickListener {
+                val model = HabitModel(
+                    title = nameEd.text.toString(),
+                    icon = emojiEd.text.toString().ifEmpty { "$" }, allDays = "7"
+                )
+                viewModel.insert(model)
+                firebaseHelper.insertOrUpdateHabitFB(model)
+                dismiss()
+            }
+        }
     }
 
 
