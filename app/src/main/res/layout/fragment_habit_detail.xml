@@ -1,26 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context=".fragment.HabitDetailFragment">
+    tools:context=".fragment.habitdetail.HabitDetailFragment">
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/habit_progress"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="50dp"
+        android:progress="10"
+        android:progressDrawable="@drawable/circle_progress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/timeTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="hello"
-        android:textSize="40sp" />
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:text="$"
+        android:id="@+id/tv_icon"
+        android:textSize="60sp"
+        app:layout_constraintBottom_toBottomOf="@id/habit_progress"
+        app:layout_constraintEnd_toEndOf="@id/habit_progress"
+        app:layout_constraintStart_toStartOf="@id/habit_progress"
+        app:layout_constraintTop_toTopOf="@id/habit_progress" />
 
-    <Button
-        android:id="@+id/startBtn"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_day"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="start" />
+        android:layout_marginStart="32dp"
+        android:text="@string/day"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@id/timeTV"
+        app:layout_constraintTop_toBottomOf="@id/habit_progress" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/tv_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="@string/tv_hours"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/tv_day"
+        app:layout_constraintTop_toBottomOf="@id/habit_progress" />
+
+    <TextView
+        android:id="@+id/tv_minutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="@string/tv_minutes"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/tv_hours"
+        app:layout_constraintTop_toBottomOf="@id/habit_progress" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="@string/tv_second"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/tv_minutes"
+        app:layout_constraintTop_toBottomOf="@id/habit_progress" />
+
+    <TextView
+        android:id="@+id/timeTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="00:00:00:00"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="60sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_day" />
+
+    <TextView
+        android:id="@+id/btn_relapse"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="30sp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="30sp"
+        android:background="@drawable/rectangle_background"
+        android:gravity="center"
+        android:text="@string/tv_relapse"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timeTV" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btn_save_data"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="18dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp"
+        app:layout_constraintTop_toBottomOf="@id/btn_relapse">
+
+        <TextView
+            android:id="@+id/tv_attempts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|start"
+            android:layout_marginStart="20dp"
+            android:text="@string/tv_attempts"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="20dp"
+            android:text="Рекорд - 9 дней"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="18dp"
+        android:text="@string/tv_history"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_save_data" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_history"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/tv_history"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/item_history" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,7 +16,7 @@ class HabitAdapter : BaseAdapter<HabitModel, ItemHabitBinding>(
         binding.habitTitle.text = model.title
         binding.habitImage.text = model.icon
         binding.habitCount.text = model.currentDay.toString() + " / " + model.allDays
-        binding.habitProgress.max = model.allDays.toInt()
-        binding.habitProgress.progress = model.currentDay
+        binding.habitProgress.max = model.allDays?.toInt()  ?:0//change
+        binding.habitProgress.progress = model.currentDay ?: 0
     }
 }
