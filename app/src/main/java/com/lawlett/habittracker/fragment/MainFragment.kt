@@ -62,6 +62,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
 
     override fun onLongClick(model: HabitModel, itemView: View, position: Int) {
         viewModel.delete(model)
-        showToast(model.title)
+        showToast(model.title.toString())
     }
 }
