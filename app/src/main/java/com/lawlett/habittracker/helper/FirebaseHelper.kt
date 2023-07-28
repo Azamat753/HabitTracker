@@ -14,7 +14,7 @@ class FirebaseHelper {
 
     fun insertOrUpdateHabitFB(model: HabitModel) {
         db.collection("habits : ${auth.currentUser?.displayName}")
-            .document(model.title).set(model)
+            .document(model.title.toString()).set(model)
             .addOnSuccessListener { documentReference ->
                 Log.e(TAG, "DocumentSnapshot added with ID: $documentReference")
             }
@@ -24,7 +24,7 @@ class FirebaseHelper {
     }
 
     fun delete(model: HabitModel){
-        db.collection("habits : ${auth.currentUser?.displayName}").document(model.title)
+        db.collection("habits : ${auth.currentUser?.displayName}").document(model.title.toString())
             .delete()
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
