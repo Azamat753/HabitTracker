@@ -12,9 +12,11 @@ import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.FragmentMainBinding
 import com.lawlett.habittracker.models.HabitModel
 
-class MainFragment : Fragment(R.layout.fragment_main),BaseAdapter.IBaseAdapterClickListener<HabitModel> {
+class MainFragment : Fragment(R.layout.fragment_main),
+    BaseAdapter.IBaseAdapterClickListener<HabitModel> {
     private val binding: FragmentMainBinding by viewBinding()
     val adapter = HabitAdapter()
+    val list = arrayListOf<HabitModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -22,9 +24,10 @@ class MainFragment : Fragment(R.layout.fragment_main),BaseAdapter.IBaseAdapterCl
         binding.fab.setOnClickListener {
             CreateHabitDialog().show(requireActivity().supportFragmentManager, "")
         }
-        adapter.listener= this
+        adapter.listener = this
         binding.habitRecycler.adapter = adapter
-        val list = arrayListOf<HabitModel>()
+
+        list.clear()
         list.add(HabitModel(title = "hey", icon = "&", allDays = "21", currentDay = 1))
         list.add(HabitModel(title = "hedsady", icon = "@", allDays = "15", currentDay = 1))
         list.add(HabitModel(title = "as", icon = "^", allDays = "24", currentDay = 15))
@@ -33,7 +36,9 @@ class MainFragment : Fragment(R.layout.fragment_main),BaseAdapter.IBaseAdapterCl
     }
 
     override fun onClick(model: HabitModel, position: Int) {
-        findNavController().navigate(R.id.habitDetailFragment)
+        val bundle = Bundle()
+        bundle.putParcelable("key",model)
+        findNavController().navigate(R.id.habitDetailFragment,)
     }
 
 }
