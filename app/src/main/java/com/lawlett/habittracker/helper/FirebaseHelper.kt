@@ -13,7 +13,7 @@ class FirebaseHelper {
     var auth: FirebaseAuth = Firebase.auth
 
     fun insertOrUpdateHabitFB(model: HabitModel) {
-        db.collection("habits : ${auth.currentUser?.displayName}")
+        db.collection("${getUserName()}:${auth.currentUser?.uid}")
             .document(model.title.toString()).set(model)
             .addOnSuccessListener { documentReference ->
                 Log.e(TAG, "DocumentSnapshot added with ID: $documentReference")
@@ -23,7 +23,23 @@ class FirebaseHelper {
             }
     }
 
-    fun delete(model: HabitModel){
+    fun getUsersData(userName: String) {
+        val docRef = db.collection(userName).document("SF")
+//
+//        docRef.collection("habits : ${getUserName()}")
+//            .document(model.title.toString()).get(userName)
+//            .addOnSuccessListener { documentReference ->
+//                Log.e(TAG, "DocumentSnapshot added with ID: $documentReference")
+//            }
+//            .addOnFailureListener { e ->
+//                Log.e(TAG, "Error adding document", e)
+//            }
+    }
+
+    fun getUserName() = auth.currentUser?.displayName
+
+
+    fun delete(model: HabitModel) {
         db.collection("habits : ${auth.currentUser?.displayName}").document(model.title.toString())
             .delete()
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
