@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 class MainFragment : Fragment(R.layout.fragment_main),
     BaseAdapter.IBaseAdapterClickListener<HabitModel>,
     BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> {
+
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
     private val adapter = HabitAdapter()
@@ -57,7 +58,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
     override fun onClick(model: HabitModel, position: Int) {
         val bundle = Bundle()
         bundle.putParcelable("key",model)
-        findNavController().navigate(R.id.habitDetailFragment,)
+        findNavController().navigate(R.id.habitDetailFragment,bundle)
     }
 
     override fun onLongClick(model: HabitModel, itemView: View, position: Int) {
