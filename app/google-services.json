@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "547684386780-r7f8m0qjgvj0hucsmb22jt4693qc43ud.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lawlett.habittracker",
+            "certificate_hash": "5d4a779b952465a067871f9274bd3e9ef63e0a4f"
+          }
+        },
+        {
           "client_id": "547684386780-a4jo0jmhap40fu7jll20mo81i08fife9.apps.googleusercontent.com",
           "client_type": 3
         }

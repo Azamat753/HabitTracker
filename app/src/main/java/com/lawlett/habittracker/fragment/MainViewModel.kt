@@ -17,9 +17,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
     val habitFlow = MutableSharedFlow<List<HabitModel>>(
-        extraBufferCapacity = 0,
-        onBufferOverflow = BufferOverflow.DROP_LATEST,
-        replay = 1
+        replay = 2
     )
 
     fun insert(habitModel: HabitModel) {
