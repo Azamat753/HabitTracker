@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="toolbartex" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">16dp</item>
+    </style>
+    <style name="Foxandroid.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="background">@color/white</item>
+        <item name="color">#FFFFFF</item>
+        <item name="theme">@style/Theme.HabitTracker</item>
+        <item name="popupTheme">@style/Theme.AppCompat.Light</item>
+        <item name="titleTextAppearance">@style/toolbartex</item>
+    </style>
+</resources>

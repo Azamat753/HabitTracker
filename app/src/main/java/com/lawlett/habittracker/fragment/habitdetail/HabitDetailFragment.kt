@@ -6,9 +6,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.R
-import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.databinding.FragmentHabitDetailBinding
 import com.lawlett.habittracker.fragment.habitdetail.adapter.HabitDetailAdapter
 import com.lawlett.habittracker.fragment.habitdetail.viewmodel.HabitDetailViewModel
@@ -34,6 +34,11 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.appBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         dataHelper = DataHelper(requireActivity())
         timerManager = TimerManager(dataHelper, binding)
         if (arguments != null) {
@@ -46,7 +51,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
         }
 
         binding.btnRelapse.setOnClickListener {
-            binding.tvRecord.text = "Рекорд - " + binding.timeTV.text.substring(0,2) +" дней"
+            binding.tvRecord.text = "Рекорд - " + binding.timeTV.text.substring(0, 2) + " дней"
             addAttempts()
             addDate()
             timerManager.startStopAction()
