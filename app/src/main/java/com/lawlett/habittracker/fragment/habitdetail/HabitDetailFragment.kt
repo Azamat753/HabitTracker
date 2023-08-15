@@ -13,6 +13,7 @@ import com.lawlett.habittracker.databinding.FragmentHabitDetailBinding
 import com.lawlett.habittracker.fragment.habitdetail.adapter.HabitDetailAdapter
 import com.lawlett.habittracker.fragment.habitdetail.viewmodel.HabitDetailViewModel
 import com.lawlett.habittracker.helper.DataHelper
+import com.lawlett.habittracker.helper.TimerManager
 import com.lawlett.habittracker.models.HabitModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,8 +21,7 @@ import java.util.Date
 import java.util.Timer
 import java.util.TimerTask
 
-class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail),
-    BaseAdapter.IBaseAdapterClickListener<HabitModel> {
+class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
 
     private val binding: FragmentHabitDetailBinding by viewBinding()
     private val adapter = HabitDetailAdapter(this::onClick)
@@ -29,27 +29,42 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail),
     private val list = arrayListOf<HabitModel>()
     lateinit var dataHelper: DataHelper
     private val timer = Timer()
+    private var data: HabitModel? = null
+    private lateinit var timerManager: TimerManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter.listener = this
         dataHelper = DataHelper(requireActivity())
+        timerManager = TimerManager(dataHelper, binding)
+        if (arguments != null) {
+            data = requireArguments().getParcelable("key") as HabitModel?
+            data?.let { model ->
+                binding.tvIcon.text = model.icon
+                binding.habitProgress.max = model.allDays?.toInt() ?: 0
+                binding.habitProgress.progress = model.currentDay ?: 0
+            }
+        }
 
         binding.btnRelapse.setOnClickListener {
+            binding.tvRecord.text = "Рекорд - " + binding.timeTV.text.substring(0,2) +" дней"
             addAttempts()
             addDate()
-            startStopAction()
+            timerManager.startStopAction()
         }
         binding.btnSaveData.setOnClickListener {
-            stopTimer()
+            timerManager.stopTimer()
+            timerManager.resetAction()
         }
+
         if (dataHelper.timerCounting()) {
-            startTimer()
+            timerManager.startTimer()
         } else {
-            stopTimer()
-            if (dataHelper.startTime() != null && dataHelper.stopTime() != null) {
-                val time = Date().time - calcRestartTime().time
-                binding.timeTV.text = timeStringFromLong(time)
+            timerManager.stopTimer()
+            dataHelper.startTime()?.let { startTime ->
+                dataHelper.stopTime()?.let { stopTime ->
+                    val time = Date().time - (startTime.time - stopTime.time)
+                    binding.timeTV.text = timerManager.timeStringFromLong(time)
+                }
             }
         }
 
@@ -82,67 +97,14 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail),
         Toast.makeText(requireContext(), habitModel.date, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onClick(model: HabitModel, position: Int) {
-        list.remove(model)
-        Toast.makeText(requireContext(), "ololo", Toast.LENGTH_SHORT).show()
-    }
-    private inner class TimeTask : TimerTask() {
+    inner class TimeTask : TimerTask() {
         override fun run() {
             if (dataHelper.timerCounting()) {
-                val time = Date().time - dataHelper.startTime()!!.time
-                lifecycleScope.launch(Dispatchers.Main){
-                    binding.timeTV.text = timeStringFromLong(time)
+                lifecycleScope.launch(Dispatchers.Main) {
+                    timerManager.updateTime()
                 }
             }
         }
     }
 
-    private fun resetAction() {
-        dataHelper.setStopTime(null)
-        dataHelper.setStartTime(null)
-        stopTimer()
-        binding.timeTV.text = timeStringFromLong(0)
-    }
-
-    private fun stopTimer() {
-        dataHelper.setTimerCounting(false)
-      //  binding.startButton.text = getString(R.string.start)
-    }
-
-    private fun startTimer() {
-        dataHelper.setTimerCounting(true)
-     //   binding.startButton.text = getString(R.string.stop)
-    }
-
-    private fun startStopAction() {
-        if (dataHelper.timerCounting()) {
-            dataHelper.setStopTime(Date())
-            stopTimer()
-        } else {
-            if (dataHelper.stopTime() != null) {
-                dataHelper.setStartTime(calcRestartTime())
-                dataHelper.setStopTime(null)
-            } else {
-                dataHelper.setStartTime(Date())
-            }
-            startTimer()
-        }
-    }
-
-    private fun calcRestartTime(): Date {
-        val diff = dataHelper.startTime()!!.time - dataHelper.stopTime()!!.time
-        return Date(System.currentTimeMillis() + diff)
-    }
-
-    private fun timeStringFromLong(ms: Long): String {
-        val seconds = (ms / 1000) % 60
-        val minutes = (ms / (1000 * 60) % 60)
-        val hours = (ms / (1000 * 60 * 60) % 24)
-        val days = (ms / (1000 * 60 * 60 * 24))
-        return makeTimeString(days,hours, minutes, seconds)
-    }
-
-    private fun makeTimeString(days: Long,hours: Long, minutes: Long, seconds: Long): String {
-        return String.format("%02d:%02d:%02d:%02d",days, hours, minutes, seconds)
-    }
 }

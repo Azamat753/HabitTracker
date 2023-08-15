@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/friendsFragment"
-        android:name="com.lawlett.habittracker.fragment.FriendsFragment"
+        android:name="com.lawlett.habittracker.fragment.friends.FriendsFragment"
         android:label="fragment_friends"
         tools:layout="@layout/fragment_friends" />
     <fragment

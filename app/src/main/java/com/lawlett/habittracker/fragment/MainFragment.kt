@@ -27,9 +27,11 @@ import kotlinx.coroutines.launch
 class MainFragment : Fragment(R.layout.fragment_main),
     BaseAdapter.IBaseAdapterClickListener<HabitModel>,
     BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> {
+
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
     private val adapter = HabitAdapter()
+    val list = arrayListOf<HabitModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,6 +57,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         adapter.longListener = this
         binding.habitRecycler.adapter = adapter
     }
+
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
@@ -68,8 +71,8 @@ class MainFragment : Fragment(R.layout.fragment_main),
 
     override fun onClick(model: HabitModel, position: Int) {
         val bundle = Bundle()
-        bundle.putParcelable("key", model)
-        findNavController().navigate(R.id.habitDetailFragment)
+        bundle.putParcelable("key",model)
+        findNavController().navigate(R.id.habitDetailFragment,)
     }
 
     override fun onLongClick(model: HabitModel, itemView: View, position: Int) {

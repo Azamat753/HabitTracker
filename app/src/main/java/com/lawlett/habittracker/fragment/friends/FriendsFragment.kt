@@ -1,4 +1,4 @@
-package com.lawlett.habittracker.fragment
+package com.lawlett.habittracker.fragment.friends
 
 import android.os.Bundle
 import android.view.View
