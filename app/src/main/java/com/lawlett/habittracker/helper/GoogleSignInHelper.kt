@@ -20,7 +20,7 @@ class GoogleSignInHelper(var fragment: Fragment) {
     var auth: FirebaseAuth
 
     private var googleSignInClient: GoogleSignInClient
-
+//
     init {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(fragment.getString(R.string.server_client_id))
