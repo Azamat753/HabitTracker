@@ -84,7 +84,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
                     dataHelper =
                         DataHelper(requireActivity(), "${model.title} start", "${model.title} stop")
                 }
-
             }
         }
         timerManager = TimerManager(dataHelper, binding)

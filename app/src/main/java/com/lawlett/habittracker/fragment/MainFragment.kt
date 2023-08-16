@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
 class MainFragment : Fragment(R.layout.fragment_main),
     BaseAdapter.IBaseAdapterClickListener<HabitModel>,
     BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> {
-
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
     private val adapter = HabitAdapter()
@@ -49,18 +48,10 @@ class MainFragment : Fragment(R.layout.fragment_main),
 
     private fun initClickers() {
         binding.fab.setOnClickListener {
-            CreateHabitDialog(object : CreateHabitDialog.DismissListener {
-                override fun onDismiss() {
-                    viewModel.getHabits()
-                }
-
-            }).show(requireActivity().supportFragmentManager, "")
+            CreateHabitDialog().show(requireActivity().supportFragmentManager, "")
         }
-
     }
-    private fun onDismiss() {
 
-    }
     private fun initAdapter() {
         adapter.listener = this
         adapter.longListener = this
