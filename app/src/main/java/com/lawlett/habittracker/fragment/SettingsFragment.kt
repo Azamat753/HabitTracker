@@ -9,10 +9,14 @@ import com.lawlett.habittracker.helper.GoogleSignInHelper
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.databinding.FragmentSettingsBinding
 import com.lawlett.habittracker.helper.FirebaseHelper
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val binding: FragmentSettingsBinding by viewBinding()
     lateinit var helper: GoogleSignInHelper
+    @Inject lateinit var firebaseHelper: FirebaseHelper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         helper = GoogleSignInHelper(this)
@@ -22,7 +26,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private fun share() {
         val intent = Intent()
         intent.action = Intent.ACTION_SEND
-        intent.putExtra(Intent.EXTRA_TEXT, FirebaseHelper().getUserName())
+        intent.putExtra(Intent.EXTRA_TEXT, firebaseHelper.getUserName())
         intent.type = "text/plain"
         startActivity(Intent.createChooser(intent, "Share To:"))
     }

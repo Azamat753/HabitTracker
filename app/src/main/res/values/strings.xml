@@ -13,5 +13,7 @@
     <string name="tv_month">января</string>
     <string name="tv_year">2023 г.</string>
     <string name="tv_time">16:30</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

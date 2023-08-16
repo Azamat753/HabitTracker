@@ -7,6 +7,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.lawlett.habittracker.TAG
 import com.lawlett.habittracker.models.HabitModel
+import java.util.Date
 
 class FirebaseHelper {
     val db = Firebase.firestore
@@ -23,10 +24,8 @@ class FirebaseHelper {
             }
     }
 
-    fun getUsersData(userName: String) {
-        val docRef = db.collection(userName).document("SF")
-
-        docRef.collection("habits : ${getUserName()}").get()
+    fun isSigned(): Boolean {
+        return auth.currentUser != null
     }
 
     fun getUserName() = "${auth.currentUser?.displayName}:${auth.currentUser?.uid}"

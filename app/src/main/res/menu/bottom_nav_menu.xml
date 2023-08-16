@@ -6,7 +6,7 @@
         android:title="Главная" />
 
     <item
-        android:id="@+id/friendsFragment"
+        android:id="@+id/followFragment"
         android:icon="@drawable/subscription_selector"
         android:title="Подписки" />
 

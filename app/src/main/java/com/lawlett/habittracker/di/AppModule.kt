@@ -1,7 +1,9 @@
 package com.lawlett.habittracker.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
+import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.room.AppDatabase
 import dagger.Module
@@ -24,4 +26,7 @@ class AppModule {
 
     @Provides
     fun provideFirebaseHelper() = FirebaseHelper()
+
+    @Provides
+    fun provideCacheManager(@ApplicationContext context: Context) = CacheManager(context)
 }

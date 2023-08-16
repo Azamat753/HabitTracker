@@ -7,14 +7,18 @@ import com.drakeet.multitype.ViewHolderInflater
 import com.lawlett.habittracker.databinding.ItemHabitBinding
 import com.lawlett.habittracker.models.HabitModel
 
-class FollowerAdapter : ViewHolderInflater<HabitModel, FollowerAdapter.FollowViewHolder>() {
-    class FollowViewHolder(var binding: ItemHabitBinding) : RecyclerView.ViewHolder(binding.root) {
+class FollowerAdapter(var click: (model :HabitModel)-> Unit) :
+    ViewHolderInflater<HabitModel, FollowerAdapter.FollowViewHolder>() {
+   inner class FollowViewHolder(var binding: ItemHabitBinding) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(habitModel: HabitModel) {
             binding.habitTitle.text = habitModel.title
             binding.habitImage.text = habitModel.icon
             binding.habitCount.text = habitModel.currentDay.toString() + " / " + habitModel.allDays
-            binding.habitProgress.max = habitModel.allDays?.toInt()  ?:0//change
+            binding.habitProgress.max = habitModel.allDays?.toInt() ?: 0//change
             binding.habitProgress.progress = habitModel.currentDay ?: 0
+            binding.root.setOnClickListener {
+                click.invoke(habitModel)
+            }
         }
     }
 

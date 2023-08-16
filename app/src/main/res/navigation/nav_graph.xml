@@ -15,20 +15,16 @@
             app:destination="@id/habitDetailFragment" />
     </fragment>
     <fragment
-        android:id="@+id/friendsFragment"
-        android:name="com.lawlett.habittracker.fragment.friends.FriendsFragment"
-        android:label="fragment_friends"
-        tools:layout="@layout/fragment_friends" />
+        android:id="@+id/followFragment"
+        android:name="com.lawlett.habittracker.fragment.follow.FollowsFragment"
+        android:label="fragment_follow"
+        tools:layout="@layout/fragment_follow" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.lawlett.habittracker.fragment.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
-    <fragment
-        android:id="@+id/signInFragment"
-        android:name="com.lawlett.habittracker.fragment.SignInFragment"
-        android:label="fragment_sign_in"
-        tools:layout="@layout/fragment_sign_in" />
+
     <fragment
         android:id="@+id/habitDetailFragment"
         android:name="com.lawlett.habittracker.fragment.habitdetail.HabitDetailFragment"

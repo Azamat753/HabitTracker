@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import java.util.Date
 
 @Parcelize
 @Entity(tableName = "habit_table")
@@ -17,5 +18,8 @@ data class HabitModel(
     val date:String?= null,
     val attempts: Int? = 0,
     val record: Int? = 0,
+    val fbName : String?=null,
+    val startDate: Date?=null,
+    val endDate: Date?=null
 //    val history: ArrayList<String>
 ) : Parcelable

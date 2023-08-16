@@ -13,7 +13,6 @@ import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class CreateHabitDialog :
     BaseBottomSheetDialog<CreateHabitDialogBinding>(CreateHabitDialogBinding::inflate) {
@@ -33,7 +32,8 @@ class CreateHabitDialog :
             createBtn.setOnClickListener {
                 val model = HabitModel(
                     title = nameEd.text.toString(),
-                    icon = emojiEd.text.toString().ifEmpty { "$" }, allDays = "7"
+                    icon = emojiEd.text.toString().ifEmpty { "$" }, allDays = "7",
+                    fbName = firebaseHelper.getUserName()
                 )
                 viewModel.insert(model)
                 firebaseHelper.insertOrUpdateHabitFB(model)

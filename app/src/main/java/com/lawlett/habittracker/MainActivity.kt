@@ -1,6 +1,5 @@
 package com.lawlett.habittracker
 
-import android.opengl.Visibility
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
             binding.toolbarMain.title = when (destination.id) {
                 R.id.mainFragment -> "Главная"
-                R.id.friendsFragment -> "Подписки"
+                R.id.followFragment -> "Подписки"
                 R.id.settingsFragment -> "Настройки"
                 R.id.habitDetailFragment -> "Детали"
                 else -> "Главная"

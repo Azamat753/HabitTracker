@@ -12,7 +12,11 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DataHelper(context: Context) {
+class DataHelper(context: Context, startKey: String, stopKey: String) {
+    private val PREFERENCES = "prefs"
+    private val START_TIME_KEY = startKey
+    private val STOP_TIME_KEY = stopKey
+    private val COUNTING_KEY = "$startKey counting"
     private var sharedPref: SharedPreferences =
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
     private var dateFormat = SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault())
@@ -68,26 +72,22 @@ class DataHelper(context: Context) {
             apply()
         }
     }
-
-    companion object {
-        const val PREFERENCES = "prefs"
-        const val START_TIME_KEY = "startKey"
-        const val STOP_TIME_KEY = "stopKey"
-        const val COUNTING_KEY = "countingKey"
-    }
-
 }
+
 // TimerManager.kt
-class TimerManager(private val dataHelper: DataHelper, private val binding: FragmentHabitDetailBinding) {
+class TimerManager(
+    private val dataHelper: DataHelper,
+    private val binding: FragmentHabitDetailBinding
+) {
 
     fun startTimer() {
         dataHelper.setTimerCounting(true)
-  //      binding.startButton.text = binding.root.context.getString(R.string.stop)
+        //      binding.startButton.text = binding.root.context.getString(R.string.stop)
     }
 
     fun stopTimer() {
         dataHelper.setTimerCounting(false)
-       // binding.startButton.text = binding.root.context.getString(R.string.start)
+        // binding.startButton.text = binding.root.context.getString(R.string.start)
     }
 
     fun resetAction() {
@@ -112,12 +112,15 @@ class TimerManager(private val dataHelper: DataHelper, private val binding: Frag
         }
     }
 
-    fun updateTime() {
+    fun updateTime(isFollow: Boolean = false, startTime: Date? = null) {
         if (dataHelper.timerCounting()) {
-            val time = Date().time - (dataHelper.startTime()?.time ?: 0)
+            val time = Date().time - (if (isFollow) startTime?.time?:0 else  dataHelper.startTime()?.time ?: 0)
             binding.timeTV.text = timeStringFromLong(time)
         }
     }
+
+    fun time() = Date().time - (dataHelper.startTime()?.time ?: 0)
+
 
     private fun calcRestartTime(): Date {
         val diff = (dataHelper.startTime()?.time ?: 0) - (dataHelper.stopTime()?.time ?: 0)
