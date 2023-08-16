@@ -78,10 +78,10 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
     private fun fetchFromFB() {
         items = ArrayList()
         cacheManager.getFollowers()?.distinct()?.let { array ->
-            array.forEach {
-                firebaseHelper.db.collection(it!!).get().addOnCompleteListener { result ->
+            array.forEach {userName->
+                firebaseHelper.db.collection(userName!!).get().addOnCompleteListener { result ->
                     if (result.result.size() != 0) {
-                        items.add(it.replaceAfter(":", ""))
+                        items.add(userName.replaceAfter(":", ""))
                     }
                     for (document in result.result) {
                         val title = document.data["title"] as String
@@ -99,6 +99,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
                             date = date,
                             startDate = startDate,
                             endDate = endDate,
+                            fbName = userName
                         )
                         items.add(model)
                         if (items.size == result.result.documents.size) {

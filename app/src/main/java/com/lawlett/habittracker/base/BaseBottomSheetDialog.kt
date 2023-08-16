@@ -9,11 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.lawlett.habittracker.R
+import com.lawlett.habittracker.databinding.FollowDialogBinding
+import com.lawlett.habittracker.databinding.FragmentHabitDetailBinding
 
 abstract class BaseBottomSheetDialog<T : ViewBinding>(private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> T) :
     BottomSheetDialogFragment() {
     private var _binding: T? = null
+
     val binding get() = _binding!!
 
     //Инициализация через view binding

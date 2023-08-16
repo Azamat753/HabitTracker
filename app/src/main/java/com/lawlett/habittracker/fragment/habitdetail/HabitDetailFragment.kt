@@ -34,8 +34,11 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
     private val timer = Timer()
     private var data: HabitModel? = null
     private var isFollow = false
+    private var isStartTimer = false
     private lateinit var timerManager: TimerManager
-    @Inject lateinit var firebaseHelper: FirebaseHelper
+
+    @Inject
+    lateinit var firebaseHelper: FirebaseHelper
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,48 +48,61 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
 
     private fun initClickers() {
         binding.btnRelapse.setOnClickListener {
-            binding.tvRecord.text = "Рекорд - " + binding.timeTV.text.substring(0, 2) + " дней"
-            addAttempts()
-            addDate()
-            data?.let {
-                val model = HabitModel(
-                    date = timerManager.time().toString(),
-                    title = it.title,
-                    allDays = it.allDays,
-                    currentDay = it.currentDay,
-                    icon = it.icon,
-                    startDate = dataHelper.startTime(),
-                    endDate = dataHelper.stopTime()
-                )
-                firebaseHelper.insertOrUpdateHabitFB(model)
-            }
-            timerManager.startStopAction()
+            launch()
         }
         binding.appBar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }
 
+    private fun launch() {
+        binding.tvRecord.text = "Рекорд - " + binding.timeTV.text.substring(0, 2) + " дней"
+        addAttempts()
+        addDate()
+        data?.let {
+            val model = HabitModel(
+                date = timerManager.time().toString(),
+                title = it.title,
+                allDays = it.allDays,
+                currentDay = it.currentDay,
+                icon = it.icon,
+                startDate = dataHelper.startTime(),
+                endDate = dataHelper.stopTime()
+            )
+            firebaseHelper.insertOrUpdateHabitFB(model)
+        }
+        timerManager.startStopAction()
+    }
+
     private fun prepare() {
         if (arguments != null) {
             data = requireArguments().getParcelable("key") as HabitModel?
             isFollow = requireArguments().getBoolean("isFollow")
+            isStartTimer = requireArguments().getBoolean("isStartTimer")
             data?.let { model ->
-                binding.tvIcon.text = model.icon
-                binding.habitProgress.max = model.allDays?.toInt() ?: 0
-                binding.habitProgress.progress = model.currentDay ?: 0
-                if (isFollow) {
-                    dataHelper =
-                        DataHelper(
-                            requireActivity(),
-                            "${model.title} start ${model.fbName}",
-                            "${model.title} stop ${model.fbName}"
-                        )
-                    dataHelper.setTimerCounting(true)
-                    binding.btnRelapse.toGone()
-                } else {
-                    dataHelper =
-                        DataHelper(requireActivity(), "${model.title} start", "${model.title} stop")
+                with(binding) {
+                    tvIcon.text = model.icon
+                    habitProgress.max = model.allDays?.toInt() ?: 0
+                    habitProgress.progress = model.currentDay ?: 0
+                    habitTv.text = data?.title
+                    if (isFollow) {
+                        dataHelper =
+                            DataHelper(
+                                requireActivity(),
+                                "${model.title} start ${model.fbName}",
+                                "${model.title} stop ${model.fbName}"
+                            )
+                        dataHelper.setTimerCounting(true)
+                        nameTv.text = data?.fbName?.replaceAfter(":", "")
+                        btnRelapse.toGone()
+                    } else {
+                        dataHelper =
+                            DataHelper(
+                                requireActivity(),
+                                "${model.title} start",
+                                "${model.title} stop"
+                            )
+                    }
                 }
             }
         }
@@ -104,6 +120,10 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
             }
         }
         timer.scheduleAtFixedRate(TimeTask(), 0, 500)
+
+        if (isStartTimer) {
+            timerManager.startStopAction()
+        }
     }
 
     private fun addAttempts() {

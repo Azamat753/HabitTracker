@@ -5,6 +5,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
 import com.lawlett.habittracker.databinding.CreateHabitDialogBinding
 import com.lawlett.habittracker.fragment.MainViewModel
@@ -23,7 +25,6 @@ class CreateHabitDialog :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
-
     }
 
     private fun initClickers() {
@@ -38,6 +39,10 @@ class CreateHabitDialog :
                 viewModel.insert(model)
                 firebaseHelper.insertOrUpdateHabitFB(model)
                 dismiss()
+                val bundle = Bundle()
+                bundle.putParcelable("key",model)
+                bundle.putBoolean("isStartTimer",true)
+                findNavController().navigate(R.id.habitDetailFragment,bundle)
             }
         }
     }
