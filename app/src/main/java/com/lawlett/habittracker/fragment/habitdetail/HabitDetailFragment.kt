@@ -39,13 +39,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.appBar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        dataHelper = DataHelper(requireActivity())
-        timerManager = TimerManager(dataHelper, binding)
         prepare()
         initClickers()
     }
@@ -68,6 +61,9 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
                 firebaseHelper.insertOrUpdateHabitFB(model)
             }
             timerManager.startStopAction()
+        }
+        binding.appBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
     }
 
