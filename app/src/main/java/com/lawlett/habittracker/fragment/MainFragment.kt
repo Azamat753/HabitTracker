@@ -45,7 +45,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
         viewModel.getHabits()
     }
 
-
     private fun initClickers() {
         binding.fab.setOnClickListener {
             CreateHabitDialog().show(requireActivity().supportFragmentManager, "")
@@ -57,12 +56,12 @@ class MainFragment : Fragment(R.layout.fragment_main),
         adapter.longListener = this
         binding.habitRecycler.adapter = adapter
     }
-
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.habitFlow.asSharedFlow().collect() {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.habitFlow.asSharedFlow().collect(){
                     adapter.setData(it)
+
                 }
             }
         }

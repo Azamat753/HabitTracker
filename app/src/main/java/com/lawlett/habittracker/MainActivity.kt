@@ -1,6 +1,8 @@
 package com.lawlett.habittracker
 
 import android.os.Bundle
+import android.view.View
+import android.view.View.GONE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
@@ -24,16 +26,18 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun destinationListener() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.bottomNavigation.isVisible = when(destination.id){
+            binding.bottomNavigation.isVisible = when (destination.id) {
                 R.id.habitDetailFragment -> false
                 else -> true
             }
-
+            if (destination.id == R.id.habitDetailFragment) {
+                binding.toolbarMain.visibility = GONE
+            }
             binding.toolbarMain.title = when (destination.id) {
                 R.id.mainFragment -> "Главная"
                 R.id.followFragment -> "Подписки"
                 R.id.settingsFragment -> "Настройки"
-                R.id.habitDetailFragment -> "Детали"
+                //  R.id.habitDetailFragment -> "Детали"
                 else -> "Главная"
             }
         }

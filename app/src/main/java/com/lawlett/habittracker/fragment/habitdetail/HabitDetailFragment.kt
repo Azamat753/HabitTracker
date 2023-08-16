@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.databinding.FragmentHabitDetailBinding
@@ -38,6 +39,13 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.appBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        dataHelper = DataHelper(requireActivity())
+        timerManager = TimerManager(dataHelper, binding)
         prepare()
         initClickers()
     }
