@@ -3,16 +3,16 @@
     <item
         android:id="@+id/mainFragment"
         android:icon="@drawable/main_selector"
-        android:title="Главная" />
+        android:title="@string/tv_main" />
 
     <item
         android:id="@+id/followFragment"
         android:icon="@drawable/subscription_selector"
-        android:title="Подписки" />
+        android:title="@string/tv_subscriptions" />
 
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/setting_selector"
-        android:title="Настройки" />
+        android:title="@string/tv_settings" />
 
 </menu>

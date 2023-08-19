@@ -8,6 +8,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.helper.GoogleSignInHelper
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.databinding.FragmentSettingsBinding
+import com.lawlett.habittracker.ext.changeLanguage
 import com.lawlett.habittracker.helper.FirebaseHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -19,6 +20,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     @Inject lateinit var firebaseHelper: FirebaseHelper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.changeLang.setOnClickListener {
+            requireActivity().changeLanguage()
+        }
         helper = GoogleSignInHelper(this)
         initClickers()
     }

@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_bg"
-            android:hint="Код"
+            android:hint="@string/tv_code"
             android:textAlignment="center"
             android:padding="12dp" />
 
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/rectangle_background"
-            android:text="Принять"
+            android:text="@string/tv_accept"
             android:textColor="@color/white" />
 
     </LinearLayout>

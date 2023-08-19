@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_bg"
-            android:hint="Название"
+            android:hint="@string/tv_title"
             android:padding="12dp" />
 
         <EditText
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/edit_bg"
-            android:hint="Смайлик"
+            android:hint="@string/tv_emoji"
             android:imeOptions="actionDone"
             android:maxLines="1"
             android:padding="12dp" />
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/rectangle_background"
-            android:text="Создать"
+            android:text="@string/tv_create"
             android:textColor="@color/white" />
     </LinearLayout>
 

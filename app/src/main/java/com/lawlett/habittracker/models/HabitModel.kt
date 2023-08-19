@@ -1,8 +1,11 @@
 package com.lawlett.habittracker.models
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.Gson
+import com.lawlett.habittracker.ext.fromJson
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 
@@ -15,11 +18,12 @@ data class HabitModel(
     val icon: String?,
     val allDays: String?,
     val currentDay:Int?=0,
-    val date:String?= null,
+   @ColumnInfo(name = "history_array") var history:ArrayList<String>,
     val attempts: Int? = 0,
     val record: Int? = 0,
     val fbName : String?=null,
     val startDate: Date?=null,
     val endDate: Date?=null
-//    val history: ArrayList<String>
-) : Parcelable
+) : Parcelable{
+
+}

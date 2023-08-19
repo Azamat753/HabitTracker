@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,8 +18,12 @@ import com.lawlett.habittracker.adapter.HabitAdapter
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
-import com.lawlett.habittracker.databinding.FollowDialogBinding
 import com.lawlett.habittracker.databinding.FragmentMainBinding
+import com.lawlett.habittracker.ext.TAG
+import com.lawlett.habittracker.ext.changeLanguage
+import com.lawlett.habittracker.ext.createDialog
+import com.lawlett.habittracker.ext.toGone
+import com.lawlett.habittracker.ext.toVisible
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,7 +78,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.habitRecycler.adapter = adapter
     }
 
-    fun getFBDataCount(): Int? {
+    private fun getFBDataCount(): Int? {
         var isComplete = false
         var listSize = 0
         firebaseHelper.db.collection(firebaseHelper.getUserName()).get()
@@ -102,17 +105,17 @@ class MainFragment : Fragment(R.layout.fragment_main),
                     val icon = document.data["icon"] as String
                     val currentDay = (document.data["currentDay"] as Long).toInt()
                     val allDays = document.data["allDays"] as String
-                    val date = document.data["date"] as String?
                     val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
                     val endDate = (document.data["endDate"] as Timestamp?)?.toDate()
+//                    val history = (document.data["endDate"] as Timestamp?)?.toDate()
                     val model = HabitModel(
                         title = title,
                         icon = icon,
                         currentDay = currentDay,
                         allDays = allDays,
-                        date = date,
                         startDate = startDate,
                         endDate = endDate,
+                        history = arrayListOf()
                     )
                     listHabit.add(model)
                     if (listHabit.size == result.result.documents.size) {

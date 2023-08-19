@@ -1,4 +1,4 @@
-package com.lawlett.habittracker
+package com.lawlett.habittracker.ext
 
 import android.app.Dialog
 import android.content.Context
@@ -13,6 +13,8 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.lawlett.habittracker.databinding.FollowDialogBinding
 
 fun Fragment.showToast(msg: String) {
@@ -60,5 +62,20 @@ fun Context.getDialog(layout: Int): Dialog {
     dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     return dialog
 }
+
+fun historyArrayToJson(list: ArrayList<String>): String {
+    return Gson().toJson(list)
+}
+
+fun historyToArray(json: String): ArrayList<String> {
+    return try {
+        Gson().fromJson<ArrayList<String>>(json)
+    } catch (e: Exception) {
+        arrayListOf()
+    }
+}
+
+inline fun <reified T> Gson.fromJson(json: String) =
+    fromJson<T>(json, object : TypeToken<T>() {}.type)
 
 val TAG = "ololo"
