@@ -75,7 +75,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.habitRecycler.adapter = adapter
     }
 
-    fun getFBDataCount(): Int? {
+    private fun getFBDataCount(): Int? {
         var isComplete = false
         var listSize = 0
         firebaseHelper.db.collection(firebaseHelper.getUserName()).get()
@@ -85,9 +85,9 @@ class MainFragment : Fragment(R.layout.fragment_main),
             }.addOnFailureListener {
                 Log.e(TAG, "Error read document", it)
             }
-        return if (isComplete){
+        return if (isComplete) {
             listSize
-        }else{
+        } else {
             null
         }
     }
@@ -96,7 +96,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.progressBar.toVisible()
         firebaseHelper.db.collection(firebaseHelper.getUserName()).get()
             .addOnCompleteListener { result ->
-                var listHabit = arrayListOf<HabitModel>()
+                val listHabit = arrayListOf<HabitModel>()
                 for (document in result.result) {
                     val title = document.data["title"] as String
                     val icon = document.data["icon"] as String
@@ -130,9 +130,9 @@ class MainFragment : Fragment(R.layout.fragment_main),
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.habitFlow.asSharedFlow().collect() { habits->
+                viewModel.habitFlow.asSharedFlow().collect() { habits ->
                     getFBDataCount()?.let {
-                        if (it != habits.size){
+                        if (it != habits.size) {
                             getHabitsFromFB()
                         }
                     }
