@@ -10,7 +10,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.drakeet.multitype.MultiTypeAdapter
 import com.google.firebase.Timestamp
 import com.lawlett.habittracker.R
-import com.lawlett.habittracker.TAG
+import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.adapter.FollowerAdapter
 import com.lawlett.habittracker.adapter.NameAdapter
 import com.lawlett.habittracker.bottomsheet.FollowDialog
@@ -19,8 +19,7 @@ import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.EventCallback
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
-import com.lawlett.habittracker.showToast
-import com.lawlett.habittracker.toGone
+import com.lawlett.habittracker.ext.toGone
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -96,10 +95,10 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
                             icon = icon,
                             currentDay = currentDay,
                             allDays = allDays,
-                            date = date,
                             startDate = startDate,
                             endDate = endDate,
-                            fbName = userName
+                            fbName = userName,
+                            history = arrayListOf()
                         )
                         items.add(model)
                         if (items.size == result.result.documents.size) {

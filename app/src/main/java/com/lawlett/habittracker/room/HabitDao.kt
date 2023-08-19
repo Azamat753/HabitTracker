@@ -19,4 +19,10 @@ interface HabitDao {
 
     @Delete
     suspend fun delete(model: HabitModel)
+
+    @Query("SELECT history_array FROM habit_table WHERE id = :id ")
+    fun getHistory(id: Int): Flow<List<String>>
+
+    //    @Query("SELECT history FROM habit_table WHERE id = :id ")
+    //    fun getHistory(id:Int):Flow<String>
 }

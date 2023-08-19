@@ -34,7 +34,8 @@ class CreateHabitDialog :
                 val model = HabitModel(
                     title = nameEd.text.toString(),
                     icon = emojiEd.text.toString().ifEmpty { "$" }, allDays = "7",
-                    fbName = firebaseHelper.getUserName()
+                    fbName = firebaseHelper.getUserName(),
+                    history = arrayListOf()
                 )
                 viewModel.insert(model)
                 firebaseHelper.insertOrUpdateHabitFB(model)

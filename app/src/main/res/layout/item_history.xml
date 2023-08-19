@@ -14,83 +14,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_margin="18dp"
-        android:elevation="16dp"
-        app:cardElevation="16dp"
-        app:cardCornerRadius="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tv_day"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="15 января 2023 г. 16:30"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:layout_gravity="center|start"
-             />
-
-        <ImageView
-            android:layout_gravity="center|end"
-            android:id="@+id/img_clear"
-            android:layout_width="30sp"
-            android:layout_height="30sp"
-            android:layout_margin="16dp"
-            android:background="@drawable/ic_clear"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_margin="18dp"
+            android:elevation="16dp"
+            app:cardCornerRadius="16sp"
+            app:cardElevation="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/tv_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:layout_marginStart="20dp"
+                android:text="15 января 2023 г. 16:30"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
-    <!--    <androidx.cardview.widget.CardView-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="70dp"-->
-    <!--        android:layout_margin="18dp"-->
-    <!--        android:elevation="28dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent">-->
+            <ImageView
+                android:id="@+id/img_clear"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_gravity="center|end"
+                android:layout_margin="16dp"
+                android:background="@drawable/ic_clear"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--            android:id="@+id/boss"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="60dp"-->
-    <!--            android:background="@drawable/rectangle_background_white"-->
-    <!--            android:elevation="8dp"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent">-->
+        </androidx.cardview.widget.CardView>
 
-    <!--            <TextView-->
-    <!--                android:id="@+id/tv_day"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_marginStart="20dp"-->
-    <!--                android:text="15 января 2023 г. 16:30"-->
-    <!--                android:textColor="@color/black"-->
-    <!--                android:textSize="16sp"-->
-    <!--                app:layout_constraintBottom_toBottomOf="@id/boss"-->
-    <!--                app:layout_constraintStart_toStartOf="@id/boss"-->
-    <!--                app:layout_constraintTop_toTopOf="@id/boss" />-->
-
-    <!--            <ImageView-->
-    <!--                android:id="@+id/img_clear"-->
-    <!--                android:layout_width="30sp"-->
-    <!--                android:layout_height="30sp"-->
-    <!--                android:layout_margin="16dp"-->
-    <!--                android:background="@drawable/ic_clear"-->
-    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--                app:layout_constraintEnd_toEndOf="parent"-->
-    <!--                app:layout_constraintTop_toTopOf="parent" />-->
-            </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--    </androidx.cardview.widget.CardView>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

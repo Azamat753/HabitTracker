@@ -15,7 +15,30 @@
     <string name="tv_time">16:30</string>
     <string name="_recediv">Рецидив</string>
     <string name="tv_taime">Таймер привычки курение будет обнулен</string>
+    <string name="choose_language">Выберите Язык…</string>
+    <string name="change_language">Сменить язык</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tv_title">Название</string>
+    <string name="tv_emoji">Смайлик</string>
+    <string name="tv_create">Создать</string>
+    <string name="tv_delete">Удалить?</string>
+    <string name="btn_no">Нет</string>
+    <string name="btn_yes">Да</string>
+    <string name="tv_code">Код</string>
+    <string name="tv_accept">Принять</string>
+    <string name="_00_00_00_00">00:00:00:00</string>
+    <string name="tv_record_9">Рекорд - 9 дней</string>
+    <string name="btn_register">Зарегистрироваться</string>
+    <string name="btn_share">Поделиться</string>
+    <string name="tv_sign_in">sign in</string>
+    <string name="btn_new_habit">Новая привычка</string>
+    <string name="tv_new_habit">Новая привычка</string>
+    <string name="tv_attempt">Попытка -</string>
+    <string name="tv_record">Рекорд </string>
+    <string name="tv_main">Главная</string>
+    <string name="tv_subscriptions">Подписки</string>
+    <string name="tv_settings">Настройки</string>
+    <string name="tv_reset_to_zero">Обнулить?</string>
 
 </resources>

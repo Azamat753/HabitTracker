@@ -114,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="00:00:00:00"
+        android:text="@string/_00_00_00_00"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="60sp"
@@ -166,7 +166,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|end"
             android:layout_marginEnd="20dp"
-            android:text="Рекорд - 9 дней"
+            android:text="@string/tv_record_9"
             android:textColor="@color/black"
             android:textSize="16sp" />
 

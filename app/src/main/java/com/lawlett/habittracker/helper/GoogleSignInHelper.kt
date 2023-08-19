@@ -13,7 +13,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lawlett.habittracker.R
-import com.lawlett.habittracker.showToast
+import com.lawlett.habittracker.ext.showToast
 
 class GoogleSignInHelper(var fragment: Fragment) {
 

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HabitTracker</string>
+    <string name="server_client_id">547684386780-a4jo0jmhap40fu7jll20mo81i08fife9.apps.googleusercontent.com</string>
+    <string name="hello">Hello</string>
+    <string name="day">Day</string>
+    <string name="tv_second">Sec</string>
+    <string name="tv_hours">Hours</string>
+    <string name="tv_minutes">Min</string>
+    <string name="tv_relapse">Relapse</string>
+    <string name="tv_attempts">Attempts - 0</string>
+    <string name="tv_history">History</string>
+    <string name="tv_month">January</string>
+    <string name="tv_year">2023 г.</string>
+    <string name="tv_time">16:30</string>
+    <string name="_recediv">Relapse</string>
+    <string name="tv_taime">The smoking habit timer will be reset to zero</string>
+    <string name="choose_language">Select a Language…</string>
+    <string name="change_language">Change the language</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tv_title">Title</string>
+    <string name="tv_emoji">Emoji</string>
+    <string name="tv_create">Create</string>
+    <string name="tv_delete">Delete?</string>
+    <string name="btn_no">No</string>
+    <string name="btn_yes">Yes</string>
+    <string name="tv_code">Code</string>
+    <string name="tv_accept">Accept</string>
+    <string name="_00_00_00_00">00:00:00:00</string>
+    <string name="tv_record_9">Record - 9 day</string>
+    <string name="btn_register">Register</string>
+    <string name="btn_share">Share</string>
+    <string name="tv_sign_in">Sign in</string>
+    <string name="btn_new_habit">New Habit</string>
+    <string name="tv_new_habit">New Habit</string>
+    <string name="tv_attempt">Attempt - </string>
+    <string name="tv_record">Record </string>
+    <string name="tv_main">Main</string>
+    <string name="tv_subscriptions">Subscriptions</string>
+    <string name="tv_settings">Settings</string>
+    <string name="tv_reset_to_zero">Reset to Zero?</string>
+</resources>

@@ -3,14 +3,28 @@ package com.lawlett.habittracker.fragment.habitdetail.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.lawlett.habittracker.Repository
+import com.lawlett.habittracker.models.HabitModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import javax.inject.Inject
 
-class HabitDetailViewModel() : ViewModel() {
+@HiltViewModel
+class HabitDetailViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+
+    val habitFlow = MutableSharedFlow<List<String>>()
 
     private val dateTime = MutableLiveData<String>()
-    val date:LiveData<String>
+    val date: LiveData<String>
         get() = dateTime
 
     private val attemptsNumbers = MutableLiveData<Int>()
@@ -18,6 +32,21 @@ class HabitDetailViewModel() : ViewModel() {
         get() = attemptsNumbers
 
     var record = 0
+    fun update(model: HabitModel) {
+        viewModelScope.launch {
+            repository.update(model)
+        }
+    }
+
+    fun getHistory(id:Int){
+        viewModelScope.launch {
+            repository.getHistory(id)
+                .flowOn(Dispatchers.IO).onEach {
+                    habitFlow.emit(it)
+                }.launchIn(viewModelScope)
+        }
+    }
+
 
     fun getTime(): LiveData<String> {
         val i = Calendar.getInstance()
@@ -28,6 +57,6 @@ class HabitDetailViewModel() : ViewModel() {
 
     fun record() {
         record++
-        attemptsNumbers.value =record
+        attemptsNumbers.value = record
     }
 }

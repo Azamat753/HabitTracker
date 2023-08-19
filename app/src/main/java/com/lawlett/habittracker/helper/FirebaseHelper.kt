@@ -5,9 +5,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.lawlett.habittracker.TAG
+import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.models.HabitModel
-import java.util.Date
 
 class FirebaseHelper {
     val db = Firebase.firestore

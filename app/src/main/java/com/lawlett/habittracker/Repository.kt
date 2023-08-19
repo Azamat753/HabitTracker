@@ -28,4 +28,8 @@ class Repository @Inject constructor(private val dao: HabitDao) {
         dao.delete(habitModel)
     }
     fun getHabits() =(dao.getAll())
+
+    fun getHistory(id:Int) = dao.getHistory(id)
+
+
 }
