@@ -16,14 +16,14 @@ data class HabitModel(
     val id: Int? = null,
     val title: String?,
     val icon: String?,
-    val allDays: String?,
-    val currentDay:Int?=0,
-   @ColumnInfo(name = "history_array") var history:ArrayList<String>,
-    val attempts: Int? = 0,
-    val record: Int? = 0,
-    val fbName : String?=null,
-    val startDate: Date?=null,
-    val endDate: Date?=null
-) : Parcelable{
+    val allDays: Int=7,
+    val currentDay: Int = 0,
+    var history: String?=null,
+    val attempts: Int = 0,
+    val record: String?=null,
+    val fbName: String? = null,
+    val startDate: Date? = null,
+    val endDate: Date? = null
+) : Parcelable {
 
 }

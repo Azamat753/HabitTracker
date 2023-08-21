@@ -2,13 +2,7 @@ package com.lawlett.habittracker.helper
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
-import com.lawlett.habittracker.databinding.ActivityMainBinding
 import com.lawlett.habittracker.databinding.FragmentHabitDetailBinding
-import com.lawlett.habittracker.fragment.habitdetail.HabitDetailFragmentArgs
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,6 +33,17 @@ class DataHelper(context: Context, startKey: String, stopKey: String) {
 
 
     fun startTime(): Date? = startTime
+
+
+    fun startTimeFromPref(): Date? {
+        val startString = sharedPref.getString(START_TIME_KEY, null)
+        return startString?.let { dateFormat.parse(it) }
+    }
+
+    fun stopTimeFromPref(): Date? {
+        val stopString = sharedPref.getString(STOP_TIME_KEY, null)
+        return stopString?.let { dateFormat.parse(it) }
+    }
 
     fun setStartTime(date: Date?) {
         startTime = date
@@ -97,13 +102,13 @@ class TimerManager(
         binding.timeTV.text = timeStringFromLong(0)
     }
 
-    fun startStopAction() {
+    fun startStopAction(isFollow: Boolean = false, startTime: Date? = null, endTime: Date? = null) {
         if (dataHelper.timerCounting()) {
             dataHelper.setStopTime(Date())
             stopTimer()
         } else {
             if (dataHelper.stopTime() != null) {
-                dataHelper.setStartTime(calcRestartTime())
+                dataHelper.setStartTime(calcRestartTime(isFollow, startTime, endTime))
                 dataHelper.setStopTime(null)
             } else {
                 dataHelper.setStartTime(Date())
@@ -114,18 +119,23 @@ class TimerManager(
 
     fun updateTime(isFollow: Boolean = false, startTime: Date? = null) {
         if (dataHelper.timerCounting()) {
-            val time = Date().time - (if (isFollow) startTime?.time?:0 else  dataHelper.startTime()?.time ?: 0)
+            val time =
+                Date().time - (if (isFollow) startTime?.time ?: 0 else dataHelper.startTime()?.time
+                    ?: 0)
             binding.timeTV.text = timeStringFromLong(time)
         }
     }
 
-    fun time() = Date().time - (dataHelper.startTime()?.time ?: 0)
-
-
-    private fun calcRestartTime(): Date {
-        val diff = (dataHelper.startTime()?.time ?: 0) - (dataHelper.stopTime()?.time ?: 0)
+    private fun calcRestartTime(
+        isFollow: Boolean = false,
+        startTime: Date? = null,
+        endTime: Date? = null
+    ): Date {
+        val diff = (if (isFollow) (startTime?.time ?: 0) - (endTime?.time
+            ?: 0) else (dataHelper.startTime()?.time ?: 0) - (dataHelper.stopTime()?.time ?: 0))
         return Date(System.currentTimeMillis() + diff)
     }
+
 
     fun timeStringFromLong(ms: Long): String {
         val seconds = (ms / 1000) % 60

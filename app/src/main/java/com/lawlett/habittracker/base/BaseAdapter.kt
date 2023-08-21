@@ -20,7 +20,7 @@ abstract class BaseAdapter<T, Binding : ViewBinding>(
     private var _binding: Binding? = null
     val binding get() = _binding!!
     var lastPosition: Int = -1
-    var  positionAdapter:Int=0
+    var positionAdapter: Int = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         _binding = inflater.invoke(LayoutInflater.from(parent.context))
         return BaseViewHolder(binding)
@@ -30,6 +30,10 @@ abstract class BaseAdapter<T, Binding : ViewBinding>(
     fun setData(data: List<T>) {
         this.data = data
         notifyDataSetChanged()
+    }
+
+    fun remove(model: T) {
+        (this.data as ArrayList<T>).remove(model)
     }
 
     override fun getItemCount(): Int = data.size

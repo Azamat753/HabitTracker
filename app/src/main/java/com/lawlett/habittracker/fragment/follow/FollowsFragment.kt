@@ -94,11 +94,10 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
                             title = title,
                             icon = icon,
                             currentDay = currentDay,
-                            allDays = allDays,
+                            allDays = allDays.toInt(),
                             startDate = startDate,
                             endDate = endDate,
                             fbName = userName,
-                            history = arrayListOf()
                         )
                         items.add(model)
                         if (items.size == result.result.documents.size) {

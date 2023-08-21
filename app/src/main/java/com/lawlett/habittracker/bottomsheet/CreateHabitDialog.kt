@@ -5,14 +5,24 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
 import com.lawlett.habittracker.databinding.CreateHabitDialogBinding
+import com.lawlett.habittracker.ext.historyArrayToJson
 import com.lawlett.habittracker.fragment.MainViewModel
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,17 +43,32 @@ class CreateHabitDialog :
             createBtn.setOnClickListener {
                 val model = HabitModel(
                     title = nameEd.text.toString(),
-                    icon = emojiEd.text.toString().ifEmpty { "$" }, allDays = "7",
+                    icon = emojiEd.text.toString().ifEmpty { "$" }, allDays = 7,
                     fbName = firebaseHelper.getUserName(),
-                    history = arrayListOf()
+                    history = historyArrayToJson(arrayListOf()),
+                    startDate = Date()
                 )
                 viewModel.insert(model)
-                firebaseHelper.insertOrUpdateHabitFB(model)
-                dismiss()
-                val bundle = Bundle()
-                bundle.putParcelable("key",model)
-                bundle.putBoolean("isStartTimer",true)
-                findNavController().navigate(R.id.habitDetailFragment,bundle)
+                viewModel.viewModelScope.launch {
+                    delay(200)
+                    viewModel.getLastHabit()
+                    observe()
+                }
+            }
+        }
+    }
+
+    private fun observe() {
+        viewModel.viewModelScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.lastHabitFlow.asSharedFlow().collect { lastHabit ->
+                    firebaseHelper.insertOrUpdateHabitFB(lastHabit)
+                    dismiss()
+                    val bundle = Bundle()
+                    bundle.putParcelable("key", lastHabit)
+                    bundle.putBoolean("isStartTimer", true)
+                    findNavController().navigate(R.id.habitDetailFragment, bundle)
+                }
             }
         }
     }

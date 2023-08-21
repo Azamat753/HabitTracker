@@ -13,15 +13,18 @@ class FirebaseHelper {
     var auth: FirebaseAuth = Firebase.auth
 
     fun insertOrUpdateHabitFB(model: HabitModel) {
-        db.collection(getUserName())
-            .document(model.title.toString()).set(model)
-            .addOnSuccessListener { documentReference ->
-                Log.e(TAG, "DocumentSnapshot added with ID: $documentReference")
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Error adding document", e)
-            }
+        if (isSigned()) {
+            db.collection(getUserName())
+                .document(model.title.toString()).set(model)
+                .addOnSuccessListener { documentReference ->
+                    Log.e(TAG, "DocumentSnapshot added with ID: $documentReference")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error adding document", e)
+                }
+        }
     }
+
 
     fun isSigned(): Boolean {
         return auth.currentUser != null
@@ -31,10 +34,15 @@ class FirebaseHelper {
 
 
     fun delete(model: HabitModel) {
-        db.collection("habits : ${auth.currentUser?.displayName}").document(model.title.toString())
-            .delete()
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+        if (isSigned()) {
+
+            db.collection("habits : ${auth.currentUser?.displayName}")
+                .document(model.title.toString())
+                .delete()
+                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+                .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+        }
     }
+
 
 }

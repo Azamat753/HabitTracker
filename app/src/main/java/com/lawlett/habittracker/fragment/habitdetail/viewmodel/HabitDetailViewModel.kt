@@ -8,6 +8,7 @@ import com.lawlett.habittracker.Repository
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -21,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HabitDetailViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
-    val habitFlow = MutableSharedFlow<List<String>>()
+    val habitFlow = MutableSharedFlow<String>()
 
     private val dateTime = MutableLiveData<String>()
     val date: LiveData<String>
@@ -38,7 +39,20 @@ class HabitDetailViewModel @Inject constructor(private val repository: Repositor
         }
     }
 
-    fun getHistory(id:Int){
+    fun updateRecord(record: String, id: Int) {
+        viewModelScope.launch {
+            repository.updateRecord(record, id)
+        }
+    }
+
+    fun updateAttempts(attempts: Int, id: Int) {
+        viewModelScope.launch {
+            delay(100)
+            repository.updateAttempts(attempts, id)
+        }
+    }
+
+    fun getHistory(id: Int) {
         viewModelScope.launch {
             repository.getHistory(id)
                 .flowOn(Dispatchers.IO).onEach {

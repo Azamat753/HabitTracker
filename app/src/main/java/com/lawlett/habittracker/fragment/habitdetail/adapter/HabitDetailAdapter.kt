@@ -5,7 +5,7 @@ import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.databinding.ItemHistoryBinding
 
-class HabitDetailAdapter(val onClick: (String) -> Unit) : BaseAdapter<String, ItemHistoryBinding>(
+class HabitDetailAdapter(val onClick: (String,Int) -> Unit) : BaseAdapter<String, ItemHistoryBinding>(
     R.layout.item_history,
     listOf(),
     ItemHistoryBinding::inflate
@@ -14,7 +14,7 @@ class HabitDetailAdapter(val onClick: (String) -> Unit) : BaseAdapter<String, It
     override fun onBind(binding: ItemHistoryBinding, date: String) {
         binding.tvDay.text=date
         binding.imgClear.setOnClickListener {
-            onClick(date)
+            onClick(date,positionAdapter)
             notifyDataSetChanged()
         }
     }
