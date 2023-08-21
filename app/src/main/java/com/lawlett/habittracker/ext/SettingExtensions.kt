@@ -44,7 +44,7 @@ private fun setLocale(s: String, context: Context) {
     //TODO: this in ViewModel
 }
 fun loadLocale(context: Context) {
-    var language: String? = LanguagePreference.getInstance(context)?.getLanguage
+    val language: String? = LanguagePreference.getInstance(context)?.getLanguage
     if (language != null) {
         setLocale(language, context)
     }

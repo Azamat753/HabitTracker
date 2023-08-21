@@ -40,5 +40,27 @@
     <string name="tv_subscriptions">Подписки</string>
     <string name="tv_settings">Настройки</string>
     <string name="tv_reset_to_zero">Обнулить?</string>
+    //Follow
+    <string name="follows_display">На этом экране вы можете наблюдать за успехом ваших подписчиков</string>
+    <string name="follows_fab">При клике вы можете вставить код подпишека и наблюдать за его привычками</string>
+    //Detail
+    <string name="detail_display">Здесь вы можете видеть подробную информацию о вашей привычки</string>
+    <string name="detail_habit_name_habit">Наименование вашей привычки</string>
+    <string name="detail_habit_name">Ваше имя</string>
+    <string name="detail_habit_progress">Это пометка следит за вашим прогресcом</string>
+    <string name="detail_habit_time">Таймер вашей привычки</string>
+    <string name="detail_habit_btn_relapse">При нажатии на кнопку ваша привычка обнуляется</string>
+    <string name="detail_habit_attempts">Счетчик поможет вам посчитать ваши попытки</string>
+    <string name="detail_habit_record">Здесь вы можно просмотреть какой у вас рекорд</string>
+    <string name="detail_habit_history_list">Ваша история попыток</string>
+    //Main
+    <string name="main_habit_display">Это ваш главный экран, здесь вы можете увидеть ваши привычки и добавить их</string>
+    <string name="main_habit_list">"Здесь будут появляться ваши привычки которые вы хотите искоренить или внедрить в свою жизнь "</string>
+    <string name="main_habit_fab">При нажатии вы можете добавить новую привычку и добавить смайлик</string>
+    //Setting
+    <string name="settings_display">Это экран ваших настроек</string>
+    <string name="settings_display_singBtn">При нажатии на кнопку вы можете пройти регистрацию</string>
+    <string name="settings_display_shareBtn">Вы можете поделиться своими привычками</string>
+    <string name="settings_display_changeLang">Здесь можно сменить язык</string>
 
 </resources>

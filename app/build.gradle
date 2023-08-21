@@ -75,6 +75,7 @@ dependencies {
 
     implementation 'com.drakeet.multitype:multitype:4.3.0'
     implementation 'com.google.code.gson:gson:2.10.1'
-
+    //spotlight
+    implementation 'com.github.takusemba:spotlight:2.0.0'
 
 }

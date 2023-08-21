@@ -1,10 +1,12 @@
-package com.lawlett.habittracker.fragment
+package com.lawlett.habittracker.fragment.main
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -20,10 +22,13 @@ import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentMainBinding
-import com.lawlett.habittracker.ext.*
+import com.lawlett.habittracker.ext.TAG
+import com.lawlett.habittracker.ext.changeLanguage
+import com.lawlett.habittracker.ext.createDialog
+import com.lawlett.habittracker.ext.toGone
+import com.lawlett.habittracker.ext.toVisible
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
-import com.lawlett.habittracker.room.HabitDao
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -45,13 +50,58 @@ class MainFragment : Fragment(R.layout.fragment_main),
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
 
-    @Inject
-    lateinit var dao: HabitDao
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
+        if (!viewModel.isLangeSeen()) {
+            languageChanged()
+        } else if (!viewModel.isUserSeen()) {
+            searchlight()
+        }
         initAdapter()
         observe()
+        viewModel.getHabits()
+//        if (!viewModel.isUserSeen()) {
+//            searchlight()
+//        }
+    }
+
+    private fun languageChanged() {
+        requireActivity().changeLanguage()
+        viewModel.saveLangeSeen()
+    }
+
+    private fun searchlight() {
+        val targets = ArrayList<Target>()
+        val root = FrameLayout(requireContext())
+        val first = layoutInflater.inflate(R.layout.layout_target, root)
+        val view = View(requireContext())
+
+        Handler().postDelayed({
+            viewModel.saveUserSeen()
+            val views = setSpotLightTarget(
+                binding.mainDisplay,
+                first,
+                getString(R.string.main_habit_display)
+            )
+
+            val firstSpot = setSpotLightTarget(
+                binding.habitRecycler,
+                first,
+                getString(R.string.main_habit_list)
+            )
+
+            val secondSpot = setSpotLightTarget(
+                binding.fab,
+                first,
+                getString(R.string.main_habit_fab)
+            )
+
+            targets.add(views)
+            targets.add(firstSpot)
+            targets.add(secondSpot)
+            setSpotLightBuilder(requireActivity(), targets, first)
+        }, 100)
     }
 
     override fun onCreateView(

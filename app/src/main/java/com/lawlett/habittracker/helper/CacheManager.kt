@@ -10,6 +10,15 @@ class CacheManager(context: Context) {
 
     private var sharedPreferences = context.getSharedPreferences("habitPref", Context.MODE_PRIVATE)
 
+
+    fun passInstruction(isPass: Boolean) {
+        sharedPreferences.edit().putBoolean("isPass", isPass).apply()
+    }
+
+    fun isPass(): Boolean {
+        return sharedPreferences.getBoolean("isPass", false)
+    }
+
     fun saveFollowers(list: ArrayList<String?>) {
         val gson = Gson()
         val json: String = gson.toJson(list)

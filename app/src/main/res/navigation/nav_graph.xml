@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.lawlett.habittracker.fragment.MainFragment"
+        android:name="com.lawlett.habittracker.fragment.main.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_follow" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.lawlett.habittracker.fragment.SettingsFragment"
+        android:name="com.lawlett.habittracker.fragment.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
 

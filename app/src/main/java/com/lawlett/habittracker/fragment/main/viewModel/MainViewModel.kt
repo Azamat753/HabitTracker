@@ -1,4 +1,4 @@
-package com.lawlett.habittracker.fragment
+package com.lawlett.habittracker.fragment.main.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,6 +18,22 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     val habitFlow = MutableSharedFlow<List<HabitModel>>()
 
     val lastHabitFlow = MutableSharedFlow<HabitModel>()
+
+    fun isUserSeen(): Boolean {
+        return repository.isUserSeen()
+    }
+
+    fun saveUserSeen() {
+        repository.saveUserSeen()
+    }
+
+    fun isLangeSeen(): Boolean {
+        return repository.isLangeSeen()
+    }
+
+    fun saveLangeSeen() {
+        repository.saveLangeSeen()
+    }
 
     fun insert(habitModel: HabitModel) {
         viewModelScope.launch {

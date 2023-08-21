@@ -2,7 +2,9 @@ package com.lawlett.habittracker.fragment.habitdetail
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,14 +16,17 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.databinding.DialogRelapseBinding
 import com.lawlett.habittracker.databinding.FragmentHabitDetailBinding
-import com.lawlett.habittracker.ext.*
+import com.lawlett.habittracker.ext.createDialog
+import com.lawlett.habittracker.ext.historyArrayToJson
+import com.lawlett.habittracker.ext.historyToArray
 import com.lawlett.habittracker.fragment.habitdetail.adapter.HabitDetailAdapter
 import com.lawlett.habittracker.fragment.habitdetail.viewmodel.HabitDetailViewModel
 import com.lawlett.habittracker.helper.DataHelper
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.helper.TimerManager
 import com.lawlett.habittracker.models.HabitModel
-import com.lawlett.habittracker.room.HabitDao
+import com.lawlett.habittracker.ext.toGone
+import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.asSharedFlow
@@ -54,10 +59,89 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepare()
+        if (!viewModel.isUserSeen()) {
+            searchlight()
+        }
+        data?.id?.let { id ->
+            viewModel.getHistory(id)
+        }
         getHistory()
         initAdapter()
         observe()
         initClickers()
+    }
+
+    private fun searchlight() {
+        val targets = ArrayList<Target>()
+        val root = FrameLayout(requireContext())
+        val first = layoutInflater.inflate(R.layout.second_target, root)
+        val view = View(requireContext())
+
+        Handler().postDelayed({
+            viewModel.saveUserSeen()
+            val views = setSpotLightTarget(
+                binding.minaDetail,
+                first,
+                getString(R.string.detail_display)
+            )
+
+            val zeroStop = setSpotLightTarget(
+                binding.habitTv,
+                first,
+                getString(R.string.detail_habit_name_habit)
+            )
+
+            val nameStop = setSpotLightTarget(
+                binding.nameTv,
+                first,
+                getString(R.string.detail_habit_name)
+            )
+
+            val firstSpot = setSpotLightTarget(
+                binding.habitProgress,
+                first,
+                getString(R.string.detail_habit_progress)
+            )
+            val secondSpot = setSpotLightTarget(
+                binding.timeTV,
+                first,
+                getString(R.string.detail_habit_time)
+            )
+            val thirdSpot = setSpotLightTarget(
+                binding.btnRelapse,
+                first,
+                getString(R.string.detail_habit_btn_relapse)
+            )
+
+            val fourSpot = setSpotLightTarget(
+                binding.tvAttempts,
+                first,
+                getString(R.string.detail_habit_attempts)
+            )
+            val fiveSpot = setSpotLightTarget(
+                binding.tvRecord,
+                first,
+                getString(R.string.detail_habit_record)
+            )
+
+            val sixStop = setSpotLightTarget(
+                binding.recyclerHistory,
+                first,
+                getString(R.string.detail_habit_history_list)
+            )
+
+            targets.add(views)
+            targets.add(zeroStop)
+            targets.add(nameStop)
+            targets.add(firstSpot)
+            targets.add(secondSpot)
+            targets.add(thirdSpot)
+            targets.add(fourSpot)
+            targets.add(fiveSpot)
+            targets.add(sixStop)
+            setSpotLightBuilder(requireActivity(), targets, first)
+        }, 100)
+
     }
 
     private fun getHistory() {
