@@ -12,16 +12,15 @@ import androidx.navigation.fragment.findNavController
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
 import com.lawlett.habittracker.databinding.CreateHabitDialogBinding
-import com.lawlett.habittracker.fragment.MainViewModel
+import com.lawlett.habittracker.ext.historyArrayToJson
+import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint

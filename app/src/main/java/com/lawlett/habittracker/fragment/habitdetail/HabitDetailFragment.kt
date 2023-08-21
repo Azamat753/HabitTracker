@@ -16,17 +16,13 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.databinding.DialogRelapseBinding
 import com.lawlett.habittracker.databinding.FragmentHabitDetailBinding
-import com.lawlett.habittracker.ext.createDialog
-import com.lawlett.habittracker.ext.historyArrayToJson
-import com.lawlett.habittracker.ext.historyToArray
+import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.habitdetail.adapter.HabitDetailAdapter
 import com.lawlett.habittracker.fragment.habitdetail.viewmodel.HabitDetailViewModel
 import com.lawlett.habittracker.helper.DataHelper
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.helper.TimerManager
 import com.lawlett.habittracker.models.HabitModel
-import com.lawlett.habittracker.ext.toGone
-import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.asSharedFlow
@@ -46,9 +42,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
     private var isFollow = false
     private var isStartTimer = false
     private var isAddedToHistory = false
-
-    @Inject
-    lateinit var dao: HabitDao
 
     private lateinit var timerManager: TimerManager
     var listHistory = arrayListOf<String>()
@@ -72,7 +65,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
     }
 
     private fun searchlight() {
-        val targets = ArrayList<Target>()
+        val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.second_target, root)
         val view = View(requireContext())
@@ -119,7 +112,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
                 getString(R.string.detail_habit_attempts)
             )
             val fiveSpot = setSpotLightTarget(
-                binding.tvRecord,
+                binding.recordTv,
                 first,
                 getString(R.string.detail_habit_record)
             )

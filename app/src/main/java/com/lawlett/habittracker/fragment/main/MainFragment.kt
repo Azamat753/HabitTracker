@@ -22,11 +22,8 @@ import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentMainBinding
-import com.lawlett.habittracker.ext.TAG
-import com.lawlett.habittracker.ext.changeLanguage
-import com.lawlett.habittracker.ext.createDialog
-import com.lawlett.habittracker.ext.toGone
-import com.lawlett.habittracker.ext.toVisible
+import com.lawlett.habittracker.ext.*
+import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,7 +69,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
     }
 
     private fun searchlight() {
-        val targets = ArrayList<Target>()
+        val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target, root)
         val view = View(requireContext())
