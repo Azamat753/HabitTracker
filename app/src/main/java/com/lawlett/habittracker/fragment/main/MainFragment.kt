@@ -1,10 +1,12 @@
-package com.lawlett.habittracker.fragment
+package com.lawlett.habittracker.fragment.main
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -22,10 +24,14 @@ import com.lawlett.habittracker.databinding.FragmentMainBinding
 import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.ext.changeLanguage
 import com.lawlett.habittracker.ext.createDialog
+import com.lawlett.habittracker.ext.setSpotLightBuilder
+import com.lawlett.habittracker.ext.setSpotLightTarget
 import com.lawlett.habittracker.ext.toGone
 import com.lawlett.habittracker.ext.toVisible
+import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
+import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -40,16 +46,64 @@ class MainFragment : Fragment(R.layout.fragment_main),
     private val adapter = HabitAdapter()
     val list = arrayListOf<HabitModel>()
     var container: ViewGroup? = null
+    //   private var languageChanged = false
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
+        if (!viewModel.isLangeSeen()) {
+            languageChanged()
+        } else if (!viewModel.isUserSeen()) {
+            searchlight()
+        }
         initAdapter()
         observe()
         viewModel.getHabits()
+//        if (!viewModel.isUserSeen()) {
+//            searchlight()
+//        }
+    }
+
+    private fun languageChanged() {
+        requireActivity().changeLanguage()
+        viewModel.saveLangeSeen()
+    }
+
+    private fun searchlight() {
+        val targets = ArrayList<Target>()
+        val root = FrameLayout(requireContext())
+        val first = layoutInflater.inflate(R.layout.layout_target, root)
+        val view = View(requireContext())
+
+        Handler().postDelayed({
+            viewModel.saveUserSeen()
+            val views = setSpotLightTarget(
+                binding.mainDisplay,
+                first,
+                getString(R.string.main_habit_display)
+            )
+
+            val firstSpot = setSpotLightTarget(
+                binding.habitRecycler,
+                first,
+                getString(R.string.main_habit_list)
+            )
+
+            val secondSpot = setSpotLightTarget(
+                binding.fab,
+                first,
+                getString(R.string.main_habit_fab)
+            )
+
+            targets.add(views)
+            targets.add(firstSpot)
+            targets.add(secondSpot)
+            setSpotLightBuilder(requireActivity(), targets, first)
+        }, 100)
     }
 
     override fun onCreateView(
@@ -88,9 +142,9 @@ class MainFragment : Fragment(R.layout.fragment_main),
             }.addOnFailureListener {
                 Log.e(TAG, "Error read document", it)
             }
-        return if (isComplete){
+        return if (isComplete) {
             listSize
-        }else{
+        } else {
             null
         }
     }
@@ -133,9 +187,9 @@ class MainFragment : Fragment(R.layout.fragment_main),
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.habitFlow.asSharedFlow().collect() { habits->
+                viewModel.habitFlow.asSharedFlow().collect() { habits ->
                     getFBDataCount()?.let {
-                        if (it != habits.size){
+                        if (it != habits.size) {
                             getHabitsFromFB()
                         }
                     }

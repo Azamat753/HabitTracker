@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="12dp"
+    android:id="@+id/main_settings"
     android:orientation="vertical"
-    tools:context="com.lawlett.habittracker.fragment.SettingsFragment">
+    tools:context="com.lawlett.habittracker.fragment.settings.SettingsFragment">
 
     <Button
         android:id="@+id/signBtn"

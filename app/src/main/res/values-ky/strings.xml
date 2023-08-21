@@ -41,4 +41,26 @@
     <string name="tv_subscriptions">Жазылуулар</string>
     <string name="tv_settings">Орнотуулар</string>
     <string name="tv_reset_to_zero">Нөлдөө?</string>
+    //Follow
+    <string name="follows_display">Бул экранда сиз жолдоочуларыңыздын ийгилигин көрө аласыз</string>
+    <string name="follows_fab">Чыкылдатуу менен сиз кол коюу кодун киргизип, анын адаттарын байкай аласыз</string>
+    //Detail
+    <string name="detail_display">Бул жерден сиз адатыңыздын чоо-жайын көрө аласыз</string>
+    <string name="detail_habit_name_habit">Адатыңызды адаттары</string>
+    <string name="detail_habit_name">Сиздин атыңыз</string>
+    <string name="detail_habit_progress">Бул белги сиздин прогрессиңизди көзөмөлдөйт</string>
+    <string name="detail_habit_time">Адатыңыздын таймери</string>
+    <string name="detail_habit_btn_relapse">Баскычты басканда, адатыңыз нөлгө айланат</string>
+    <string name="detail_habit_attempts">Эсептегич аракетиңизди эсептөөгө жардам берет</string>
+    <string name="detail_habit_record">Бул жерден сиз көрө аласыз сиздин рекордуңуз кандай</string>
+    <string name="detail_habit_history_list">Сиздин аракет тарыхыңыз</string>
+    //Main
+    <string name="main_habit_display">Бул сиздин башкы экраныңыз, бул жерде сиз адаттарыңызды көрө аласыз жана аларды кошо аласыз</string>
+    <string name="main_habit_list">Бул жерде сиздин адаттарыңыз пайда болот Сиз жок кылгыңыз же жашооңузга киргизгиңиз келет</string>
+    <string name="main_habit_fab">Басканда, сиз жаңы адатты кошуп, Эмодзи кошо аласыз</string>
+    //Setting
+    <string name="settings_display">Бул сиздин жөндөөлөрүңүздүн экраны</string>
+    <string name="settings_display_singBtn">Баскычты басканда, сиз каттоодон өтсөңүз болот</string>
+    <string name="settings_display_shareBtn">Сиз адаттарыңыз менен бөлүшө аласыз</string>
+    <string name="settings_display_changeLang">Бул жерде тил өзгөртө аласыз</string>
 </resources>

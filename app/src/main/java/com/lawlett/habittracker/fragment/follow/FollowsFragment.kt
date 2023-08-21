@@ -1,9 +1,12 @@
 package com.lawlett.habittracker.fragment.follow
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -15,11 +18,15 @@ import com.lawlett.habittracker.adapter.FollowerAdapter
 import com.lawlett.habittracker.adapter.NameAdapter
 import com.lawlett.habittracker.bottomsheet.FollowDialog
 import com.lawlett.habittracker.databinding.FragmentFollowBinding
+import com.lawlett.habittracker.ext.setSpotLightBuilder
+import com.lawlett.habittracker.ext.setSpotLightTarget
+import com.takusemba.spotlight.Target
 import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.EventCallback
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
 import com.lawlett.habittracker.ext.toGone
+import com.lawlett.habittracker.fragment.follow.viewModel.FollowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,6 +39,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
     var aza = "Azamat:nPqDXFOUCghapEMR08uxlX0xf3h1"
     var arrayNames = arrayListOf(ibrahimName, ibrahimName2, aza)
     lateinit var items: MutableList<Any>
+    private val viewModel: FollowsViewModel by viewModels()
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
@@ -42,6 +50,9 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initMultiAdapter()
+        if (!viewModel.isUserSeen()) {
+            searchlight()
+        }
         fetchFromFB()
         binding.fab.setOnClickListener {
             FollowDialog(this).show(requireActivity().supportFragmentManager, "")
@@ -49,6 +60,28 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
 //        if (!firebaseHelper.isSigned()){
 //            requireContext().getDialog(R.layout.follow_dialog).show()
 //        }
+    }
+
+    private fun searchlight() {
+        val targets = ArrayList<Target>()
+        val root = FrameLayout(requireContext())
+        val first = layoutInflater.inflate(R.layout.layout_target, root)
+        val view = View(requireContext())
+
+        Handler().postDelayed({
+            viewModel.saveUserSeen()
+            val vi = setSpotLightTarget(
+                binding.mainFollow, first, getString(R.string.follows_display)
+            )
+
+            val firstStop = setSpotLightTarget(
+                binding.fab, first, getString(R.string.follows_fab)
+            )
+
+            targets.add(vi)
+            targets.add(firstStop)
+            setSpotLightBuilder(requireActivity(), targets, first)
+        }, 100)
     }
 
     private fun openDetail(habitModel: HabitModel) {
@@ -77,7 +110,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
     private fun fetchFromFB() {
         items = ArrayList()
         cacheManager.getFollowers()?.distinct()?.let { array ->
-            array.forEach {userName->
+            array.forEach { userName ->
                 firebaseHelper.db.collection(userName!!).get().addOnCompleteListener { result ->
                     if (result.result.size() != 0) {
                         items.add(userName.replaceAfter(":", ""))

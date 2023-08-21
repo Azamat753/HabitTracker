@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         loadLocale(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         initNavigationGraph()
         destinationListener()
     }
