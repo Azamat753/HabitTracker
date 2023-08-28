@@ -332,7 +332,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     private fun updateHistory() {
         val historyItem = viewModel.getTime()
         listHistory.add(historyItem)
-        binding.tvHistory.toVisible()
+        binding.historyTv.toVisible()
         adapter.setData(listHistory)
         viewModel.updateHistory(historyArrayToJson(listHistory), habitModelGlobal?.id!!)
     }

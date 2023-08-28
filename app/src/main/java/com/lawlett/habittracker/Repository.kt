@@ -1,37 +1,21 @@
 package com.lawlett.habittracker
 
 import android.content.SharedPreferences
+import com.lawlett.habittracker.api.FirebaseApi
+import com.lawlett.habittracker.api.SignApi
+import com.lawlett.habittracker.helper.CacheManager
+import com.lawlett.habittracker.models.FirebaseResponse
 import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.models.NotificationModel
 import com.lawlett.habittracker.room.HabitDao
 import javax.inject.Inject
 
 
-class Repository @Inject constructor(private val dao: HabitDao,private val pref:SharedPreferences) {
-
-    fun isUserSeen(): Boolean {
-        return pref.getBoolean(KEY_BORD, false)
-    }
-
-    fun saveUserSeen() {
-        pref.edit().putBoolean(KEY_BORD, true).apply()
-    }
-
-    fun isLangeSeen(): Boolean {
-        return pref.getBoolean(KEY_LANGE, false)
-    }
-
-    fun saveLangeSeen() {
-        pref.edit().putBoolean(KEY_LANGE, true).apply()
-    }
-
-//    override fun getUsers(): Flow<List<User>> = flow {
-//        emit(appDatabase.userDao().getAll())
-//    }
-//
-//    override fun insertAll(users: List<User>): Flow<Unit> = flow {
-//        appDatabase.userDao().insertAll(users)
-//        emit(Unit)
-//    }
+class Repository @Inject constructor(
+    private val dao: HabitDao,
+    private val api: FirebaseApi,
+    private val signApi: SignApi
+) {
 
     suspend fun insert(habitModel: HabitModel) {
         dao.insert(habitModel)
@@ -54,11 +38,21 @@ class Repository @Inject constructor(private val dao: HabitDao,private val pref:
         dao.updateRecord(record, id)
     }
 
-    companion object {
-        const val KEY_PREF = "pref"
-        const val KEY_BORD = "bord"
-        const val KEY_LANGE = "LANGE"
+    suspend fun updateHistory(history: String, id: Int) {
+        dao.updateHistory(history, id)
     }
+
+
+    suspend fun sendRemoteNotification(
+        notificationModel: NotificationModel,
+        token: String
+    ): FirebaseResponse? {
+        return api.sendRemoteNotification(notificationModel, "Bearer $token")
+    }
+
+    suspend fun getToken(code: String) =
+        signApi.getToken(code = code)
+
     suspend fun updateAllDays(allDays: Int, id: Int) {
         dao.updateAllDays(allDays, id)
     }

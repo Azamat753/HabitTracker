@@ -1,5 +1,6 @@
 package com.lawlett.habittracker.fragment.main
 
+
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -16,28 +17,31 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.firebase.Timestamp
-import com.lawlett.habittracker.*
+import com.lawlett.habittracker.R
 import com.lawlett.habittracker.adapter.HabitAdapter
+import com.lawlett.habittracker.api.SignApi
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
+import com.lawlett.habittracker.databinding.DialogTrainingBinding
 import com.lawlett.habittracker.databinding.FragmentMainBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
+import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main),
     BaseAdapter.IBaseAdapterClickListener<HabitModel>,
     BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> {
+
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
     private val adapter = HabitAdapter()
@@ -47,35 +51,50 @@ class MainFragment : Fragment(R.layout.fragment_main),
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
 
+    @Inject
+    lateinit var signApi: SignApi
+    @Inject
+    lateinit var cacheManager: CacheManager
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
-        if (!viewModel.isLangeSeen()) {
+        if (!cacheManager.isLangeSeen()){
             languageChanged()
-        } else if (!viewModel.isUserSeen()) {
-            searchlight()
+        }else if (!cacheManager.isUserSeenDialog()) {
+            dialogTest()
         }
         initAdapter()
         observe()
         viewModel.getHabits()
-//        if (!viewModel.isUserSeen()) {
-//            searchlight()
-//        }
+
     }
 
+    private fun dialogTest() {
+        cacheManager.saveUserSeenDialog()
+        val dialog = requireContext().createDialog(DialogTrainingBinding::inflate)
+        dialog.first.btnYes.setOnClickListener {
+            searchlight()
+            dialog.second.dismiss()
+        }
+        dialog.first.btnNo.setOnClickListener {
+            cacheManager.saveInstruction(true)
+            dialog.second.dismiss() }
+    }
+
+
     private fun languageChanged() {
+        cacheManager.saveLangeSeen()
         requireActivity().changeLanguage()
-        viewModel.saveLangeSeen()
     }
 
     private fun searchlight() {
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target, root)
-        val view = View(requireContext())
 
         Handler().postDelayed({
-            viewModel.saveUserSeen()
             val views = setSpotLightTarget(
                 binding.mainDisplay,
                 first,
@@ -119,7 +138,14 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.fab.setOnClickListener {
             CreateHabitDialog().show(requireActivity().supportFragmentManager, "")
         }
+        binding.fab.setOnClickListener {
+        }
     }
+
+    private fun getToken() {
+        CacheManager(requireContext()).getToken()
+    }
+
 
     private fun initAdapter() {
         adapter.listener = this
