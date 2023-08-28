@@ -19,22 +19,6 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     val lastHabitFlow = MutableSharedFlow<HabitModel>()
 
-    fun isUserSeen(): Boolean {
-        return repository.isUserSeen()
-    }
-
-    fun saveUserSeen() {
-        repository.saveUserSeen()
-    }
-
-    fun isLangeSeen(): Boolean {
-        return repository.isLangeSeen()
-    }
-
-    fun saveLangeSeen() {
-        repository.saveLangeSeen()
-    }
-
     fun insert(habitModel: HabitModel) {
         viewModelScope.launch {
             repository.insert(habitModel)

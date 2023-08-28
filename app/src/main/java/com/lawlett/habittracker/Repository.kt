@@ -13,27 +13,9 @@ import javax.inject.Inject
 
 class Repository @Inject constructor(
     private val dao: HabitDao,
-    private val pref: SharedPreferences,
     private val api: FirebaseApi,
-    private val cacheManager: CacheManager,
     private val signApi: SignApi
 ) {
-
-    fun isUserSeen(): Boolean {
-        return pref.getBoolean(KEY_BORD, false)
-    }
-
-    fun saveUserSeen() {
-        pref.edit().putBoolean(KEY_BORD, true).apply()
-    }
-
-    fun isLangeSeen(): Boolean {
-        return pref.getBoolean(KEY_LANGE, false)
-    }
-
-    fun saveLangeSeen() {
-        pref.edit().putBoolean(KEY_LANGE, true).apply()
-    }
 
     suspend fun insert(habitModel: HabitModel) {
         dao.insert(habitModel)
@@ -70,13 +52,6 @@ class Repository @Inject constructor(
 
     suspend fun getToken(code: String) =
         signApi.getToken(code = code)
-
-
-    companion object {
-        const val KEY_PREF = "pref"
-        const val KEY_BORD = "bord"
-        const val KEY_LANGE = "LANGE"
-    }
 
     suspend fun updateAllDays(allDays: Int, id: Int) {
         dao.updateAllDays(allDays, id)

@@ -65,8 +65,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         initAdapter()
         prepare()
         helper = GoogleSignInHelper(fragment = this, tokenCallback = this)
-        if (!viewModel.isUserSeen()) {
-            searchlight()
             if (!cacheManager.isPass()) {
                 if (!cacheManager.isUserSeen()) {
                     searchlight()
@@ -78,7 +76,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
             initClickers()
             observe()
         }
-    }
 
     private fun observe() {
 //        viewLifecycleOwner.lifecycleScope.launch {

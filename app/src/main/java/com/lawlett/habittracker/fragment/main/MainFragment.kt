@@ -137,7 +137,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.fab.setOnClickListener {
             CreateHabitDialog().show(requireActivity().supportFragmentManager, "")
         }
-        binding.fabSend.setOnClickListener {
+        binding.fab.setOnClickListener {
         }
     }
 
