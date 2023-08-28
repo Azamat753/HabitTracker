@@ -8,11 +8,11 @@ import javax.inject.Inject
 @HiltViewModel
 class FollowsViewModel @Inject constructor(private val repository: Repository):ViewModel() {
 
-    fun isUserSeen(): Boolean {
-        return repository.isUserSeen()
-    }
-
-    fun saveUserSeen() {
-        repository.saveUserSeen()
-    }
+//    fun isUserSeen(): Boolean {
+//        return repository.isUserFollow()
+//    }
+//
+//    fun saveUserSeen() {
+//        repository.saveUserFollow()
+//    }
 }

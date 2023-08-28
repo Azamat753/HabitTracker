@@ -24,6 +24,9 @@ import com.lawlett.habittracker.models.HabitModel
 import com.lawlett.habittracker.models.MessageModel
 import com.lawlett.habittracker.models.NotificationMessage
 import com.lawlett.habittracker.models.NotificationModel
+import com.lawlett.habittracker.ext.toGone
+import com.lawlett.habittracker.helper.CacheManager
+import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.asSharedFlow
@@ -53,20 +56,28 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
 
     lateinit var helper: GoogleSignInHelper
 
+    @Inject
+    lateinit var cacheManager: CacheManager
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         prepare()
-        helper= GoogleSignInHelper(fragment = this, tokenCallback = this)
+        helper = GoogleSignInHelper(fragment = this, tokenCallback = this)
         if (!viewModel.isUserSeen()) {
             searchlight()
+            if (!cacheManager.isPass()) {
+                if (!cacheManager.isUserSeen()) {
+                    searchlight()
+                }
+            }
+            habitModelGlobal?.id?.let { id ->
+                viewModel.getHistory(id)
+            }
+            initClickers()
+            observe()
         }
-        habitModelGlobal?.id?.let { id ->
-            viewModel.getHistory(id)
-        }
-        initClickers()
-        observe()
     }
 
     private fun observe() {
@@ -100,7 +111,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         val first = layoutInflater.inflate(R.layout.second_target, root)
 
         Handler().postDelayed({
-            viewModel.saveUserSeen()
+            cacheManager.saveUserSeen()
             val views = setSpotLightTarget(
                 binding.minaDetail,
                 first,
@@ -176,9 +187,9 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
 //            dialogRelapse()
         }
 
-        binding.appBar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
+//        binding.appBar.setNavigationOnClickListener {
+//            findNavController().navigateUp()
+//        }
     }
 
     private fun dialogRelapse() {

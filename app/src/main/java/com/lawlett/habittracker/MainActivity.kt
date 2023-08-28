@@ -73,16 +73,16 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 R.id.habitDetailFragment -> false
                 else -> true
             }
-            if (destination.id == R.id.habitDetailFragment) {
-                binding.toolbarMain.visibility = GONE
-            }
-            binding.toolbarMain.title = when (destination.id) {
-                R.id.mainFragment -> getString(R.string.tv_main)
-                R.id.followFragment -> getString(R.string.tv_subscriptions)
-                R.id.settingsFragment -> getString(R.string.tv_settings)
-                //  R.id.habitDetailFragment -> "Детали"
-                else -> getString(R.string.tv_main)
-            }
+//            if (destination.id == R.id.habitDetailFragment) {
+//                binding.toolbarMain.visibility = GONE
+//            }
+//            binding.toolbarMain.text = when (destination.id) {
+//                R.id.mainFragment -> getString(R.string.tv_main)
+//                R.id.followFragment -> getString(R.string.tv_subscriptions)
+//                R.id.settingsFragment -> getString(R.string.tv_settings)
+//                //  R.id.habitDetailFragment -> "Детали"
+//                else -> getString(R.string.tv_main)
+//            }
         }
     }
 

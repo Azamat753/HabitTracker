@@ -1,6 +1,7 @@
 package com.lawlett.habittracker.di
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.lawlett.habittracker.Repository.Companion.KEY_PREF
@@ -8,6 +9,7 @@ import com.lawlett.habittracker.api.FirebaseApi
 import com.lawlett.habittracker.api.SignApi
 import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
+import com.lawlett.habittracker.helper.Key.KEY_PREF
 import com.lawlett.habittracker.room.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -66,6 +68,6 @@ class AppModule {
     @Provides
     @Singleton
     fun providePreference(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences(KEY_PREF, Context.MODE_PRIVATE)
+        return context.getSharedPreferences(KEY_PREF, MODE_PRIVATE)
     }
 }

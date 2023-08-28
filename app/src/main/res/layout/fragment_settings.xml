@@ -8,6 +8,15 @@
     android:orientation="vertical"
     tools:context="com.lawlett.habittracker.fragment.settings.SettingsFragment">
 
+    <TextView
+        android:id="@+id/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12sp"
+        android:text="@string/tv_settings"
+        android:textColor="@color/black"
+        android:textSize="28sp" />
+
     <Button
         android:id="@+id/signBtn"
         android:layout_width="match_parent"

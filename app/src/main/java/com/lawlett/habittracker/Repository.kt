@@ -1,20 +1,13 @@
 package com.lawlett.habittracker
 
 import android.content.SharedPreferences
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
 import com.lawlett.habittracker.api.FirebaseApi
 import com.lawlett.habittracker.api.SignApi
 import com.lawlett.habittracker.helper.CacheManager
-import com.lawlett.habittracker.helper.FirebaseHelper
-import com.lawlett.habittracker.helper.MyFirebaseMessagingService
 import com.lawlett.habittracker.models.FirebaseResponse
 import com.lawlett.habittracker.models.HabitModel
 import com.lawlett.habittracker.models.NotificationModel
-import com.lawlett.habittracker.models.TokenModel
 import com.lawlett.habittracker.room.HabitDao
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 
