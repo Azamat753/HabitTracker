@@ -3,7 +3,6 @@ package com.lawlett.habittracker.helper
 import android.content.Context
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import com.lawlett.habittracker.helper.Key.KEY_GET_LOUNGE
 import com.lawlett.habittracker.helper.Key.KEY_SAVE_DIALOG
 import java.lang.reflect.Type
 import java.util.ArrayList
@@ -12,6 +11,9 @@ class CacheManager(context: Context) {
 
     private var sharedPreferences = context.getSharedPreferences("habitPref", Context.MODE_PRIVATE)
 
+    fun setToken(token: String) = sharedPreferences.edit().putString("token", token).apply()
+
+    fun getToken(): String? = sharedPreferences.getString("token", null)
     fun isUserFollow():Boolean{
         return sharedPreferences.getBoolean(Key.KEY_SAVE_FOLLOW,false)
     }

@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lawlett.habittracker.Repository
 import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.models.NotificationModel
+import com.lawlett.habittracker.models.TokenModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -24,6 +26,11 @@ class HabitDetailViewModel @Inject constructor(private val repository: Repositor
 
     val habitFlow = MutableSharedFlow<String>()
 
+    val isNotificationPushed = MutableSharedFlow<Boolean>()
+
+    val tokenModelFlow = MutableSharedFlow<TokenModel>()
+
+
     private val dateTime = MutableLiveData<String>()
     val date: LiveData<String>
         get() = dateTime
@@ -39,9 +46,32 @@ class HabitDetailViewModel @Inject constructor(private val repository: Repositor
         }
     }
 
+    fun getToken(authCode: String) {
+        viewModelScope.launch {
+            tokenModelFlow.emit(repository.getToken(authCode))
+
+//            repository.getToken(authCode).
+//            flowOn(Dispatchers.IO).onEach {
+//                tokenModelFlow.emit(it)
+//            }
+        }
+    }
+
+    fun sendRemoteNotification(notificationModel: NotificationModel,token:String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.sendRemoteNotification(notificationModel,token)
+        }
+    }
+
     fun updateRecord(record: String, id: Int) {
         viewModelScope.launch {
             repository.updateRecord(record, id)
+        }
+    }
+
+    fun updateHistory(history: String, id: Int) {
+        viewModelScope.launch {
+            repository.updateHistory(history, id)
         }
     }
 
@@ -62,24 +92,19 @@ class HabitDetailViewModel @Inject constructor(private val repository: Repositor
     }
 
 
-    fun getTime(): LiveData<String> {
+    fun getTime(): String {
         val i = Calendar.getInstance()
-        val a = SimpleDateFormat("dd MM yyyy г. HH:mm", Locale.getDefault())
-        dateTime.postValue(a.format(i.time))
-        return date
+        val a = SimpleDateFormat("dd MM yyyy г. HH:mm:ss", Locale.getDefault())
+        return a.format(i.time)
     }
 
-    fun record() {
+    fun addAttempt() {
         record++
         attemptsNumbers.value = record
     }
 
-//    fun isUserSeen(): Boolean {
-//        return repository.isUserSeen()
-//    }
-//
-//    fun saveUserSeen() {
-//        repository.saveUserSeen()
-//    }
-
+    fun minusAttempt() {
+        record--
+        attemptsNumbers.value = record
+    }
 }

@@ -3,9 +3,9 @@ package com.lawlett.habittracker.fragment.habitdetail
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,15 +14,19 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.R
-import com.lawlett.habittracker.databinding.DialogRelapseBinding
+import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentHabitDetailBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.habitdetail.adapter.HabitDetailAdapter
 import com.lawlett.habittracker.fragment.habitdetail.viewmodel.HabitDetailViewModel
-import com.lawlett.habittracker.helper.DataHelper
-import com.lawlett.habittracker.helper.FirebaseHelper
-import com.lawlett.habittracker.helper.TimerManager
+import com.lawlett.habittracker.helper.*
 import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.models.MessageModel
+import com.lawlett.habittracker.models.NotificationMessage
+import com.lawlett.habittracker.models.NotificationModel
+import com.lawlett.habittracker.ext.toGone
+import com.lawlett.habittracker.helper.CacheManager
+import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.asSharedFlow
@@ -30,18 +34,19 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
-class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
+class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallback {
 
     private val binding: FragmentHabitDetailBinding by viewBinding()
     private val adapter = HabitDetailAdapter(this::onClick)
     private val viewModel: HabitDetailViewModel by viewModels()
     lateinit var dataHelper: DataHelper
     private val timer = Timer()
-    private var data: HabitModel? = null
+    private var habitModelGlobal: HabitModel? = null
     private var isFollow = false
     private var isStartTimer = false
-    private var isAddedToHistory = false
+    private var attempts = 0
 
     private lateinit var timerManager: TimerManager
     var listHistory = arrayListOf<String>()
@@ -49,29 +54,62 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
 
+    lateinit var helper: GoogleSignInHelper
+
+    @Inject
+    lateinit var cacheManager: CacheManager
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initAdapter()
         prepare()
-        if (!viewModel.isUserSeen()) {
-            searchlight()
+        helper = GoogleSignInHelper(fragment = this, tokenCallback = this)
+        if (!cacheManager.isPass()) {
+            if (!cacheManager.isUserSeen()) {
+                searchlight()
+            }
         }
-        data?.id?.let { id ->
+        habitModelGlobal?.id?.let { id ->
             viewModel.getHistory(id)
         }
-        getHistory()
-        initAdapter()
-        observe()
         initClickers()
+        observe()
+    }
+
+
+    private fun observe() {
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                viewModel.isNotificationPushed.asSharedFlow().collect() {
+//                    Log.e(TAG, "onViewCreated: $it")
+//                }
+//            }
+//        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.tokenModelFlow.asSharedFlow().collect() {
+                    val token = it.access_token
+                    val notificationModel = NotificationModel(
+                        MessageModel(
+                            topic = "News",
+                            notification = NotificationMessage("Naruto", "Uzumaki")
+                        )
+                    )
+                    viewModel.sendRemoteNotification(notificationModel, token)
+                }
+            }
+        }
     }
 
     private fun searchlight() {
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.second_target, root)
-        val view = View(requireContext())
 
         Handler().postDelayed({
-            viewModel.saveUserSeen()
+            cacheManager.saveUserSeen()
             val views = setSpotLightTarget(
                 binding.minaDetail,
                 first,
@@ -134,13 +172,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
             targets.add(sixStop)
             setSpotLightBuilder(requireActivity(), targets, first)
         }, 100)
-
-    }
-
-    private fun getHistory() {
-        data?.id?.let { id ->
-            viewModel.getHistory(id)
-        }
     }
 
     private fun initAdapter() {
@@ -149,25 +180,34 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
 
     private fun initClickers() {
         binding.btnRelapse.setOnClickListener {
-            dialogRelapse()
+            helper.signInGoogle()
+
+//            dialogRelapse()
         }
 
-        binding.appBar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
+//        binding.appBar.setNavigationOnClickListener {
+//            findNavController().navigateUp()
+//        }
     }
 
     private fun dialogRelapse() {
-        val dialog = requireContext().createDialog(DialogRelapseBinding::inflate)
+        val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+        dialog.first.txtTitle.text = requireContext().getString(R.string.reset_to_zero)
+        dialog.first.txtDescription.text = requireContext().getString(R.string.habit_clear)
         dialog.first.btnYes.setOnClickListener {
             launch()
             showRecord()
             timerManager.resetAction()
-            timerManager.startStopAction(isFollow, data?.startDate, data?.endDate)
+            timerManager.startStopAction(
+                isFollow,
+                habitModelGlobal?.startDate,
+                habitModelGlobal?.endDate
+            )
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
     }
+
 
     @SuppressLint("SetTextI18n")
     private fun showRecord() {
@@ -177,8 +217,8 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
             binding.recordTitleTv.toVisible()
             binding.recordTv.toVisible()
             binding.recordTv.text = newRecord.toString()
-            data?.id?.let {
-                viewModel.updateRecord(newRecord.toString(), data?.id!!)
+            habitModelGlobal?.id?.let { id ->
+                viewModel.updateRecord(newRecord.toString(), id)
             } ?: kotlin.run {
                 showToast("id пуст")
             }
@@ -190,7 +230,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
         timerManager = TimerManager(dataHelper, binding)
         addAttempts()
         updateHistory()
-        data?.let {
+        habitModelGlobal?.let {
             val model = HabitModel(
                 title = it.title,
                 allDays = it.allDays,
@@ -202,34 +242,42 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
             )
             firebaseHelper.insertOrUpdateHabitFB(model)
         }
-        timerManager.startStopAction(isFollow, data?.startDate, data?.endDate)
+        timerManager.startStopAction(
+            isFollow,
+            habitModelGlobal?.startDate,
+            habitModelGlobal?.endDate
+        )
     }
 
     @SuppressLint("SetTextI18n")
     private fun prepare() {
         if (arguments != null) {
-            data = requireArguments().getParcelable("key") as HabitModel?
+            habitModelGlobal = requireArguments().getParcelable("key") as HabitModel?
             isFollow = requireArguments().getBoolean("isFollow")
             isStartTimer = requireArguments().getBoolean("isStartTimer")
-            data?.let { model ->
+            habitModelGlobal?.let { model ->
                 with(binding) {
                     iconTv.text = model.icon
                     habitProgress.max = model.allDays
-                    habitTv.text = data?.title
-                    recordTv.text = data?.record
-                    viewModel.record = data?.attempts ?: 0
-                    if (data?.record?.toInt() == 0 || data?.record==null) {
-                        recordTv.toGone()
-                        recordTitleTv.toGone()
-                    } else {
-                        recordTv.text = data?.record
+                    habitTv.text = habitModelGlobal?.title
+                    recordTv.text = habitModelGlobal?.record
+                    viewModel.record = habitModelGlobal?.attempts ?: 0
+                    habitModelGlobal?.let { model ->
+                        if (model.record?.toInt() == 0 || model.record == null) {
+                            recordTv.toGone()
+                            recordTitleTv.toGone()
+                        } else {
+                            recordTv.text = habitModelGlobal?.record
+                        }
+                        if (model.attempts == 0) {
+                            attemptCard.toGone()
+                        } else {
+                            tvAttempts.text =
+                                "${getString(R.string.tv_attempt)} ${habitModelGlobal?.attempts.toString()}"
+                        }
+                        checkHistoryOnEmpty()
                     }
-                    if (data?.attempts == 0) {
-                        attemptCard.toGone()
-                    } else {
-                        tvAttempts.text =
-                            "${getString(R.string.tv_attempt)} ${data?.attempts.toString()}"
-                    }
+
                     if (isFollow) {
                         dataHelper =
                             DataHelper(
@@ -238,7 +286,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
                                 "${model.title} stop ${model.fbName}"
                             )
                         dataHelper.setTimerCounting(true)
-                        nameTv.text = data?.fbName?.replaceAfter(":", "")
+                        nameTv.text = habitModelGlobal?.fbName?.replaceAfter(":", "")
                         btnRelapse.toGone()
                     } else {
                         dataHelper =
@@ -249,6 +297,10 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
                             )
                     }
                     habitProgress.progress = dataHelper.startTimeFromPref()?.getDays()?.toInt() ?: 0
+                    habitModelGlobal?.history?.let { history ->
+                        listHistory = historyToArray(history)
+                        adapter.setData(listHistory)
+                    }
                 }
             }
         }
@@ -257,15 +309,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
         if (dataHelper.timerCounting()) {
             timerManager.startTimer()
         }
-        // todo else {
-//            timerManager.stopTimer()
-//            dataHelper.startTime()?.let { startTime ->
-//                dataHelper.stopTime()?.let { stopTime ->
-//                    val time = Date().time - (startTime.time - stopTime.time)
-//                    binding.timeTV.text = timerManager.timeStringFromLong(time)
-//                }
-//            }
-//        }
         timer.scheduleAtFixedRate(TimeTask(), 0, 500)
 
         if (isStartTimer) {
@@ -276,76 +319,57 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
     @SuppressLint("SetTextI18n")
     private fun addAttempts() {
         binding.attemptCard.toVisible()
-        viewModel.record()
+        viewModel.addAttempt()
         viewModel.attemptsNumber.observe(requireActivity()) {
             it?.let { attempts ->
-                binding.tvAttempts.text = getString(R.string.tv_attempt) + " " + attempts
-                viewModel.updateAttempts(attempts, data?.id!!)
-            }
-        }
-    }
-
-    private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.habitFlow.asSharedFlow().collect() { historyDB ->
-                    listHistory = historyToArray(historyDB)
-                    adapter.setData(listHistory)
-                    adapter.notifyDataSetChanged()
-                }
+                this.attempts = attempts
+                binding.tvAttempts.text = getString(R.string.tv_attempt) + " " + this.attempts
+                viewModel.updateAttempts(attempts, habitModelGlobal?.id!!)
             }
         }
     }
 
     private fun updateHistory() {
-        viewModel.getTime()
-        viewModel.date.observe(viewLifecycleOwner) { newHistory ->
-            listHistory.add(newHistory)
-            isAddedToHistory = true
-        }
-        data?.let {
-            val model = HabitModel(
-                id = it.id,
-                history = historyArrayToJson(listHistory),
-                allDays = it.allDays,
-                title = it.title,
-                currentDay = it.currentDay,
-                icon = it.icon,
-                record = dataHelper.startTimeFromPref()?.getDays()
-            )
-            if (isAddedToHistory) {
-                viewModel.update(model)
-                observe()
-            }
-        }
+        val historyItem = viewModel.getTime()
+        listHistory.add(historyItem)
+        binding.tvHistory.toVisible()
+        adapter.setData(listHistory)
+        viewModel.updateHistory(historyArrayToJson(listHistory), habitModelGlobal?.id!!)
     }
 
     private fun onClick(historyString: String, position: Int) {
-        listHistory.remove(historyString)
-        data?.let {
-            val model = HabitModel(
-                id = it.id,
-                history = historyArrayToJson(listHistory),
-                allDays = it.allDays,
-                title = it.title,
-                currentDay = it.currentDay,
-                icon = it.icon
-            )
-            viewModel.update(model)
-            observe()
+        val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+        dialog.first.txtDescription.text = "$historyString \n Будет удалена"
+        dialog.first.btnYes.setOnClickListener {
+            listHistory.remove(historyString)
+            viewModel.updateHistory(historyArrayToJson(listHistory), habitModelGlobal?.id!!)
+            viewModel.minusAttempt()
+            adapter.notifyItemRemoved(position)
+            checkHistoryOnEmpty()
+            dialog.second.dismiss()
         }
-        adapter.notifyItemRemoved(position)
-        Toast.makeText(requireContext(), historyString, Toast.LENGTH_SHORT).show()
+        dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
+    }
+
+    private fun checkHistoryOnEmpty() {
+        if (adapter.data.isEmpty()) {
+            binding.historyTv.toGone()
+        } else {
+            binding.historyTv.toVisible()
+        }
     }
 
     inner class TimeTask : TimerTask() {
         override fun run() {
             if (dataHelper.timerCounting()) {
                 lifecycleScope.launch(Dispatchers.Main) {
-                    timerManager.updateTime(isFollow, data?.startDate)
+                    timerManager.updateTime(isFollow, habitModelGlobal?.startDate)
                 }
             }
         }
     }
 
+    override fun newToken(authCode: String) {
+        viewModel.getToken(authCode)
+    }
 }

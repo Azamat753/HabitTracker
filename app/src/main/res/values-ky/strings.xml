@@ -40,7 +40,7 @@
     <string name="tv_main">Башкы</string>
     <string name="tv_subscriptions">Жазылуулар</string>
     <string name="tv_settings">Орнотуулар</string>
-    <string name="tv_reset_to_zero">Нөлдөө?</string>
+    <string name="reset_to_zero">Нөлдөө?</string>
     //Follow
     <string name="follows_display">Бул экранда сиз жолдоочуларыңыздын ийгилигин көрө аласыз</string>
     <string name="follows_fab">Чыкылдатуу менен сиз кол коюу кодун киргизип, анын адаттарын байкай аласыз</string>
@@ -63,4 +63,5 @@
     <string name="settings_display_singBtn">Баскычты басканда, сиз каттоодон өтсөңүз болот</string>
     <string name="settings_display_shareBtn">Сиз адаттарыңыз менен бөлүшө аласыз</string>
     <string name="settings_display_changeLang">Бул жерде тил өзгөртө аласыз</string>
+    <string name="habit_clear">Привычка будет обнулена</string>
 </resources>

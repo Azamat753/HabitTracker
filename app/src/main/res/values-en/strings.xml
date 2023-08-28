@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">HabitTracker</string>
+    <string name="app_name">GetHabit</string>
     <string name="server_client_id">547684386780-a4jo0jmhap40fu7jll20mo81i08fife9.apps.googleusercontent.com</string>
     <string name="hello">Hello</string>
     <string name="day">Day</string>
@@ -39,7 +39,7 @@
     <string name="tv_main">Main</string>
     <string name="tv_subscriptions">Subscriptions</string>
     <string name="tv_settings">Settings</string>
-    <string name="tv_reset_to_zero">Reset to Zero?</string>
+    <string name="reset_to_zero">Reset to Zero?</string>
 
     /Follow
     <string name="follows_display">On this screen you can watch the success of your subscribers</string>
@@ -63,4 +63,5 @@
     <string name="settings_display_singBtn">By clicking on the button you can register</string>
     <string name="settings_display_shareBtn">You can share your habits</string>
     <string name="settings_display_changeLang">Here you can change the language</string>
+    <string name="habit_clear">Привычка будет обнулена</string>
 </resources>
