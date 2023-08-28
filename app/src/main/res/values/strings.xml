@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HabitTracker</string>
+    <string name="app_name">GetHabit</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="server_client_id">547684386780-a4jo0jmhap40fu7jll20mo81i08fife9.apps.googleusercontent.com</string>
     <string name="hello">Hello</string>
@@ -39,7 +39,7 @@
     <string name="tv_main">Главная</string>
     <string name="tv_subscriptions">Подписки</string>
     <string name="tv_settings">Настройки</string>
-    <string name="tv_reset_to_zero">Обнулить?</string>
+    <string name="reset_to_zero">Обнулить?</string>
     //Follow
     <string name="follows_display">На этом экране вы можете наблюдать за успехом ваших подписчиков</string>
     <string name="follows_fab">При клике вы можете вставить код подпишека и наблюдать за его привычками</string>
@@ -62,5 +62,6 @@
     <string name="settings_display_singBtn">При нажатии на кнопку вы можете пройти регистрацию</string>
     <string name="settings_display_shareBtn">Вы можете поделиться своими привычками</string>
     <string name="settings_display_changeLang">Здесь можно сменить язык</string>
+    <string name="habit_clear">Привычка будет обнулена</string>
 
 </resources>

@@ -23,6 +23,9 @@ interface HabitDao {
     @Query("SELECT history FROM habit_table WHERE id = :id ")
     fun getHistory(id: Int): Flow<String>
 
+    @Query("UPDATE habit_table SET history=:history WHERE id = :id")
+    suspend fun updateHistory(history: String, id: Int)
+
     @Query("UPDATE habit_table SET record=:record WHERE id = :id")
     suspend fun updateRecord(record: String, id: Int)
 

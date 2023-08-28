@@ -1,5 +1,7 @@
 package com.lawlett.habittracker.fragment.main
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -16,23 +18,30 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.firebase.Timestamp
-import com.lawlett.habittracker.*
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.ktx.messaging
+import com.lawlett.habittracker.R
 import com.lawlett.habittracker.adapter.HabitAdapter
+import com.lawlett.habittracker.api.FirebaseApi
+import com.lawlett.habittracker.api.SignApi
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentMainBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
+import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main),
@@ -46,6 +55,9 @@ class MainFragment : Fragment(R.layout.fragment_main),
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
+
+    @Inject
+    lateinit var signApi: SignApi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -72,7 +84,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target, root)
-        val view = View(requireContext())
 
         Handler().postDelayed({
             viewModel.saveUserSeen()
@@ -119,7 +130,14 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.fab.setOnClickListener {
             CreateHabitDialog().show(requireActivity().supportFragmentManager, "")
         }
+        binding.fabSend.setOnClickListener {
+        }
     }
+
+    private fun getToken() {
+        CacheManager(requireContext()).getToken()
+    }
+
 
     private fun initAdapter() {
         adapter.listener = this

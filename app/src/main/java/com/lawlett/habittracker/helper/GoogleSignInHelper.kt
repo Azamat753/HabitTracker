@@ -7,6 +7,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -15,16 +16,18 @@ import com.google.firebase.ktx.Firebase
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.ext.showToast
 
-class GoogleSignInHelper(var fragment: Fragment) {
+class GoogleSignInHelper(var fragment: Fragment, var tokenCallback: TokenCallback? = null) {
 
     var auth: FirebaseAuth
 
     private var googleSignInClient: GoogleSignInClient
-//
+
     init {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestScopes(Scope("https://www.googleapis.com/auth/firebase.messaging"))
             .requestIdToken(fragment.getString(R.string.server_client_id))
             .requestEmail()
+            .requestServerAuthCode(fragment.getString(R.string.server_client_id))
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(fragment.requireContext(), gso)
@@ -50,6 +53,7 @@ class GoogleSignInHelper(var fragment: Fragment) {
             val account: GoogleSignInAccount? = task.result
             if (account != null) {
                 updateUI(account)
+                tokenCallback?.newToken(account.serverAuthCode ?: "")
             }
         } else {
             fragment.showToast(task.exception.toString())

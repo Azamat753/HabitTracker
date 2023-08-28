@@ -2,6 +2,7 @@ package com.lawlett.habittracker.bottomsheet
 
 import android.os.Bundle
 import android.view.View
+import com.google.firebase.messaging.FirebaseMessaging
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
 import com.lawlett.habittracker.databinding.FollowDialogBinding
 import com.lawlett.habittracker.helper.CacheManager
@@ -21,6 +22,7 @@ class FollowDialog(var eventCallback: EventCallback) : BaseBottomSheetDialog<Fol
             applyBtn.setOnClickListener {
                 val array = cacheManager.getFollowers()?:ArrayList()
                 array.add(codeEd.text.toString().trim())
+                FirebaseMessaging.getInstance().subscribeToTopic(codeEd.text.toString().trim())
                 cacheManager.saveFollowers(array)
                 eventCallback.call()
                 dismiss()

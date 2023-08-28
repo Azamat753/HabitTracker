@@ -31,9 +31,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     lateinit var firebaseHelper: FirebaseHelper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       // if (!viewModel.isUserSeen()) {
-            searchlight()
-       // }
+//        if (!viewModel.isUserSeen()) {
+//            searchlight()
+//        }
         binding.changeLang.setOnClickListener {
             requireActivity().changeLanguage()
         }

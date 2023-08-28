@@ -6,6 +6,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="328dp"
+        app:cardCornerRadius="8dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,6 +32,7 @@
                 android:id="@+id/txt_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="15dp"
                 android:text="Привычка “курение” будет удалена"
@@ -53,6 +55,7 @@
                     android:id="@+id/btn_no"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rectangle_background"
                     android:backgroundTint="@color/dark_grey"
                     android:text="@string/btn_no"
                     android:textAllCaps="false"
@@ -63,6 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="31dp"
+                    android:background="@drawable/rectangle_background"
                     android:layout_marginBottom="17dp"
                     android:backgroundTint="@color/blue"
                     android:text="@string/btn_yes"

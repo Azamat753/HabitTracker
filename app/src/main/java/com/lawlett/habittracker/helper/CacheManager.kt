@@ -10,6 +10,9 @@ class CacheManager(context: Context) {
 
     private var sharedPreferences = context.getSharedPreferences("habitPref", Context.MODE_PRIVATE)
 
+    fun setToken(token: String) = sharedPreferences.edit().putString("token", token).apply()
+
+    fun getToken(): String? = sharedPreferences.getString("token", null)
 
     fun passInstruction(isPass: Boolean) {
         sharedPreferences.edit().putBoolean("isPass", isPass).apply()

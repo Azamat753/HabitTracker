@@ -43,7 +43,6 @@ class CreateHabitDialog :
                     title = nameEd.text.toString(),
                     icon = emojiEd.text.toString().ifEmpty { "$" }, allDays = 7,
                     fbName = firebaseHelper.getUserName(),
-                    history = historyArrayToJson(arrayListOf()),
                     startDate = Date()
                 )
                 viewModel.insert(model)

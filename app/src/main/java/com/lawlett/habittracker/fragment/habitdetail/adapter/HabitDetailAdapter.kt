@@ -14,7 +14,7 @@ class HabitDetailAdapter(val onClick: (String,Int) -> Unit) : BaseAdapter<String
     override fun onBind(binding: ItemHistoryBinding, date: String) {
         binding.tvDay.text=date
         binding.imgClear.setOnClickListener {
-            onClick(date,positionAdapter)
+            onClick(date,positionAdapter-1)
             notifyDataSetChanged()
         }
     }

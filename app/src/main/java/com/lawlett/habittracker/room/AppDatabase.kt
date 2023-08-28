@@ -6,7 +6,7 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.lawlett.habittracker.models.HabitModel
 
-@Database(entities = [HabitModel::class], version = 1)
+@Database(entities = [HabitModel::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 
 abstract class AppDatabase : RoomDatabase() {
