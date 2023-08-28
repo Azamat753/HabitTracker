@@ -6,7 +6,6 @@ import android.os.Handler
 import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.helper.GoogleSignInHelper
 import com.lawlett.habittracker.R
@@ -19,21 +18,29 @@ import com.lawlett.habittracker.helper.FirebaseHelper
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlin.concurrent.timerTask
+import androidx.fragment.app.viewModels
+import com.lawlett.habittracker.helper.CacheManager
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val binding: FragmentSettingsBinding by viewBinding()
     lateinit var helper: GoogleSignInHelper
+
     private val viewModel: SettingsViewModel by viewModels()
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
+
+    @Inject
+    lateinit var cacheManager: CacheManager
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       // if (!viewModel.isUserSeen()) {
-            searchlight()
-       // }
+        if (!cacheManager.isPass()) {
+            if (!cacheManager.isUserSeen()) {
+                searchlight()
+            }
+        }
+
         binding.changeLang.setOnClickListener {
             requireActivity().changeLanguage()
         }
@@ -48,7 +55,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         val view = View(requireContext())
 
         Handler().postDelayed({
-            //viewModel.saveUserSeen()
+            cacheManager.saveUserSeen()
             val views = setSpotLightTarget(
                 binding.mainSettings, first, getString(R.string.settings_display)
             )

@@ -50,9 +50,12 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initMultiAdapter()
-        if (!viewModel.isUserSeen()) {
-            searchlight()
+        if ( !cacheManager.isPass()) {
+            if (!cacheManager.isUserSeen()) {
+                searchlight()
+            }
         }
+
         fetchFromFB()
         binding.fab.setOnClickListener {
             FollowDialog(this).show(requireActivity().supportFragmentManager, "")
@@ -69,7 +72,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
         val view = View(requireContext())
 
         Handler().postDelayed({
-            viewModel.saveUserSeen()
+            cacheManager.saveUserSeen()
             val vi = setSpotLightTarget(
                 binding.mainFollow, first, getString(R.string.follows_display)
             )

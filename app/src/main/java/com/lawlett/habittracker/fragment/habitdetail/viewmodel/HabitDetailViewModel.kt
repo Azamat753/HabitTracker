@@ -60,12 +60,12 @@ class HabitDetailViewModel @Inject constructor(private val repository: Repositor
         attemptsNumbers.value = record
     }
 
-    fun isUserSeen(): Boolean {
-        return repository.isUserSeen()
-    }
-
-    fun saveUserSeen() {
-        repository.saveUserSeen()
-    }
+//    fun isUserSeen(): Boolean {
+//        return repository.isUserSeen()
+//    }
+//
+//    fun saveUserSeen() {
+//        repository.saveUserSeen()
+//    }
 
 }

@@ -20,6 +20,8 @@ import com.lawlett.habittracker.adapter.HabitAdapter
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
+import com.lawlett.habittracker.databinding.DialogRelapseBinding
+import com.lawlett.habittracker.databinding.DialogTrainingBinding
 import com.lawlett.habittracker.databinding.FragmentMainBinding
 import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.ext.changeLanguage
@@ -29,6 +31,7 @@ import com.lawlett.habittracker.ext.setSpotLightTarget
 import com.lawlett.habittracker.ext.toGone
 import com.lawlett.habittracker.ext.toVisible
 import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
+import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
 import com.takusemba.spotlight.Target
@@ -41,36 +44,50 @@ import javax.inject.Inject
 class MainFragment : Fragment(R.layout.fragment_main),
     BaseAdapter.IBaseAdapterClickListener<HabitModel>,
     BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> {
+
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
     private val adapter = HabitAdapter()
     val list = arrayListOf<HabitModel>()
     var container: ViewGroup? = null
-    //   private var languageChanged = false
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
+
+    @Inject
+    lateinit var cacheManager: CacheManager
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
-        if (!viewModel.isLangeSeen()) {
+        if (!cacheManager.isLangeSeen()){
             languageChanged()
-        } else if (!viewModel.isUserSeen()) {
-            searchlight()
+        }else if (!cacheManager.isUserSeenDialog()) {
+            dialogTest()
         }
         initAdapter()
         observe()
         viewModel.getHabits()
-//        if (!viewModel.isUserSeen()) {
-//            searchlight()
-//        }
+
     }
 
+    private fun dialogTest() {
+        cacheManager.saveUserSeenDialog()
+        val dialog = requireContext().createDialog(DialogTrainingBinding::inflate)
+        dialog.first.btnYes.setOnClickListener {
+            searchlight()
+            dialog.second.dismiss()
+        }
+        dialog.first.btnNo.setOnClickListener {
+            cacheManager.saveInstruction(true)
+            dialog.second.dismiss() }
+    }
+
+
     private fun languageChanged() {
+        cacheManager.saveLangeSeen()
         requireActivity().changeLanguage()
-        viewModel.saveLangeSeen()
     }
 
     private fun searchlight() {
@@ -80,7 +97,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
         val view = View(requireContext())
 
         Handler().postDelayed({
-            viewModel.saveUserSeen()
             val views = setSpotLightTarget(
                 binding.mainDisplay,
                 first,
@@ -104,6 +120,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
             targets.add(secondSpot)
             setSpotLightBuilder(requireActivity(), targets, first)
         }, 100)
+
     }
 
     override fun onCreateView(

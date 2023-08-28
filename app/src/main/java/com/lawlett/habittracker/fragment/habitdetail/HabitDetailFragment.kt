@@ -26,6 +26,7 @@ import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.helper.TimerManager
 import com.lawlett.habittracker.models.HabitModel
 import com.lawlett.habittracker.ext.toGone
+import com.lawlett.habittracker.helper.CacheManager
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -54,12 +55,17 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
 
+    @Inject
+    lateinit var cacheManager: CacheManager
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepare()
-        if (!viewModel.isUserSeen()) {
-            searchlight()
+        if (!cacheManager.isPass()) {
+            if (!cacheManager.isUserSeen()) {
+                searchlight()
+            }
         }
         data?.id?.let { id ->
             viewModel.getHistory(id)
@@ -76,7 +82,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
         val view = View(requireContext())
 
         Handler().postDelayed({
-            viewModel.saveUserSeen()
+            cacheManager.saveUserSeen()
             val views = setSpotLightTarget(
                 binding.minaDetail,
                 first,
@@ -151,9 +157,9 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
             dialogRelapse()
         }
 
-        binding.appBar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
+//        binding.appBar.setNavigationOnClickListener {
+//            findNavController().navigateUp()
+//        }
     }
 
     private fun dialogRelapse() {
