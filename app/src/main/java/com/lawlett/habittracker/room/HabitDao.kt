@@ -20,9 +20,18 @@ interface HabitDao {
     @Delete
     suspend fun delete(model: HabitModel)
 
-    @Query("SELECT history_array FROM habit_table WHERE id = :id ")
-    fun getHistory(id: Int): Flow<List<String>>
+    @Query("SELECT history FROM habit_table WHERE id = :id ")
+    fun getHistory(id: Int): Flow<String>
 
-    //    @Query("SELECT history FROM habit_table WHERE id = :id ")
-    //    fun getHistory(id:Int):Flow<String>
+    @Query("UPDATE habit_table SET record=:record WHERE id = :id")
+    suspend fun updateRecord(record: String, id: Int)
+
+    @Query("UPDATE habit_table SET allDays=:allDays WHERE id = :id")
+    suspend fun updateAllDays(allDays: Int, id: Int)
+
+    @Query("UPDATE habit_table SET attempts = :attempts WHERE id = :id")
+    suspend fun updateAttempts(attempts: Int, id: Int)
+
+    @Query("SELECT * FROM habit_table WHERE id = (SELECT MAX(id) FROM habit_table)")
+    fun getLastHabit(): Flow<HabitModel>
 }

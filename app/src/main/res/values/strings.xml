@@ -34,8 +34,8 @@
     <string name="tv_sign_in">sign in</string>
     <string name="btn_new_habit">Новая привычка</string>
     <string name="tv_new_habit">Новая привычка</string>
-    <string name="tv_attempt">Попытка -</string>
-    <string name="tv_record">Рекорд </string>
+    <string name="tv_attempt">Попытка : </string>
+    <string name="tv_record">Рекорд : </string>
     <string name="tv_main">Главная</string>
     <string name="tv_subscriptions">Подписки</string>
     <string name="tv_settings">Настройки</string>

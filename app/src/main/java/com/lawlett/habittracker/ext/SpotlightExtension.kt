@@ -9,17 +9,16 @@ import com.lawlett.habittracker.R
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.OnTargetListener
 import com.takusemba.spotlight.Spotlight
-import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.effet.RippleEffect
 import com.takusemba.spotlight.shape.RoundedRectangle
 
-fun setSpotLightTarget(targetView: View, backLayoutView: View, discription: String ):Target{
-    val target1 = Target.Builder()
+fun setSpotLightTarget(targetView: View, backLayoutView: View, discription: String ):com.takusemba.spotlight.Target{
+    val target1 = com.takusemba.spotlight.Target.Builder()
         .setAnchor(targetView)
         .setShape(RoundedRectangle(targetView.height.toFloat(), targetView.width.toFloat(), 30F))
         .setEffect(RippleEffect(100f, 200f, Color.argb(30, 124, 255, 90)))
         .setOverlay(backLayoutView)
-        .setOnTargetListener(object :  OnTargetListener {
+        .setOnTargetListener(object : OnTargetListener {
             override fun onStarted() {
                 backLayoutView.findViewById<TextView>(R.id.text_target).text = discription
             }

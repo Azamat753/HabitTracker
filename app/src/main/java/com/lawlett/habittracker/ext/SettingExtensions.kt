@@ -22,7 +22,6 @@ fun Activity.changeLanguage() {
             2->{
                 setLocale("ky",this)
             }
-
         }
         this.recreate()
         dialog.dismiss()

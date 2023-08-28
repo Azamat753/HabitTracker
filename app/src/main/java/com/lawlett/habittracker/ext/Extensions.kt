@@ -16,6 +16,8 @@ import androidx.viewbinding.ViewBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lawlett.habittracker.databinding.FollowDialogBinding
+import java.util.*
+import kotlin.collections.ArrayList
 
 fun Fragment.showToast(msg: String) {
     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
@@ -42,25 +44,10 @@ fun <T : ViewBinding> Context.createDialog(
     return Pair(binding,dialog)
 }
 
-fun Context.agetDialog(layout: Int): Dialog {
-    val inflater: LayoutInflater = LayoutInflater.from(this)
-    val view: View = inflater.inflate(layout, null)
-    var binding = FollowDialogBinding.inflate(inflater)
-    val dialog = Dialog(this)
-    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-    dialog.setContentView(view)
-    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    return dialog
-}
-
-fun Context.getDialog(layout: Int): Dialog {
-    val inflater: LayoutInflater = LayoutInflater.from(this)
-    val view: View = inflater.inflate(layout, null)
-    val dialog = Dialog(this)
-    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-    dialog.setContentView(view)
-    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    return dialog
+fun Date.getDays(): String {
+    val time = this.time - Date().time
+    val days = (time / (1000 * 60 * 60 * 24))
+    return days.toString().replace("-", "")
 }
 
 fun historyArrayToJson(list: ArrayList<String>): String {

@@ -35,8 +35,8 @@
     <string name="tv_sign_in">Кирүү</string>
     <string name="btn_new_habit">Жаңы адат</string>
     <string name="tv_new_habit">Жаңы адат</string>
-    <string name="tv_attempt">Аракет - </string>
-    <string name="tv_record">Жазуу </string>
+    <string name="tv_attempt">Аракет : </string>
+    <string name="tv_record">Жазуу : </string>
     <string name="tv_main">Башкы</string>
     <string name="tv_subscriptions">Жазылуулар</string>
     <string name="tv_settings">Орнотуулар</string>

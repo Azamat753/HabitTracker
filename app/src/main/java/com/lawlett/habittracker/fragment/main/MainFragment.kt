@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.firebase.Timestamp
@@ -20,23 +21,16 @@ import com.lawlett.habittracker.adapter.HabitAdapter
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
-import com.lawlett.habittracker.databinding.DialogRelapseBinding
-import com.lawlett.habittracker.databinding.DialogTrainingBinding
 import com.lawlett.habittracker.databinding.FragmentMainBinding
-import com.lawlett.habittracker.ext.TAG
-import com.lawlett.habittracker.ext.changeLanguage
-import com.lawlett.habittracker.ext.createDialog
-import com.lawlett.habittracker.ext.setSpotLightBuilder
-import com.lawlett.habittracker.ext.setSpotLightTarget
-import com.lawlett.habittracker.ext.toGone
-import com.lawlett.habittracker.ext.toVisible
+import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
-import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
-import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,7 +38,6 @@ import javax.inject.Inject
 class MainFragment : Fragment(R.layout.fragment_main),
     BaseAdapter.IBaseAdapterClickListener<HabitModel>,
     BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> {
-
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
     private val adapter = HabitAdapter()
@@ -54,49 +47,35 @@ class MainFragment : Fragment(R.layout.fragment_main),
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
 
-    @Inject
-    lateinit var cacheManager: CacheManager
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
-        if (!cacheManager.isLangeSeen()){
+        if (!viewModel.isLangeSeen()) {
             languageChanged()
-        }else if (!cacheManager.isUserSeenDialog()) {
-            dialogTest()
+        } else if (!viewModel.isUserSeen()) {
+            searchlight()
         }
         initAdapter()
         observe()
         viewModel.getHabits()
-
+//        if (!viewModel.isUserSeen()) {
+//            searchlight()
+//        }
     }
-
-    private fun dialogTest() {
-        cacheManager.saveUserSeenDialog()
-        val dialog = requireContext().createDialog(DialogTrainingBinding::inflate)
-        dialog.first.btnYes.setOnClickListener {
-            searchlight()
-            dialog.second.dismiss()
-        }
-        dialog.first.btnNo.setOnClickListener {
-            cacheManager.saveInstruction(true)
-            dialog.second.dismiss() }
-    }
-
 
     private fun languageChanged() {
-        cacheManager.saveLangeSeen()
         requireActivity().changeLanguage()
+        viewModel.saveLangeSeen()
     }
 
     private fun searchlight() {
-        val targets = ArrayList<Target>()
+        val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target, root)
         val view = View(requireContext())
 
         Handler().postDelayed({
+            viewModel.saveUserSeen()
             val views = setSpotLightTarget(
                 binding.mainDisplay,
                 first,
@@ -120,7 +99,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
             targets.add(secondSpot)
             setSpotLightBuilder(requireActivity(), targets, first)
         }, 100)
-
     }
 
     override fun onCreateView(
@@ -170,7 +148,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.progressBar.toVisible()
         firebaseHelper.db.collection(firebaseHelper.getUserName()).get()
             .addOnCompleteListener { result ->
-                var listHabit = arrayListOf<HabitModel>()
+                val listHabit = arrayListOf<HabitModel>()
                 for (document in result.result) {
                     val title = document.data["title"] as String
                     val icon = document.data["icon"] as String
@@ -183,10 +161,9 @@ class MainFragment : Fragment(R.layout.fragment_main),
                         title = title,
                         icon = icon,
                         currentDay = currentDay,
-                        allDays = allDays,
+                        allDays = allDays.toInt(),
                         startDate = startDate,
                         endDate = endDate,
-                        history = arrayListOf()
                     )
                     listHabit.add(model)
                     if (listHabit.size == result.result.documents.size) {
@@ -205,6 +182,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.habitFlow.asSharedFlow().collect() { habits ->
+
                     getFBDataCount()?.let {
                         if (it != habits.size) {
                             getHabitsFromFB()
@@ -226,7 +204,10 @@ class MainFragment : Fragment(R.layout.fragment_main),
         val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
         dialog.first.btnYes.setOnClickListener {
             viewModel.delete(model)
-            adapter.notifyItemRemoved(position)
+            viewModel.viewModelScope.launch {
+                delay(100)
+                adapter.notifyItemRemoved(position)
+            }
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }

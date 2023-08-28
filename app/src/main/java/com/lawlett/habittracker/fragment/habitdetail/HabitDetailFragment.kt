@@ -16,25 +16,19 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.databinding.DialogRelapseBinding
 import com.lawlett.habittracker.databinding.FragmentHabitDetailBinding
-import com.lawlett.habittracker.ext.createDialog
-import com.lawlett.habittracker.ext.setSpotLightBuilder
-import com.lawlett.habittracker.ext.setSpotLightTarget
+import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.habitdetail.adapter.HabitDetailAdapter
 import com.lawlett.habittracker.fragment.habitdetail.viewmodel.HabitDetailViewModel
 import com.lawlett.habittracker.helper.DataHelper
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.helper.TimerManager
 import com.lawlett.habittracker.models.HabitModel
-import com.lawlett.habittracker.ext.toGone
-import com.lawlett.habittracker.helper.CacheManager
-import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
@@ -47,7 +41,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
     private var data: HabitModel? = null
     private var isFollow = false
     private var isStartTimer = false
-    private var isAdded = false
+    private var isAddedToHistory = false
 
     private lateinit var timerManager: TimerManager
     var listHistory = arrayListOf<String>()
@@ -55,34 +49,29 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
 
-    @Inject
-    lateinit var cacheManager: CacheManager
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepare()
-        if (!cacheManager.isPass()) {
-            if (!cacheManager.isUserSeen()) {
-                searchlight()
-            }
+        if (!viewModel.isUserSeen()) {
+            searchlight()
         }
         data?.id?.let { id ->
             viewModel.getHistory(id)
         }
+        getHistory()
         initAdapter()
         observe()
         initClickers()
     }
 
     private fun searchlight() {
-        val targets = ArrayList<Target>()
+        val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.second_target, root)
         val view = View(requireContext())
 
         Handler().postDelayed({
-            cacheManager.saveUserSeen()
+            viewModel.saveUserSeen()
             val views = setSpotLightTarget(
                 binding.minaDetail,
                 first,
@@ -123,7 +112,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
                 getString(R.string.detail_habit_attempts)
             )
             val fiveSpot = setSpotLightTarget(
-                binding.tvRecord,
+                binding.recordTv,
                 first,
                 getString(R.string.detail_habit_record)
             )
@@ -148,6 +137,12 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
 
     }
 
+    private fun getHistory() {
+        data?.id?.let { id ->
+            viewModel.getHistory(id)
+        }
+    }
+
     private fun initAdapter() {
         binding.recyclerHistory.adapter = adapter
     }
@@ -157,31 +152,46 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
             dialogRelapse()
         }
 
-//        binding.appBar.setNavigationOnClickListener {
-//            findNavController().navigateUp()
-//        }
+        binding.appBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     private fun dialogRelapse() {
         val dialog = requireContext().createDialog(DialogRelapseBinding::inflate)
         dialog.first.btnYes.setOnClickListener {
             launch()
+            showRecord()
             timerManager.resetAction()
-            timerManager.startTimer()
+            timerManager.startStopAction(isFollow, data?.startDate, data?.endDate)
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
     }
 
     @SuppressLint("SetTextI18n")
+    private fun showRecord() {
+        val nowRecord = binding.recordTv.text.toString().ifEmpty { "0" }.toInt()
+        val newRecord = dataHelper.startTimeFromPref()?.getDays().toString().toInt()
+        if (newRecord > nowRecord) {
+            binding.recordTitleTv.toVisible()
+            binding.recordTv.toVisible()
+            binding.recordTv.text = newRecord.toString()
+            data?.id?.let {
+                viewModel.updateRecord(newRecord.toString(), data?.id!!)
+            } ?: kotlin.run {
+                showToast("id пуст")
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun launch() {
-        binding.tvRecord.text =
-            "${R.string.tv_record}" + binding.timeTV.text.substring(0, 2) + " ${R.string.day}"
+        timerManager = TimerManager(dataHelper, binding)
         addAttempts()
-        addDate()
+        updateHistory()
         data?.let {
             val model = HabitModel(
-//                date = timerManager.time().toString(),
                 title = it.title,
                 allDays = it.allDays,
                 currentDay = it.currentDay,
@@ -192,9 +202,10 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
             )
             firebaseHelper.insertOrUpdateHabitFB(model)
         }
-        timerManager.startStopAction()
+        timerManager.startStopAction(isFollow, data?.startDate, data?.endDate)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun prepare() {
         if (arguments != null) {
             data = requireArguments().getParcelable("key") as HabitModel?
@@ -202,10 +213,23 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
             isStartTimer = requireArguments().getBoolean("isStartTimer")
             data?.let { model ->
                 with(binding) {
-                    tvIcon.text = model.icon
-                    habitProgress.max = model.allDays?.toInt() ?: 0
-                    habitProgress.progress = model.currentDay ?: 0
+                    iconTv.text = model.icon
+                    habitProgress.max = model.allDays
                     habitTv.text = data?.title
+                    recordTv.text = data?.record
+                    viewModel.record = data?.attempts ?: 0
+                    if (data?.record?.toInt() == 0 || data?.record==null) {
+                        recordTv.toGone()
+                        recordTitleTv.toGone()
+                    } else {
+                        recordTv.text = data?.record
+                    }
+                    if (data?.attempts == 0) {
+                        attemptCard.toGone()
+                    } else {
+                        tvAttempts.text =
+                            "${getString(R.string.tv_attempt)} ${data?.attempts.toString()}"
+                    }
                     if (isFollow) {
                         dataHelper =
                             DataHelper(
@@ -224,6 +248,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
                                 "${model.title} stop"
                             )
                     }
+                    habitProgress.progress = dataHelper.startTimeFromPref()?.getDays()?.toInt() ?: 0
                 }
             }
         }
@@ -231,15 +256,16 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
 
         if (dataHelper.timerCounting()) {
             timerManager.startTimer()
-        } else {
-            timerManager.stopTimer()
-            dataHelper.startTime()?.let { startTime ->
-                dataHelper.stopTime()?.let { stopTime ->
-                    val time = Date().time - (startTime.time - stopTime.time)
-                    binding.timeTV.text = timerManager.timeStringFromLong(time)
-                }
-            }
         }
+        // todo else {
+//            timerManager.stopTimer()
+//            dataHelper.startTime()?.let { startTime ->
+//                dataHelper.stopTime()?.let { stopTime ->
+//                    val time = Date().time - (startTime.time - stopTime.time)
+//                    binding.timeTV.text = timerManager.timeStringFromLong(time)
+//                }
+//            }
+//        }
         timer.scheduleAtFixedRate(TimeTask(), 0, 500)
 
         if (isStartTimer) {
@@ -247,49 +273,69 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail) {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun addAttempts() {
+        binding.attemptCard.toVisible()
         viewModel.record()
         viewModel.attemptsNumber.observe(requireActivity()) {
-            binding.tvAttempts.text = getString(R.string.tv_attempt) + " " + it
+            it?.let { attempts ->
+                binding.tvAttempts.text = getString(R.string.tv_attempt) + " " + attempts
+                viewModel.updateAttempts(attempts, data?.id!!)
+            }
         }
     }
 
-    fun observe() {
+    private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.habitFlow.asSharedFlow().collect() { historyDB ->
-                    listHistory = historyDB as ArrayList<String>
+                    listHistory = historyToArray(historyDB)
                     adapter.setData(listHistory)
+                    adapter.notifyDataSetChanged()
                 }
             }
         }
     }
 
-    private fun addDate() {
+    private fun updateHistory() {
         viewModel.getTime()
         viewModel.date.observe(viewLifecycleOwner) { newHistory ->
             listHistory.add(newHistory)
-            isAdded = true
+            isAddedToHistory = true
         }
         data?.let {
             val model = HabitModel(
                 id = it.id,
-                history = listHistory,
+                history = historyArrayToJson(listHistory),
+                allDays = it.allDays,
+                title = it.title,
+                currentDay = it.currentDay,
+                icon = it.icon,
+                record = dataHelper.startTimeFromPref()?.getDays()
+            )
+            if (isAddedToHistory) {
+                viewModel.update(model)
+                observe()
+            }
+        }
+    }
+
+    private fun onClick(historyString: String, position: Int) {
+        listHistory.remove(historyString)
+        data?.let {
+            val model = HabitModel(
+                id = it.id,
+                history = historyArrayToJson(listHistory),
                 allDays = it.allDays,
                 title = it.title,
                 currentDay = it.currentDay,
                 icon = it.icon
             )
-            if (isAdded) {
-                viewModel.update(model)
-                viewModel.getHistory(it.id!!)
-            }
+            viewModel.update(model)
+            observe()
         }
-    }
-
-    private fun onClick(habitModel: String) {
-        //   list.remove(habitModel)
-        Toast.makeText(requireContext(), habitModel, Toast.LENGTH_SHORT).show()
+        adapter.notifyItemRemoved(position)
+        Toast.makeText(requireContext(), historyString, Toast.LENGTH_SHORT).show()
     }
 
     inner class TimeTask : TimerTask() {

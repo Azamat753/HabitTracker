@@ -34,8 +34,8 @@
     <string name="tv_sign_in">Sign in</string>
     <string name="btn_new_habit">New Habit</string>
     <string name="tv_new_habit">New Habit</string>
-    <string name="tv_attempt">Attempt - </string>
-    <string name="tv_record">Record </string>
+    <string name="tv_attempt">Attempt : </string>
+    <string name="tv_record">Record : </string>
     <string name="tv_main">Main</string>
     <string name="tv_subscriptions">Subscriptions</string>
     <string name="tv_settings">Settings</string>

@@ -14,7 +14,7 @@ class FollowerAdapter(var click: (model :HabitModel)-> Unit) :
             binding.habitTitle.text = habitModel.title
             binding.habitImage.text = habitModel.icon
             binding.habitCount.text = habitModel.currentDay.toString() + " / " + habitModel.allDays
-            binding.habitProgress.max = habitModel.allDays?.toInt() ?: 0//change
+            binding.habitProgress.max = habitModel.allDays ?: 0//change
             binding.habitProgress.progress = habitModel.currentDay ?: 0
             binding.root.setOnClickListener {
                 click.invoke(habitModel)
