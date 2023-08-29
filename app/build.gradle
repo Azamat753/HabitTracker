@@ -42,7 +42,7 @@ android {
         viewBinding true
     }
 }
-//// Это нужно добавить в конец файла build.gradle
+// Это нужно добавить в конец файла build.gradle
 //tasks.whenTaskAdded { task ->
 //    if (task.name == 'mergeDebugResources') {
 //        task.dependsOn 'processDebugGoogleServices'

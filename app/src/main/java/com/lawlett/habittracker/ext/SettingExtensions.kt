@@ -5,7 +5,26 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AlertDialog
 import com.lawlett.habittracker.R
+import com.lawlett.habittracker.helper.CacheManager
+import com.lawlett.habittracker.helper.Key.THEME_PREFERENCE
 import java.util.Locale
+
+fun Context.checkedTheme() {
+    when (CacheManager(this).getTheme()) {
+        0 -> {
+            this.setTheme(R.style.AppTheme)
+        }
+        1 -> {
+            this.setTheme(R.style.AppTheme_Pink)
+        }
+        2 -> {
+            this.setTheme(R.style.AppTheme_Dark)
+        }
+        3 -> {
+            this.setTheme(R.style.AppTheme_Pink)
+        }
+    }
+}
 
 fun Activity.changeLanguage() {
     val listItems = arrayOf("Русский","English","Кыргызский")
@@ -47,5 +66,4 @@ fun loadLocale(context: Context) {
     if (language != null) {
         setLocale(language, context)
     }
-
 }

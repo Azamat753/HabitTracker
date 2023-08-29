@@ -3,6 +3,7 @@ package com.lawlett.habittracker.helper
 import android.content.Context
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.lawlett.habittracker.helper.Key.KEY_FOR_COLOR
 import com.lawlett.habittracker.helper.Key.KEY_SAVE_DIALOG
 import java.lang.reflect.Type
 import java.util.ArrayList
@@ -11,20 +12,17 @@ class CacheManager(context: Context) {
 
     private var sharedPreferences = context.getSharedPreferences("habitPref", Context.MODE_PRIVATE)
 
-    fun isUserFollow():Boolean{
-        return sharedPreferences.getBoolean(Key.KEY_SAVE_FOLLOW,false)
+    fun getTheme(): Int {
+        return sharedPreferences.getInt("color",0)
     }
 
-    fun saveUserFollow(){
-        sharedPreferences.edit().putBoolean(Key.KEY_SAVE_FOLLOW,true).apply()
-    }
-    fun isUserSetting():Boolean{
-        return sharedPreferences.getBoolean(Key.KEY_SAVE_SETTINGS,false)
+    fun setTheme( s: Int) {
+        sharedPreferences.edit().putInt("color", s).apply()
     }
 
-    fun saveSettings(){
-        sharedPreferences.edit().putBoolean(Key.KEY_SAVE_SETTINGS,true).apply()
-    }
+    fun setToken(token: String) = sharedPreferences.edit().putString("token", token).apply()
+
+    fun getToken(): String? = sharedPreferences.getString("token", null)
 
     fun isUserSeen(): Boolean {
         return sharedPreferences.getBoolean(Key.KEY_BORD, false)

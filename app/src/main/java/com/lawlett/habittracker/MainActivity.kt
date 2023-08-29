@@ -16,6 +16,12 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.firebase.messaging.FirebaseMessaging
 import com.lawlett.habittracker.databinding.ActivityMainBinding
 import com.lawlett.habittracker.ext.loadLocale
+import dagger.hilt.android.AndroidEntryPoint
+import android.Manifest
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.lawlett.habittracker.ext.checkedTheme
 import com.lawlett.habittracker.helper.MyFirebaseMessagingService
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,6 +32,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        checkedTheme()
         loadLocale(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

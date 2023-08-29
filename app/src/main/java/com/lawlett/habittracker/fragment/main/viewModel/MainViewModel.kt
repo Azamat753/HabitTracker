@@ -7,8 +7,10 @@ import com.lawlett.habittracker.ext.getDays
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -57,7 +59,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
                         if (currentDays >= daysFromRoom){
                             currentDays = it.allDays + 7
                             it.id?.let {id->
-                            updateAllDays(currentDays,id)
+                                updateAllDays(currentDays,id)
                             }
                         }
                     }

@@ -33,6 +33,7 @@
             android:textColor="@color/blue"
             app:layout_constraintBottom_toTopOf="@+id/habit_progress"
             app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="?attr/textColor"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="habit" />
 
