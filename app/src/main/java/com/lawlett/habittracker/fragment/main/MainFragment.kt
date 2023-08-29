@@ -60,6 +60,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
+       // changeTheme()
         if (!cacheManager.isLangeSeen()){
             languageChanged()
         }else if (!cacheManager.isUserSeenDialog()) {
@@ -70,6 +71,10 @@ class MainFragment : Fragment(R.layout.fragment_main),
         viewModel.getHabits()
 
     }
+
+//    private fun changeTheme() {
+//        TODO("Not yet implemented")
+//    }
 
     private fun dialogTest() {
         cacheManager.saveUserSeenDialog()
@@ -137,8 +142,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
     private fun initClickers() {
         binding.fab.setOnClickListener {
             CreateHabitDialog().show(requireActivity().supportFragmentManager, "")
-        }
-        binding.fab.setOnClickListener {
         }
     }
 

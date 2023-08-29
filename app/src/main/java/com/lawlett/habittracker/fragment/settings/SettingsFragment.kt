@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import androidx.fragment.app.viewModels
 import com.lawlett.habittracker.helper.CacheManager
+import com.lawlett.habittracker.helper.launge.ChooseThemeBottomSheetDialog
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
@@ -39,6 +40,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             if (!cacheManager.isUserSeen()) {
                 searchlight()
             }
+        }
+
+        binding.changeTheme.setOnClickListener {
+            val bottomDialog = ChooseThemeBottomSheetDialog()
+            bottomDialog.show(requireActivity().supportFragmentManager, "TAG")
+           // requireContext().checkedTheme()
         }
 
         binding.changeLang.setOnClickListener {

@@ -12,4 +12,7 @@ object Key {
     const val KEY_BORD = "bord"
     const val KEY_LANGE = "LANGE"
 
+    const val KEY_FOR_COLOR = "color.key"
+    const val THEME_PREFERENCE = "theme pref"
+
 }

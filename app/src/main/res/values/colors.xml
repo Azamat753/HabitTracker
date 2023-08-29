@@ -6,4 +6,8 @@
     <color name="grey">#9E9E9E</color>
     <color name="dark_grey">#666666</color>
     <color name="red">#FF0000</color>
+    <color name="gray">#aaa</color>
+    <color name="deep_teal">#075E54</color>
+    <color name="pink">#FC9885</color>
+    <color name="pink_gray">#FC988599</color>
 </resources>
