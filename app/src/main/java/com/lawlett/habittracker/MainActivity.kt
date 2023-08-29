@@ -19,6 +19,7 @@ import android.Manifest
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
+import com.lawlett.habittracker.ext.checkedTheme
 import com.lawlett.habittracker.helper.MyFirebaseMessagingService
 
 
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        checkedTheme()
         loadLocale(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

@@ -19,6 +19,9 @@ class ChooseThemeBottomSheetDialog :
 
     private val adapter = ThemeAdapter()
 
+    @Inject
+    lateinit var cacheManager: CacheManager
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
@@ -31,7 +34,7 @@ class ChooseThemeBottomSheetDialog :
     }
 
     override fun onClick(model: ThemeModel, position: Int) {
-        CacheManager.getInstance(requireContext())?.saveInt(THEME_PREFERENCE, position)
+        cacheManager.setTheme(position)
         startActivity(Intent(requireContext(), MainActivity::class.java))
         requireActivity().overridePendingTransition(
             android.R.anim.fade_in, android.R.anim.fade_out

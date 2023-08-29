@@ -45,7 +45,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         binding.changeTheme.setOnClickListener {
             val bottomDialog = ChooseThemeBottomSheetDialog()
             bottomDialog.show(requireActivity().supportFragmentManager, "TAG")
-           // requireContext().checkedTheme()
         }
 
         binding.changeLang.setOnClickListener {
