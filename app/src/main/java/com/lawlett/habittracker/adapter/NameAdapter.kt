@@ -5,8 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ViewHolderInflater
 import com.lawlett.habittracker.databinding.NameCardBinding
+import com.lawlett.habittracker.models.HabitModel
 
-class NameAdapter : ViewHolderInflater<String, NameAdapter.ViewHolder>() {
+class NameAdapter(var click: (model : String)-> Unit) : ViewHolderInflater<Pair<String,String>, NameAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
         return ViewHolder(
@@ -17,13 +18,16 @@ class NameAdapter : ViewHolderInflater<String, NameAdapter.ViewHolder>() {
         )
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, item: String) {
+    override fun onBindViewHolder(holder: ViewHolder, item: Pair<String,String>) {
         holder.onBind(item)
     }
 
-    class ViewHolder(var view: NameCardBinding) : RecyclerView.ViewHolder(view.root) {
-        fun onBind(name: String) {
-            view.title.text = name
+   inner class ViewHolder(var view: NameCardBinding) : RecyclerView.ViewHolder(view.root) {
+        fun onBind(name: Pair<String,String>) {
+            view.title.text = name.first
+            view.root.setOnClickListener {
+                click.invoke(name.second)
+            }
         }
     }
 }

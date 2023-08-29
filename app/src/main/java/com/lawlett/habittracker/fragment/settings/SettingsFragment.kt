@@ -4,26 +4,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.lawlett.habittracker.helper.GoogleSignInHelper
 import com.lawlett.habittracker.R
+import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentSettingsBinding
-import com.lawlett.habittracker.ext.changeLanguage
-import com.lawlett.habittracker.ext.setSpotLightBuilder
-import com.lawlett.habittracker.ext.setSpotLightTarget
+import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.settings.viewModel.SettingsViewModel
+import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
+import com.lawlett.habittracker.helper.GoogleSignInHelper
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.fragment.app.viewModels
-import com.lawlett.habittracker.helper.CacheManager
+
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val binding: FragmentSettingsBinding by viewBinding()
+
     lateinit var helper: GoogleSignInHelper
 
     private val viewModel: SettingsViewModel by viewModels()
@@ -40,19 +47,32 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 searchlight()
             }
         }
-
-        binding.changeLang.setOnClickListener {
-            requireActivity().changeLanguage()
-        }
         helper = GoogleSignInHelper(this)
         initClickers()
+        setupUI()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.completeFlow.asSharedFlow().collect() {
+                    showProgressBar(it)
+                }
+            }
+        }
+    }
+
+    private fun setupUI() {
+        with(binding) {
+            if (firebaseHelper.isSigned()) {
+                signBtn.toGone()
+            } else {
+                signBtn.toVisible()
+            }
+        }
     }
 
     private fun searchlight() {
         val targets = ArrayList<Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.second_target, root)
-        val view = View(requireContext())
 
         Handler().postDelayed({
             cacheManager.saveUserSeen()
@@ -87,6 +107,19 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         startActivity(Intent.createChooser(intent, "Share To:"))
     }
 
+    private fun showProgressBar(visible: Boolean) {
+        if (visible) {
+            binding.progressBar.toVisible()
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+        } else {
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            binding.progressBar.toGone()
+        }
+    }
+
     private fun initClickers() {
         with(binding) {
             signBtn.setOnClickListener {
@@ -94,6 +127,22 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
             shareBtn.setOnClickListener {
                 share()
+            }
+            syncBtn.setOnClickListener {
+                val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+                dialog.first.txtTitle.text = "Привычки будут синхронизированы"
+                dialog.first.txtDescription.text =
+                    "Актуализация данных для подписчиков"
+                dialog.first.btnYes.setOnClickListener {
+                    viewModel.sync()
+                    showProgressBar(true)
+                    dialog.second.dismiss()
+                }
+                dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
+            }
+
+            changeLang.setOnClickListener {
+                requireActivity().changeLanguage()
             }
         }
     }

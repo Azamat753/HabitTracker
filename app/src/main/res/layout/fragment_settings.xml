@@ -1,46 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp"
-    android:id="@+id/main_settings"
     android:orientation="vertical"
+    android:padding="12dp"
     tools:context="com.lawlett.habittracker.fragment.settings.SettingsFragment">
 
-    <TextView
-        android:id="@+id/toolbar_main"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12sp"
-        android:text="@string/tv_settings"
-        android:textColor="@color/black"
-        android:textSize="28sp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/signBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_background"
-        android:text="@string/btn_register"
-        android:textColor="@color/white" />
+        <Button
+            android:id="@+id/signBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_background"
+            android:fontFamily="@font/inter_medium"
+            android:paddingStart="12dp"
+            android:text="@string/btn_register"
+            android:textAlignment="textStart"
+            android:textColor="@color/white" />
 
-    <Button
-        android:layout_marginTop="12dp"
-        android:id="@+id/shareBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_background"
-        android:text="@string/btn_share"
-        android:textColor="@color/white" />
 
-    <Button
-        android:layout_marginTop="12dp"
-        android:id="@+id/change_lang"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_background"
-        android:text="@string/change_language"
-        android:textColor="@color/white" />
+        <Button
+            android:id="@+id/shareBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rectangle_background"
+            android:fontFamily="@font/inter_medium"
+            android:paddingStart="12dp"
+            android:text="@string/btn_share"
+            android:textAlignment="textStart"
+            android:textColor="@color/white" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/change_lang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rectangle_background"
+            android:fontFamily="@font/inter_medium"
+            android:paddingStart="12dp"
+            android:text="@string/change_language"
+            android:textAlignment="textStart"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/syncBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rectangle_background"
+            android:fontFamily="@font/inter_medium"
+            android:paddingStart="12dp"
+            android:text="@string/sync"
+            android:textAlignment="textStart"
+            android:textColor="@color/white" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:indeterminateTint="@color/blue"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

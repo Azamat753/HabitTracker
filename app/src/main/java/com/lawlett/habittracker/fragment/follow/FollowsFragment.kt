@@ -1,75 +1,94 @@
 package com.lawlett.habittracker.fragment.follow
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.drakeet.multitype.MultiTypeAdapter
 import com.google.firebase.Timestamp
+import com.google.firebase.messaging.FirebaseMessaging
 import com.lawlett.habittracker.R
-import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.adapter.FollowerAdapter
 import com.lawlett.habittracker.adapter.NameAdapter
 import com.lawlett.habittracker.bottomsheet.FollowDialog
+import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentFollowBinding
-import com.lawlett.habittracker.ext.setSpotLightBuilder
-import com.lawlett.habittracker.ext.setSpotLightTarget
+import com.lawlett.habittracker.ext.*
+import com.lawlett.habittracker.helper.*
 import com.takusemba.spotlight.Target
-import com.lawlett.habittracker.helper.CacheManager
-import com.lawlett.habittracker.helper.EventCallback
-import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
-import com.lawlett.habittracker.ext.toGone
-import com.lawlett.habittracker.fragment.follow.viewModel.FollowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
+class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenCallback {
     private val binding: FragmentFollowBinding by viewBinding()
     lateinit var multiTypeAdapter: MultiTypeAdapter
-    var ibrahimName = "Ibra Kasymov:8EEgmDq90vQzrgQI3RGtlCO5pQ12"
-    var ibrahimName2 = "Red. Fox._23:k55n745emFP9brVsXs5Wzu9hpJC2"
-    var aza = "Azamat:nPqDXFOUCghapEMR08uxlX0xf3h1"
-    var arrayNames = arrayListOf(ibrahimName, ibrahimName2, aza)
     lateinit var items: MutableList<Any>
-    private val viewModel: FollowsViewModel by viewModels()
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
+
+    lateinit var helper: GoogleSignInHelper
+
 
     @Inject
     lateinit var cacheManager: CacheManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        helper = GoogleSignInHelper(this, tokenCallback = this)
         initMultiAdapter()
-        if ( !cacheManager.isPass()) {
+        if (!cacheManager.isPass()) {
             if (!cacheManager.isUserSeen()) {
                 searchlight()
             }
         }
-
-        fetchFromFB()
-        binding.fab.setOnClickListener {
-            FollowDialog(this).show(requireActivity().supportFragmentManager, "")
+        if (firebaseHelper.isSigned()) {
+            fetchFromFB()
         }
-//        if (!firebaseHelper.isSigned()){
-//            requireContext().getDialog(R.layout.follow_dialog).show()
-//        }
+        initClickers()
+        setupUI()
+        checkOnEmpty()
+    }
+
+    private fun initClickers() {
+        with(binding) {
+            fab.setOnClickListener {
+                FollowDialog(this@FollowsFragment).show(
+                    requireActivity().supportFragmentManager,
+                    ""
+                )
+            }
+            signBtn.setOnClickListener {
+                helper.signInGoogle()
+            }
+        }
+    }
+
+    private fun setupUI() {
+        with(binding) {
+            if (!firebaseHelper.isSigned()) {
+                recyclerFriends.toGone()
+                signLayout.toVisible()
+            } else {
+                progressBar.toGone()
+                recyclerFriends.toVisible()
+                signLayout.toGone()
+            }
+        }
     }
 
     private fun searchlight() {
         val targets = ArrayList<Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target, root)
-        val view = View(requireContext())
 
         Handler().postDelayed({
             cacheManager.saveUserSeen()
@@ -87,6 +106,21 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
         }, 100)
     }
 
+    private fun checkOnEmpty() {
+        with(binding) {
+            if (firebaseHelper.isSigned()) {
+                if (multiTypeAdapter.items.isEmpty()) {
+                    recyclerFriends.toGone()
+                    signLayout.toGone()
+                    emptyLayout.toVisible()
+                } else {
+                    recyclerFriends.toVisible()
+                    emptyLayout.toGone()
+                }
+            }
+        }
+    }
+
     private fun openDetail(habitModel: HabitModel) {
         val bundle = Bundle()
         bundle.putParcelable("key", habitModel)
@@ -96,7 +130,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
 
     private fun initMultiAdapter() {
         multiTypeAdapter = MultiTypeAdapter()
-        multiTypeAdapter.register(NameAdapter())
+        multiTypeAdapter.register(NameAdapter(click = ({ name -> removeFollower(name) })))
         multiTypeAdapter.register(FollowerAdapter(click = ({ model -> openDetail(model) })))
         val layoutManager = GridLayoutManager(requireContext(), 2)
         val spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -110,47 +144,80 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback {
         binding.recyclerFriends.adapter = multiTypeAdapter
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun removeFollower(name: String) {
+        val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+        dialog.first.txtDescription.text = "Подписка на ${name.makeUserName()} будет удалена"
+        dialog.first.btnYes.setOnClickListener {
+            val array = cacheManager.getFollowers()!!
+            array.remove(name)
+            cacheManager.saveFollowers(array)
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(name.makeTopic())
+            reInitAdapter()
+            dialog.second.dismiss()
+        }
+        dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     private fun fetchFromFB() {
+        binding.progressBar.toVisible()
         items = ArrayList()
         cacheManager.getFollowers()?.distinct()?.let { array ->
             array.forEach { userName ->
                 firebaseHelper.db.collection(userName!!).get().addOnCompleteListener { result ->
                     if (result.result.size() != 0) {
-                        items.add(userName.replaceAfter(":", ""))
+                        items.add(Pair(userName.makeUserName(), userName))
+                    } else {
+                        binding.progressBar.toGone()
                     }
                     for (document in result.result) {
                         val title = document.data["title"] as String
+                        val attempts = (document.data["attempts"] as Long).toInt()
                         val icon = document.data["icon"] as String
                         val currentDay = (document.data["currentDay"] as Long).toInt()
-                        val allDays = document.data["allDays"] as String
-                        val date = document.data["date"] as String?
+                        val allDays = (document.data["allDays"] as Long).toInt()
                         val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
-                        val endDate = (document.data["endDate"] as Timestamp?)?.toDate()
                         val model = HabitModel(
                             title = title,
                             icon = icon,
                             currentDay = currentDay,
-                            allDays = allDays.toInt(),
+                            allDays = allDays,
                             startDate = startDate,
-                            endDate = endDate,
                             fbName = userName,
+                            attempts = attempts
                         )
                         items.add(model)
-                        if (items.size == result.result.documents.size) {
-                            binding.progressBar.toGone()
+                        if (items.size == result.result.documents.size + if (cacheManager.getFollowers() != null) cacheManager.getFollowers()!!
+                                .distinct().size else 0
+                        ) {
                             multiTypeAdapter.items = items
                             multiTypeAdapter.notifyDataSetChanged()
+                            checkOnEmpty()
                         }
                     }
+                    binding.progressBar.toGone()
                 }.addOnFailureListener {
+                    binding.progressBar.toGone()
                     Log.e(TAG, "Error read document", it)
                 }
             }
+        }.run {
+            binding.progressBar.toGone()
         }
     }
 
     override fun call() {
+        reInitAdapter()
+    }
+
+    private fun reInitAdapter() {
         initMultiAdapter()
         fetchFromFB()
+        checkOnEmpty()
+    }
+
+    override fun newToken(authCode: String) {
+        reInitAdapter()
     }
 }

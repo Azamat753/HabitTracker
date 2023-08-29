@@ -64,4 +64,8 @@
     <string name="settings_display_shareBtn">Сиз адаттарыңыз менен бөлүшө аласыз</string>
     <string name="settings_display_changeLang">Бул жерде тил өзгөртө аласыз</string>
     <string name="habit_clear">Привычка будет обнулена</string>
+    <string name="sync">Синхронизироваться</string>
+    <string name="success">Успешно</string>
+    <string name="empty_habit_desc">Чтобы начать привычку нажмите на кнопку “+” и укажите название и иконку в виде одного смайлика</string>
+    <string name="empty_follow_desc">Чтоб подписаться на кого то нажмите на кнопку “+” и укажите код который вам отправили через кнопку ”Поделиться своим кодом”</string>
 </resources>

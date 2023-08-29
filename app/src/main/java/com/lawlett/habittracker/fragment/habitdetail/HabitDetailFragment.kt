@@ -3,7 +3,6 @@ package com.lawlett.habittracker.fragment.habitdetail
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -20,13 +19,9 @@ import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.habitdetail.adapter.HabitDetailAdapter
 import com.lawlett.habittracker.fragment.habitdetail.viewmodel.HabitDetailViewModel
 import com.lawlett.habittracker.helper.*
-import com.lawlett.habittracker.models.HabitModel
-import com.lawlett.habittracker.models.MessageModel
-import com.lawlett.habittracker.models.NotificationMessage
-import com.lawlett.habittracker.models.NotificationModel
 import com.lawlett.habittracker.ext.toGone
 import com.lawlett.habittracker.helper.CacheManager
-import com.takusemba.spotlight.Target
+import com.lawlett.habittracker.models.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.asSharedFlow
@@ -79,28 +74,29 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
 
 
     private fun observe() {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                viewModel.isNotificationPushed.asSharedFlow().collect() {
-//                    Log.e(TAG, "onViewCreated: $it")
-//                }
-//            }
-//        }
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.tokenModelFlow.asSharedFlow().collect() {
-                    val token = it.access_token
-                    val notificationModel = NotificationModel(
-                        MessageModel(
-                            topic = "News",
-                            notification = NotificationMessage("Naruto", "Uzumaki")
-                        )
-                    )
-                    viewModel.sendRemoteNotification(notificationModel, token)
+                    sendNotification(it)
                 }
             }
         }
+    }
+
+    private fun sendNotification(it: TokenModel) {
+        val name = firebaseHelper.getUserName().makeUserName()
+        val topic = firebaseHelper.getUserName().makeTopic()
+        val token = it.access_token
+        val notificationModel = NotificationModel(
+            MessageModel(
+                topic = topic,
+                notification = NotificationMessage(
+                    name,
+                    "Рецедив привычки : ${habitModelGlobal?.title.toString()}"
+                )
+            )
+        )
+        viewModel.sendRemoteNotification(notificationModel, token)
     }
 
     private fun searchlight() {
@@ -180,14 +176,11 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
 
     private fun initClickers() {
         binding.btnRelapse.setOnClickListener {
-            helper.signInGoogle()
-
-//            dialogRelapse()
+            dialogRelapse()
         }
-
-//        binding.appBar.setNavigationOnClickListener {
-//            findNavController().navigateUp()
-//        }
+        binding.backArrowImg.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     private fun dialogRelapse() {
@@ -203,6 +196,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                 habitModelGlobal?.startDate,
                 habitModelGlobal?.endDate
             )
+            helper.signInGoogle()
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
@@ -220,7 +214,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
             habitModelGlobal?.id?.let { id ->
                 viewModel.updateRecord(newRecord.toString(), id)
             } ?: kotlin.run {
-                showToast("id пуст")
+                showToast("Произошла ошибка обновления")
             }
         }
     }

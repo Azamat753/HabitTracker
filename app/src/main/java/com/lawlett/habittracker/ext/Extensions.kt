@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.lawlett.habittracker.databinding.FollowDialogBinding
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -31,9 +30,17 @@ fun View.toVisible() {
     isVisible = true
 }
 
+fun String.makeTopic() = this.replaceBefore(":", "")
+    .replace(":", "")
+
+
+fun String.makeUserName() = this.replaceAfter(":", "")
+    .replace(":", "")
+
+
 fun <T : ViewBinding> Context.createDialog(
     inflate: (LayoutInflater, ViewGroup?, Boolean) -> T,
-): Pair<T,Dialog> {
+): Pair<T, Dialog> {
     val inflater: LayoutInflater = LayoutInflater.from(this)
     val binding = inflate.invoke(inflater, null, false)
     val dialog = Dialog(this)
@@ -41,7 +48,7 @@ fun <T : ViewBinding> Context.createDialog(
     dialog.setContentView(binding.root)
     dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     dialog.show()
-    return Pair(binding,dialog)
+    return Pair(binding, dialog)
 }
 
 fun Date.getDays(): String {

@@ -16,7 +16,6 @@ data class FirebaseResponse(
 data class NotificationMessage(
     val title: String,
     val body: String
-
 )
 
 data class TokenModel(

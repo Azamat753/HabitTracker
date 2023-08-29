@@ -49,11 +49,6 @@ class HabitDetailViewModel @Inject constructor(private val repository: Repositor
     fun getToken(authCode: String) {
         viewModelScope.launch {
             tokenModelFlow.emit(repository.getToken(authCode))
-
-//            repository.getToken(authCode).
-//            flowOn(Dispatchers.IO).onEach {
-//                tokenModelFlow.emit(it)
-//            }
         }
     }
 

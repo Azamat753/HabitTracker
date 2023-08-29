@@ -53,7 +53,6 @@ class GoogleSignInHelper(var fragment: Fragment, var tokenCallback: TokenCallbac
             val account: GoogleSignInAccount? = task.result
             if (account != null) {
                 updateUI(account)
-                tokenCallback?.newToken(account.serverAuthCode ?: "")
             }
         } else {
             fragment.showToast(task.exception.toString())
@@ -65,6 +64,7 @@ class GoogleSignInHelper(var fragment: Fragment, var tokenCallback: TokenCallbac
         auth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
                 fragment.showToast("Success")
+                tokenCallback?.newToken(account.serverAuthCode ?: "")
             } else {
                 fragment.showToast(it.exception.toString())
             }

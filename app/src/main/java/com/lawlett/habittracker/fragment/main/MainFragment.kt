@@ -22,7 +22,6 @@ import com.lawlett.habittracker.api.SignApi
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
-import com.lawlett.habittracker.databinding.DialogTrainingBinding
 import com.lawlett.habittracker.databinding.FragmentMainBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
@@ -44,7 +43,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
     private val adapter = HabitAdapter()
-    val list = arrayListOf<HabitModel>()
     var container: ViewGroup? = null
 
     @Inject
@@ -52,6 +50,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
 
     @Inject
     lateinit var signApi: SignApi
+
     @Inject
     lateinit var cacheManager: CacheManager
 
@@ -59,27 +58,30 @@ class MainFragment : Fragment(R.layout.fragment_main),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
-        if (!cacheManager.isLangeSeen()){
+        if (!cacheManager.isLangeSeen()) {
             languageChanged()
-        }else if (!cacheManager.isUserSeenDialog()) {
+        } else if (!cacheManager.isUserSeenDialog()) {
             dialogTest()
         }
         initAdapter()
-        observe()
         viewModel.getHabits()
-
+        observe()
+        checkOnEmpty()
     }
 
     private fun dialogTest() {
         cacheManager.saveUserSeenDialog()
-        val dialog = requireContext().createDialog(DialogTrainingBinding::inflate)
+        val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+        dialog.first.txtTitle.text = "Желаете ли вы пройти обучение?"
+        dialog.first.txtDescription.toGone()
         dialog.first.btnYes.setOnClickListener {
             searchlight()
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener {
             cacheManager.saveInstruction(true)
-            dialog.second.dismiss() }
+            dialog.second.dismiss()
+        }
     }
 
 
@@ -137,14 +139,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.fab.setOnClickListener {
             CreateHabitDialog().show(requireActivity().supportFragmentManager, "")
         }
-        binding.fab.setOnClickListener {
-        }
     }
-
-    private fun getToken() {
-        CacheManager(requireContext()).getToken()
-    }
-
 
     private fun initAdapter() {
         adapter.listener = this
@@ -152,53 +147,42 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.habitRecycler.adapter = adapter
     }
 
-    private fun getFBDataCount(): Int? {
-        var isComplete = false
-        var listSize = 0
-        firebaseHelper.db.collection(firebaseHelper.getUserName()).get()
-            .addOnCompleteListener { result ->
-                listSize = result.result.size()
-                isComplete = true
-            }.addOnFailureListener {
-                Log.e(TAG, "Error read document", it)
-            }
-        return if (isComplete) {
-            listSize
-        } else {
-            null
-        }
-    }
-
     private fun getHabitsFromFB() {
         binding.progressBar.toVisible()
         firebaseHelper.db.collection(firebaseHelper.getUserName()).get()
             .addOnCompleteListener { result ->
                 val listHabit = arrayListOf<HabitModel>()
+                if (result.result.documents.size == 0) {
+                    binding.progressBar.toGone()
+                }
                 for (document in result.result) {
                     val title = document.data["title"] as String
+                    val attempts = (document.data["attempts"] as Long).toInt()
                     val icon = document.data["icon"] as String
                     val currentDay = (document.data["currentDay"] as Long).toInt()
-                    val allDays = document.data["allDays"] as String
+                    val allDays = (document.data["allDays"] as Long).toInt()
                     val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
-                    val endDate = (document.data["endDate"] as Timestamp?)?.toDate()
-//                    val history = (document.data["endDate"] as Timestamp?)?.toDate()
                     val model = HabitModel(
                         title = title,
                         icon = icon,
                         currentDay = currentDay,
-                        allDays = allDays.toInt(),
+                        allDays = allDays,
                         startDate = startDate,
-                        endDate = endDate,
+                        fbName = firebaseHelper.getUserName(),
+                        attempts = attempts
                     )
                     listHabit.add(model)
-                    if (listHabit.size == result.result.documents.size) {
+                    if (listHabit.size == result.result.documents.size + if (cacheManager.getFollowers() != null) cacheManager.getFollowers()?.distinct()?.size!! else 0
+                    ) {
                         listHabit.forEach {
                             viewModel.insert(it)
                         }
                         binding.progressBar.toGone()
+                        checkOnEmpty()
                     }
                 }
             }.addOnFailureListener {
+                binding.progressBar.toGone()
                 Log.e(TAG, "Error read document", it)
             }
     }
@@ -207,14 +191,25 @@ class MainFragment : Fragment(R.layout.fragment_main),
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.habitFlow.asSharedFlow().collect() { habits ->
-
-                    getFBDataCount()?.let {
-                        if (it != habits.size) {
-                            getHabitsFromFB()
-                        }
-                    }
                     adapter.setData(habits)
+                    checkOnEmpty()
                 }
+            }
+        }
+    }
+
+    private fun checkOnEmpty() {
+        with(binding) {
+            if (adapter.data.isEmpty()) {
+                habitRecycler.toGone()
+                emptyLayout.toVisible()
+                if (firebaseHelper.isSigned()) {
+                    getHabitsFromFB()
+                }
+            } else {
+                binding.progressBar.toGone()
+                habitRecycler.toVisible()
+                emptyLayout.toGone()
             }
         }
     }
@@ -229,6 +224,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
         dialog.first.btnYes.setOnClickListener {
             viewModel.delete(model)
+            firebaseHelper.delete(model)
             viewModel.viewModelScope.launch {
                 delay(100)
                 adapter.notifyItemRemoved(position)
