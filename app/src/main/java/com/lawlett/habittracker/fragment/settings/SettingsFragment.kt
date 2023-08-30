@@ -20,7 +20,8 @@ import com.lawlett.habittracker.fragment.settings.viewModel.SettingsViewModel
 import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.helper.GoogleSignInHelper
-import com.lawlett.habittracker.helper.launge.ChooseThemeBottomSheetDialog
+import com.lawlett.habittracker.helper.launge.ChooseLoungeBottomSheetDialog
+import com.lawlett.habittracker.helper.theme.ChooseThemeBottomSheetDialog
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.asSharedFlow
@@ -148,9 +149,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
 
             binding.changeLang.setOnClickListener {
-                requireActivity().changeLanguage()
+                val bottomDialog = ChooseLoungeBottomSheetDialog()
+                bottomDialog.show(requireActivity().supportFragmentManager, "TAG")
+
             }
         }
     }
-
+//                changeLounge()
+//                requireActivity().changeLanguage()
 }

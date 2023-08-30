@@ -7,9 +7,12 @@
     <color name="dark_grey">#666666</color>
     <color name="red">#FF0000</color>
     <color name="gray">#aaa</color>
-    <color name="green">#99DE9F</color>
+    <color name="green">#6CB86F</color>
     <color name="heavenly">#73AFBA</color>
     <color name="pink">#FC9885</color>
     <color name="bilberry">#464196</color>
     <color name="pink_gray">#FC988599</color>
+    <color name="star">#78524b</color>
+    <color name="blue_gray">#445bab</color>
+    <color name="dark">#1B1A1A</color>
 </resources>

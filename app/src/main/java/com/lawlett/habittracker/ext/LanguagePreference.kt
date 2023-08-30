@@ -3,8 +3,6 @@ package com.lawlett.habittracker.ext
 import android.content.Context
 import android.content.SharedPreferences
 
-
-
 class LanguagePreference(context: Context) {
     private val preferences: SharedPreferences
     val getLanguage: String?

@@ -1,4 +1,4 @@
-package com.lawlett.habittracker.helper.launge
+package com.lawlett.habittracker.helper.theme
 
 import android.graphics.Color
 import com.lawlett.habittracker.R

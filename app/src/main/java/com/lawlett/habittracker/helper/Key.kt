@@ -14,5 +14,6 @@ object Key {
 
     const val KEY_FOR_COLOR = "color.key"
     const val THEME_PREFERENCE = "theme pref"
+    const val LOUNGE_PREFERENCE = "lounge_pref"
 
 }
