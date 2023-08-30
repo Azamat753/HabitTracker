@@ -20,14 +20,12 @@ import com.lawlett.habittracker.fragment.settings.viewModel.SettingsViewModel
 import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.helper.GoogleSignInHelper
+import com.lawlett.habittracker.helper.launge.ChooseThemeBottomSheetDialog
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.fragment.app.viewModels
-import com.lawlett.habittracker.helper.CacheManager
-import com.lawlett.habittracker.helper.launge.ChooseThemeBottomSheetDialog
 
 
 @AndroidEntryPoint
@@ -49,15 +47,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             if (!cacheManager.isUserSeen()) {
                 searchlight()
             }
-        }
-
-        binding.changeTheme.setOnClickListener {
-            val bottomDialog = ChooseThemeBottomSheetDialog()
-            bottomDialog.show(requireActivity().supportFragmentManager, "TAG")
-        }
-
-        binding.changeLang.setOnClickListener {
-            requireActivity().changeLanguage()
         }
         helper = GoogleSignInHelper(this)
         initClickers()
@@ -153,7 +142,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
             }
 
-            changeLang.setOnClickListener {
+            binding.changeTheme.setOnClickListener {
+                val bottomDialog = ChooseThemeBottomSheetDialog()
+                bottomDialog.show(requireActivity().supportFragmentManager, "TAG")
+            }
+
+            binding.changeLang.setOnClickListener {
                 requireActivity().changeLanguage()
             }
         }

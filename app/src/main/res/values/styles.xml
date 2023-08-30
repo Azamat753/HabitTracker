@@ -2,36 +2,50 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme.NoActionBar">
-        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>"
         <item name="colorAccent">?attr/textColor</item>
     </style>
 
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <item name="textColor">@color/white</item>
+        <item name="iconColor">@color/blue</item>
+        <item name="android:statusBarColor">@color/blue</item>
+        <item name="backgroundColor">@color/white</item>
+    </style>
+
+    <style name="AppTheme.Heavenly" parent="AppTheme.NoActionBar">
+        <item name="backgroundColor">@color/white</item>
+        <item name="android:statusBarColor">@color/heavenly</item>
+        <item name="textColor">@color/white</item>
+        <item name="iconColor">@color/heavenly</item>
+    </style>
+
     <style name="AppTheme.Green" parent="AppTheme.NoActionBar">
         <item name="backgroundColor">#FFFFFF</item>
-        <item name="android:statusBarColor">#075E54</item>
-        <item name="textColor">#075E54</item>
-        <item name="iconColor">#075E54</item>
+        <item name="android:statusBarColor">@color/green</item>
+        <item name="textColor">@color/white</item>
+        <item name="iconColor">@color/green</item>
     </style>
 
     <style name="AppTheme.Pink" parent="AppTheme.NoActionBar">
-        <item name="textColor">@color/pink</item>
+        <item name="textColor">@color/white</item>
         <item name="iconColor">@color/pink</item>
         <item name="android:statusBarColor">@color/pink</item>
-        <item name="backgroundColor">#FFFFFF</item>
-    </style>
-
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-        <item name="textColor">@color/blue</item>
-        <item name="iconColor">@color/blue</item>
-        <item name="android:statusBarColor">@color/blue</item>
-        <item name="backgroundColor">#FFFFFF</item>
+        <item name="backgroundColor">@color/white</item>
     </style>
 
     <style name="AppTheme.Dark" parent="AppTheme.NoActionBar">
-        <item name="textColor">@color/black</item>
+        <item name="textColor">@color/white</item>
+        <item name="iconColor">@color/black</item>
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="backgroundColor">@color/white</item>
     </style>
 
-
+    <style name="AppTheme.Bilberry" parent="AppTheme.NoActionBar">
+        <item name="textColor">@color/white</item>
+        <item name="iconColor">@color/bilberry</item>
+        <item name="android:statusBarColor">@color/bilberry</item>
+        <item name="backgroundColor">@color/white</item>
+    </style>
 </resources>

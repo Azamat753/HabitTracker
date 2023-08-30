@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.lawlett.habittracker.MainActivity
+import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
 import com.lawlett.habittracker.databinding.ThemeLayoutBinding
@@ -43,12 +44,12 @@ class ChooseThemeBottomSheetDialog :
 
     private fun fillThemeModel(): ArrayList<ThemeModel> {
         val listThemeModels: ArrayList<ThemeModel> = ArrayList()
-        listThemeModels.add(ThemeModel("cиний", "#0365C4"))
-        listThemeModels.add(ThemeModel("оранже", "#FF5722"))
-        listThemeModels.add(ThemeModel("getString(R.string.yellow)", "#FFC03D"))
-        listThemeModels.add(ThemeModel("getString(R.string.heavenly)", "#73AFBA"))
-        listThemeModels.add(ThemeModel("getString(R.string.red)", "#FF2525"))
-        listThemeModels.add(ThemeModel("getString(R.string.green)", "#99DE9F"))
+        listThemeModels.add(ThemeModel(getString(R.string.blue), "#0365C4"))
+        listThemeModels.add(ThemeModel(getString(R.string.heavenly), "#73AFBA"))
+        listThemeModels.add(ThemeModel(getString(R.string.green), "#99DE9F"))
+        listThemeModels.add(ThemeModel(getString(R.string.pink), "#FC9885"))
+        listThemeModels.add(ThemeModel(getString(R.string.black), "#323232"))
+        listThemeModels.add(ThemeModel(getString(R.string.bilberry), "#464196"))
         return listThemeModels
     }
 }

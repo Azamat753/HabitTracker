@@ -3,8 +3,8 @@
     android:id="@+id/listview_background_shape">
     <stroke
         android:width="2dp"
-        android:color="@color/blue" />
+        android:color="?attr/iconColor" />
   
     <corners android:bottomLeftRadius="6dp" android:bottomRightRadius="6dp" />
-    <solid android:color="@color/blue" />
+    <solid android:color="?attr/iconColor" />
 </shape>

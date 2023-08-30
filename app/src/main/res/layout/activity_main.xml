@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:text="@string/tv_settings"
         android:paddingHorizontal="12dp"
-        android:textColor="@color/black"
+        android:textColor="?attr/iconColor"
         android:textSize="16sp" />
 
     <androidx.fragment.app.FragmentContainerView
@@ -34,8 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        app:itemTextColor="@color/blue"
-        app:itemIconTint="@color/blue"
+        app:itemTextColor="?attr/iconColor"
+        app:itemIconTint="?attr/iconColor"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -31,7 +31,7 @@
                 android:layout_gravity="center|start"
                 android:layout_marginStart="20dp"
                 android:text="15 января 2023 г. 16:30"
-                android:textColor="@color/black"
+                android:textColor="?attr/iconColor"
                 android:textSize="16sp" />
 
             <ImageView

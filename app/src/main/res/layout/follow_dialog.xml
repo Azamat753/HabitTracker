@@ -34,7 +34,7 @@
             android:layout_marginTop="12dp"
             android:background="@drawable/rectangle_background"
             android:text="@string/tv_accept"
-            android:textColor="@color/white" />
+            android:textColor="?attr/textColor" />
 
     </LinearLayout>
 

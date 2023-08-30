@@ -22,9 +22,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:fontFamily="@font/inter_medium"
-                android:textAlignment="center"
                 android:text="@string/tv_delete"
-                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:textColor="?attr/iconColor"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
                 android:fontFamily="@font/inter"
                 android:text="Привычка “курение” будет удалена"
                 android:textAlignment="center"
-                android:textColor="@color/black"
+                android:textColor="?attr/iconColor"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@id/buttonsLayout"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +65,7 @@
                     android:backgroundTint="@color/dark_grey"
                     android:text="@string/btn_no"
                     android:textAllCaps="false"
-                    android:textColor="@color/white" />
+                    android:textColor="?attr/textColor"/>
 
                 <Button
                     android:id="@+id/btn_yes"
@@ -77,7 +77,7 @@
                     android:backgroundTint="@color/blue"
                     android:text="@string/btn_yes"
                     android:textAllCaps="false"
-                    android:textColor="@color/white" />
+                    android:textColor="?attr/textColor" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

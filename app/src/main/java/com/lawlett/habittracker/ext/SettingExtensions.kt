@@ -15,13 +15,19 @@ fun Context.checkedTheme() {
             this.setTheme(R.style.AppTheme)
         }
         1 -> {
-            this.setTheme(R.style.AppTheme_Pink)
+            this.setTheme(R.style.AppTheme_Heavenly)
         }
         2 -> {
-            this.setTheme(R.style.AppTheme_Dark)
+            this.setTheme(R.style.AppTheme_Green)
         }
         3 -> {
             this.setTheme(R.style.AppTheme_Pink)
+        }
+        4 -> {
+            this.setTheme(R.style.AppTheme_Dark)
+        }
+        5 -> {
+            this.setTheme(R.style.AppTheme_Bilberry)
         }
     }
 }

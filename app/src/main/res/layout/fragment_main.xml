@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_display"
     android:layout_width="match_parent"
+    android:background="?attr/backgroundColor"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="12dp"
@@ -46,7 +47,7 @@
                 android:fontFamily="@font/inter"
                 android:text="@string/empty_habit_desc"
                 android:textAlignment="center"
-                android:textColor="@color/blue"
+                android:textColor="?attr/iconColor"
                 android:textSize="16sp" />
 
         </LinearLayout>
@@ -68,7 +69,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/white"
             android:src="@drawable/ic_add"
-            android:tint="@color/blue"
+            android:tint="?attr/iconColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

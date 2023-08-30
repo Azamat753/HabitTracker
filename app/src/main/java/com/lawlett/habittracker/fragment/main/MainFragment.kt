@@ -55,7 +55,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
     @Inject
     lateinit var cacheManager: CacheManager
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
@@ -84,7 +83,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
             dialog.second.dismiss()
         }
     }
-
 
     private fun languageChanged() {
         cacheManager.saveLangeSeen()
