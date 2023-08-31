@@ -87,17 +87,17 @@ class CacheManager(context: Context) {
         sharedPreferences.edit().putString("language_", s).apply()
     }
 
-    companion object {
-        @Volatile
-        var instance: CacheManager? = null
-        fun getInstance(context: Context): CacheManager? {
-            if (instance == null) CacheManager(context)
-            return instance
-        }
-    }
+//    companion object {
+//        @Volatile
+//        var instance: CacheManager? = null
+//        fun getInstance(context: Context): CacheManager? {
+//            if (instance == null) CacheManager(context)
+//            return instance
+//        }
+//    }
 
-    init {
-        instance = this
-        sharedPreferences = context.getSharedPreferences("my_language", Context.MODE_PRIVATE)
-    }
+//    init {
+//        instance = this
+//        sharedPreferences = context.getSharedPreferences("my_language", Context.MODE_PRIVATE)
+//    }
 }

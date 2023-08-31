@@ -94,13 +94,11 @@ private fun setLocale(s: String, context: Context) {
         config,
         context.resources.displayMetrics
     )
-    CacheManager.getInstance(context)?.saveLanguage(s)
-
-    //TODO: this in ViewModel
+    CacheManager(context).saveLanguage(s)
 }
 
 fun loadLocale(context: Context) {
-    val language: String? = LanguagePreference.getInstance(context)?.getLanguage
+    val language: String? = CacheManager(context).getLanguage
     if (language != null) {
         setLocale(language, context)
     }

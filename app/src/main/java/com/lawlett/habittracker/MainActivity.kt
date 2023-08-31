@@ -16,6 +16,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.databinding.ActivityMainBinding
 import com.lawlett.habittracker.ext.changeLounge
 import com.lawlett.habittracker.ext.checkedTheme
+import com.lawlett.habittracker.ext.loadLocale
 import com.lawlett.habittracker.helper.MyFirebaseMessagingService
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         checkedTheme()
         changeLounge()
-        //loadLocale(this)
+        loadLocale(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         initNavigationGraph()

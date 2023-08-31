@@ -28,6 +28,7 @@ import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
 import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
+import com.lawlett.habittracker.helper.launge.ChooseLoungeBottomSheetDialog
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -86,7 +87,9 @@ class MainFragment : Fragment(R.layout.fragment_main),
 
     private fun languageChanged() {
         cacheManager.saveLangeSeen()
-        requireActivity().changeLanguage()
+        val bottomDialog = ChooseLoungeBottomSheetDialog()
+        bottomDialog.show(requireActivity().supportFragmentManager, "TAG")
+       // requireActivity().changeLanguage()
     }
 
     private fun searchlight() {

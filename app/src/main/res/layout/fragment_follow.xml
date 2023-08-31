@@ -68,7 +68,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/inter"
-                android:text="Для работы функции подписки требуется Google аккаунт"
+                android:text="@string/google"
                 android:textAlignment="center"
                 android:textColor="?attr/iconColor"
                 android:textSize="16sp" />

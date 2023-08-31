@@ -3,7 +3,7 @@
     <string name="app_name">HabitTracker</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="server_client_id">547684386780-a4jo0jmhap40fu7jll20mo81i08fife9.apps.googleusercontent.com</string>
-    <string name="hello">Саламат Сызбы</string>
+    <string name="hello">Саламатcызбы</string>
     <string name="day">Күндөр</string>
     <string name="tv_second">Сек</string>
     <string name="tv_hours">Саат</string>
@@ -25,7 +25,7 @@
     <string name="tv_create">Түзүү</string>
     <string name="tv_delete">Чыгаруу?</string>
     <string name="btn_no">Жок</string>
-    <string name="btn_yes">Ова</string>
+    <string name="btn_yes">Оба</string>
     <string name="tv_code">Коду</string>
     <string name="tv_accept">Кабыл алуу</string>
     <string name="_00_00_00_00">00:00:00:00</string>
@@ -40,7 +40,7 @@
     <string name="tv_main">Башкы</string>
     <string name="tv_subscriptions">Жазылуулар</string>
     <string name="tv_settings">Орнотуулар</string>
-    <string name="reset_to_zero">Нөлдөө?</string>
+    <string name="reset_to_zero">өчүрүп?</string>
     //Follow
     <string name="follows_display">Бул экранда сиз жолдоочуларыңыздын ийгилигин көрө аласыз</string>
     <string name="follows_fab">Чыкылдатуу менен сиз кол коюу кодун киргизип, анын адаттарын байкай аласыз</string>
@@ -63,21 +63,25 @@
     <string name="settings_display_singBtn">Баскычты басканда, сиз каттоодон өтсөңүз болот</string>
     <string name="settings_display_shareBtn">Сиз адаттарыңыз менен бөлүшө аласыз</string>
     <string name="settings_display_changeLang">Бул жерде тил өзгөртө аласыз</string>
-    <string name="habit_clear">Привычка будет обнулена</string>
-    <string name="sync">Синхронизироваться</string>
-    <string name="success">Успешно</string>
-    <string name="empty_habit_desc">Чтобы начать привычку нажмите на кнопку “+” и укажите название и иконку в виде одного смайлика</string>
-    <string name="empty_follow_desc">Чтоб подписаться на кого то нажмите на кнопку “+” и укажите код который вам отправили через кнопку ”Поделиться своим кодом”</string>
-    <string name="blue">Синий</string>
-    <string name="red">Красный</string>
-    <string name="orange">Оранжевый</string>
-    <string name="yellow">Жёлтый</string>
-    <string name="black">Черный</string>
-    <string name="green">Зелёный</string>
-    <string name="pink">Розовый</string>
-    <string name="violet">Фиолетовый</string>
-    <string name="heavenly">Небесный</string>
-    <string name="bilberry">Черничный</string>
-    <string name="dark_brown">Коричневый темный</string>
-    <string name="greyish_blue">Серый сине-серебристый</string>
+    <string name="habit_clear">Адат нөлгө түшөт</string>
+    <string name="sync">Синхрондоштуруу</string>
+    <string name="success">Ийгиликтүү</string>
+    <string name="empty_habit_desc">Адатты баштоо үчүн " + " баскычын чыкылдатып, атын жана сөлөкөтүн бир эмодзи катары көрсөтүңүз</string>
+    <string name="empty_follow_desc">Баскычын чыкылдатып, кимдир бирөө үчүн жазылуу үчүн " + "жана баскычы аркылуу жиберген кодун көрсөтүү"сиздин кодду бөлүшүү"</string>
+    <string name="blue">Көк</string>
+    <string name="red">Кызыл</string>
+    <string name="orange">Кызгылт сары</string>
+    <string name="yellow">Сары</string>
+    <string name="black">Кара</string>
+    <string name="green">Жашыл</string>
+    <string name="pink">Кызгылт</string>
+    <string name="violet">Күлгүн</string>
+    <string name="heavenly">Асмандык</string>
+    <string name="bilberry">Бөрү карагат</string>
+    <string name="dark_brown">Караңгы түс</string>
+    <string name="greyish_blue">Боз көк-күмүш</string>
+    <string name="btn_further">Кийинки</string>
+    <string name="tv_further">Кийинки...</string>
+    <string name="btn_change_the_subject">Теманы Өзгөртүү</string>
+    <string name="google">Жазылуу өзгөчөлүгү Google каттоо эсебин талап кылат</string>
 </resources>

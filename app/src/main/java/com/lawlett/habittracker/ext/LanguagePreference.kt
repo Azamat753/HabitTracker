@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 
 class LanguagePreference(context: Context) {
+
     private val preferences: SharedPreferences
     val getLanguage: String?
         get() = preferences.getString("language_", "")
