@@ -13,6 +13,7 @@ class LoungeAdapter: BaseAdapter<LoungeModel, ItemLaungeBinding>(
         binding.signBtn.text = model.lounge
     }
 }
+
 //class LoungesAdapter(val onClick:(LoungeModel)->Unit,val list:ArrayList<LoungeModel>,):Adapter<LoungesAdapter.LoungesViewHolder>(){
 //
 //
