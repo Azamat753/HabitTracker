@@ -44,7 +44,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
     private val adapter = HabitAdapter()
-    var container: ViewGroup? = null
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
@@ -57,16 +56,19 @@ class MainFragment : Fragment(R.layout.fragment_main),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initAdapter()
         initClickers()
         if (!cacheManager.isLangeSeen()) {
             languageChanged()
         } else if (!cacheManager.isUserSeenDialog()) {
             dialogTest()
         }
-        initAdapter()
         viewModel.getHabits()
         observe()
-        checkOnEmpty()
+        viewModel.viewModelScope.launch {
+            delay(1000)
+            checkOnEmpty()
+        }
     }
 
     private fun dialogTest() {
@@ -120,15 +122,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
         }, 100)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        this.container = container
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onResume() {
         super.onResume()
         viewModel.getHabits()
@@ -171,13 +164,15 @@ class MainFragment : Fragment(R.layout.fragment_main),
                         attempts = attempts
                     )
                     listHabit.add(model)
-                    if (listHabit.size == result.result.documents.size + if (cacheManager.getFollowers() != null) cacheManager.getFollowers()?.distinct()?.size!! else 0
+                    if (listHabit.size == result.result.documents.size + if (cacheManager.getFollowers() != null) cacheManager.getFollowers()
+                            ?.distinct()?.size!! else 0
                     ) {
-                        listHabit.forEach {
+                        adapter.setData(listHabit)
+                        checkOnEmpty()
+                        adapter.data.forEach {
                             viewModel.insert(it)
                         }
                         binding.progressBar.toGone()
-                        checkOnEmpty()
                     }
                 }
             }.addOnFailureListener {
@@ -191,7 +186,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.habitFlow.asSharedFlow().collect() { habits ->
                     adapter.setData(habits)
-                    checkOnEmpty()
                 }
             }
         }

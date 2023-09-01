@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 R.id.habitDetailFragment -> false
                 else -> true
             }
+
             binding.toolbarMain.isVisible = when (destination.id) {
                 R.id.habitDetailFragment -> false
                 else -> true
