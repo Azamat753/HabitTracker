@@ -77,4 +77,10 @@
     <string name="violet">Фиолетовый</string>
     <string name="heavenly">Небесный</string>
     <string name="bilberry">Черничный</string>
+    <string name="dark_brown">Коричневый </string>
+    <string name="greyish_blue">Сине-серый</string>
+    <string name="btn_further">Далее</string>
+    <string name="tv_further">Далее...</string>
+    <string name="btn_change_the_subject">Поменять Тему</string>
+    <string name="google">Для работы функции подписки требуется Google аккаунт</string>
 </resources>

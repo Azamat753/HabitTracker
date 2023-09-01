@@ -37,9 +37,9 @@
 
     <style name="AppTheme.Dark" parent="AppTheme.NoActionBar">
         <item name="textColor">@color/white</item>
-        <item name="iconColor">@color/black</item>
-        <item name="android:statusBarColor">@color/black</item>
-        <item name="backgroundColor">@color/white</item>
+        <item name="iconColor">@color/blue</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="backgroundColor">@color/dark</item>
     </style>
 
     <style name="AppTheme.Bilberry" parent="AppTheme.NoActionBar">
@@ -48,4 +48,19 @@
         <item name="android:statusBarColor">@color/bilberry</item>
         <item name="backgroundColor">@color/white</item>
     </style>
+
+    <style name="AppTheme.NewColor" parent="AppTheme.NoActionBar">
+        <item name="textColor">@color/white</item>
+        <item name="iconColor">@color/star</item>
+        <item name="android:statusBarColor">@color/star</item>
+        <item name="backgroundColor">@color/white</item>
+    </style>
+
+    <style name="AppTheme.NewColor2" parent="AppTheme.NoActionBar">
+        <item name="textColor">@color/white</item>
+        <item name="iconColor">@color/blue_gray</item>
+        <item name="android:statusBarColor">@color/blue_gray</item>
+        <item name="backgroundColor">@color/white</item>
+    </style>
+
 </resources>

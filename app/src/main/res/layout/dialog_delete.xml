@@ -65,7 +65,7 @@
                     android:backgroundTint="@color/dark_grey"
                     android:text="@string/btn_no"
                     android:textAllCaps="false"
-                    android:textColor="?attr/textColor"/>
+                    android:textColor="?attr/textColor" />
 
                 <Button
                     android:id="@+id/btn_yes"
@@ -78,6 +78,15 @@
                     android:text="@string/btn_yes"
                     android:textAllCaps="false"
                     android:textColor="?attr/textColor" />
+
+                <!--                <Button-->
+                <!--                    android:id="@+id/createBtn"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginTop="12dp"-->
+                <!--                    android:background="@drawable/rectangle_background"-->
+                <!--                    android:text="@string/tv_create"-->
+                <!--                    android:textColor="?attr/textColor"/>-->
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

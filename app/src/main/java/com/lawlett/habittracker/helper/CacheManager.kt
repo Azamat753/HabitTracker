@@ -3,8 +3,10 @@ package com.lawlett.habittracker.helper
 import android.content.Context
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.lawlett.habittracker.ext.LanguagePreference
 import com.lawlett.habittracker.helper.Key.KEY_FOR_COLOR
 import com.lawlett.habittracker.helper.Key.KEY_SAVE_DIALOG
+import com.lawlett.habittracker.helper.Key.LOUNGE_PREFERENCE
 import java.lang.reflect.Type
 import java.util.ArrayList
 
@@ -13,11 +15,19 @@ class CacheManager(context: Context) {
     private var sharedPreferences = context.getSharedPreferences("habitPref", Context.MODE_PRIVATE)
 
     fun getTheme(): Int {
-        return sharedPreferences.getInt("color",0)
+        return sharedPreferences.getInt("color", 0)
     }
 
-    fun setTheme( s: Int) {
+    fun setTheme(s: Int) {
         sharedPreferences.edit().putInt("color", s).apply()
+    }
+
+    fun setLounge(s: Int) {
+        sharedPreferences.edit().putInt(LOUNGE_PREFERENCE, s).apply()
+    }
+
+    fun getLounge(): Int {
+        return sharedPreferences.getInt(LOUNGE_PREFERENCE, 0)
     }
 
     fun setToken(token: String) = sharedPreferences.edit().putString("token", token).apply()
@@ -69,4 +79,25 @@ class CacheManager(context: Context) {
         val type: Type = object : TypeToken<ArrayList<String?>?>() {}.type
         return gson.fromJson(json, type)
     }
+
+    val getLanguage: String?
+        get() = sharedPreferences.getString("language_", "")
+
+    fun saveLanguage(s: String) {
+        sharedPreferences.edit().putString("language_", s).apply()
+    }
+
+//    companion object {
+//        @Volatile
+//        var instance: CacheManager? = null
+//        fun getInstance(context: Context): CacheManager? {
+//            if (instance == null) CacheManager(context)
+//            return instance
+//        }
+//    }
+
+//    init {
+//        instance = this
+//        sharedPreferences = context.getSharedPreferences("my_language", Context.MODE_PRIVATE)
+//    }
 }
