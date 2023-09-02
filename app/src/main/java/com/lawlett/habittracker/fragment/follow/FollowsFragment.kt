@@ -49,6 +49,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
                 searchlight()
             }
         }
+
         if (firebaseHelper.isSigned()) {
             fetchFromFB()
         }
