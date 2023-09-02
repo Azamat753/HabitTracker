@@ -38,7 +38,9 @@ class ChooseLanguageBottomSheetDialog :
     override fun onClick(model: String, position: Int) {
         cacheManager.setLanguage(position)
         val intent = Intent(requireContext(), MainActivity::class.java)
-        intent.putExtra(Key.IS_SETTING, true)
+        if (tag != "main") {
+            intent.putExtra(Key.IS_SETTING, true)
+        }
         startActivity(intent)
         requireActivity().overridePendingTransition(
             android.R.anim.fade_in, android.R.anim.fade_out

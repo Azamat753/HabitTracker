@@ -47,7 +47,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
     lateinit var cacheManager: CacheManager
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        spotlight()
+        spotlight()
         helper = GoogleSignInHelper(this)
         initClickers()
         setupUI()

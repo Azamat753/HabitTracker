@@ -60,7 +60,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         initClickers()
-//        firstLaunchDialog()
+        firstLaunchDialog()
         viewModel.getHabits()
         observe()
         viewModel.viewModelScope.launch {
@@ -95,8 +95,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
     private fun languageChanged() {
         cacheManager.saveLangeSeen()
         val bottomDialog = ChooseLanguageBottomSheetDialog()
-        bottomDialog.show(requireActivity().supportFragmentManager, "TAG")
-       // requireActivity().changeLanguage()
+        bottomDialog.show(requireActivity().supportFragmentManager, "main")
     }
 
     private fun searchlight() {

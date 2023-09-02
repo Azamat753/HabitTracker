@@ -43,7 +43,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
         super.onViewCreated(view, savedInstanceState)
         helper = GoogleSignInHelper(this, tokenCallback = this)
         initMultiAdapter()
-//        spotlight()
+        spotlight()
         getFromFb()
         initClickers()
         setupUI()
