@@ -39,7 +39,6 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
 
     @Inject
     lateinit var cacheManager: CacheManager
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         helper = GoogleSignInHelper(this, tokenCallback = this)
