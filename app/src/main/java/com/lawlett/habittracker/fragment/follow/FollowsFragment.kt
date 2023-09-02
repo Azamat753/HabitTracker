@@ -37,7 +37,6 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
 
     lateinit var helper: GoogleSignInHelper
 
-
     @Inject
     lateinit var cacheManager: CacheManager
 
@@ -88,7 +87,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
     private fun searchlight() {
         val targets = ArrayList<Target>()
         val root = FrameLayout(requireContext())
-        val first = layoutInflater.inflate(R.layout.layout_target, root)
+        val first = layoutInflater.inflate(R.layout.layout_target_follows, root)
 
         Handler().postDelayed({
             cacheManager.saveUserSeen()

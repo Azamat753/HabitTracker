@@ -61,7 +61,7 @@
     //Setting
     <string name="settings_display">This is your settings screen</string>
     <string name="settings_display_singBtn">By clicking on the button you can register</string>
-    <string name="settings_display_shareBtn">You can share your habits</string>
+    <string name="settings_display_shareBtn">By clicking on this button, you can send your unique code to your friend (like "Ibra Kasymov:8EEgmDq90vQzrgQI3RGtlCO5pQ12"). Your friend, having received this code, will be able to insert it into his subscriptions screen and observe your daily habits that are displayed on your home screen. This is a great way to share your successes, achievements and lifestyle with close friends and maintain mutual motivation for healthy and productive habits.</string>
     <string name="settings_display_changeLang">Here you can change the language</string>
     <string name="habit_clear">The habit will be reset to zero</string>
     <string name="sync">Sync</string>
@@ -84,4 +84,6 @@
     <string name="tv_further">Further</string>
     <string name="btn_change_the_subject">Change The Subject</string>
     <string name="google">The subscription function requires a Google account</string>
+    <string name="btn_change_theme">You can change the theme of the application</string>
+    <string name="btn_sync">When you click on this button, your habits are instantly synchronized with the server, and they are automatically added to your home screen, even if you have changed your device and logged into the application from another phone. This ensures continuous and convenient management of your habits, wherever you are, and ensures that you always have access to up-to-date data on your goals and progress.</string>
 </resources>

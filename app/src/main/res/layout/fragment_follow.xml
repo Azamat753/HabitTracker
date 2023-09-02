@@ -7,13 +7,11 @@
     android:background="?attr/backgroundColor"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp"
     tools:context="com.lawlett.habittracker.fragment.follow.FollowsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="12dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/emptyLayout"
@@ -28,6 +26,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:layout_margin="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/empty_page" />
@@ -58,6 +57,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:layout_margin="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_google" />
@@ -74,6 +74,8 @@
                 android:textSize="16sp" />
 
             <Button
+                android:layout_margin="12dp"
+
                 android:id="@+id/signBtn"
                 android:layout_width="match_parent"
                 android:layout_marginTop="30dp"
@@ -90,11 +92,13 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_friends"
             android:layout_width="match_parent"
+            android:layout_margin="12dp"
             android:layout_height="match_parent"
             android:orientation="vertical" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
+            android:layout_margin="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/white"

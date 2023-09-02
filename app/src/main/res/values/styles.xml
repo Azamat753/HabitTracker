@@ -49,14 +49,14 @@
         <item name="backgroundColor">@color/white</item>
     </style>
 
-    <style name="AppTheme.NewColor" parent="AppTheme.NoActionBar">
+    <style name="AppTheme.brown" parent="AppTheme.NoActionBar">
         <item name="textColor">@color/white</item>
         <item name="iconColor">@color/star</item>
         <item name="android:statusBarColor">@color/star</item>
         <item name="backgroundColor">@color/white</item>
     </style>
 
-    <style name="AppTheme.NewColor2" parent="AppTheme.NoActionBar">
+    <style name="AppTheme.Blue_Grey" parent="AppTheme.NoActionBar">
         <item name="textColor">@color/white</item>
         <item name="iconColor">@color/blue_gray</item>
         <item name="android:statusBarColor">@color/blue_gray</item>
