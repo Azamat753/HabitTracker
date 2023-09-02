@@ -30,6 +30,7 @@ import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.EventCallback
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
+import com.lawlett.habittracker.databinding.CreateHabitDialogBinding
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay

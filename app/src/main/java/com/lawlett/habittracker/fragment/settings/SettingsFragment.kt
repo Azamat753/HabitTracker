@@ -13,12 +13,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.R
+import com.lawlett.habittracker.adapter.LanguageAdapter
+import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
 import com.lawlett.habittracker.bottomsheet.ChooseThemeBottomSheetDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentSettingsBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.settings.viewModel.SettingsViewModel
 import com.lawlett.habittracker.helper.*
+import com.lawlett.habittracker.helper.Key.KEY_SEARCH_SETTINGS
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.asSharedFlow
