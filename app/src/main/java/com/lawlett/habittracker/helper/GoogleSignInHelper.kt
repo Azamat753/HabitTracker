@@ -26,8 +26,8 @@ class GoogleSignInHelper(var fragment: Fragment, var tokenCallback: TokenCallbac
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestScopes(Scope("https://www.googleapis.com/auth/firebase.messaging"))
             .requestIdToken(fragment.getString(R.string.server_client_id))
-            .requestEmail()
             .requestServerAuthCode(fragment.getString(R.string.server_client_id))
+            .requestEmail()
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(fragment.requireContext(), gso)
@@ -63,7 +63,6 @@ class GoogleSignInHelper(var fragment: Fragment, var tokenCallback: TokenCallbac
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
-                fragment.showToast("Success")
                 tokenCallback?.newToken(account.serverAuthCode ?: "")
             } else {
                 fragment.showToast(it.exception.toString())

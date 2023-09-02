@@ -21,10 +21,15 @@ class HabitAdapter() : BaseAdapter<HabitModel, ItemHabitBinding>(
     @SuppressLint("SetTextI18n")
     override fun onBind(binding: ItemHabitBinding, model: HabitModel) {
         val currentDay = model.startDate?.getDays()?.toInt() ?: 0
-        binding.habitTitle.text = model.title
-        binding.habitImage.text = model.icon
-        binding.habitCount.text = currentDay.toString() + " / " + model.allDays
-        binding.habitProgress.max = model.allDays
-        binding.habitProgress.progress = currentDay
+        val record = model.record?:"0"
+        with(binding){
+            habitTitle.text = model.title
+            habitImage.text = model.icon
+            habitCount.text = currentDay.toString() + " / " + model.allDays
+            habitProgress.max = model.allDays
+            habitProgress.progress = currentDay
+            recordTitleTv.text = root.context?.resources?.getString(R.string.tv_record, record.toInt())
+            tvAttempts.text ="Попыток - "+ model.attempts.toString()
+        }
     }
 }

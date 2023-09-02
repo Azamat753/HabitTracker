@@ -1,4 +1,4 @@
-package com.lawlett.habittracker.helper.theme
+package com.lawlett.habittracker.bottomsheet
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,8 +7,11 @@ import com.lawlett.habittracker.MainActivity
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
-import com.lawlett.habittracker.databinding.ThemeLayoutBinding
 import com.lawlett.habittracker.helper.CacheManager
+import com.lawlett.habittracker.helper.Key.IS_SETTING
+import com.lawlett.habittracker.adapter.ThemeAdapter
+import com.lawlett.habittracker.databinding.ThemeLayoutBinding
+import com.lawlett.habittracker.models.ThemeModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,7 +38,9 @@ class ChooseThemeBottomSheetDialog :
 
     override fun onClick(model: ThemeModel, position: Int) {
         cacheManager.setTheme(position)
-        startActivity(Intent(requireContext(), MainActivity::class.java))
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.putExtra(IS_SETTING,true)
+        startActivity(intent)
         requireActivity().overridePendingTransition(
             android.R.anim.fade_in, android.R.anim.fade_out
         )

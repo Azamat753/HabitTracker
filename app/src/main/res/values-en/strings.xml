@@ -35,7 +35,7 @@
     <string name="btn_new_habit">New Habit</string>
     <string name="tv_new_habit">New Habit</string>
     <string name="tv_attempt">Attempt : </string>
-    <string name="tv_record">Record : </string>
+    <string name="tv_record">Record : %d</string>
     <string name="tv_main">Main</string>
     <string name="tv_subscriptions">Subscriptions</string>
     <string name="tv_settings">Settings</string>
@@ -84,4 +84,5 @@
     <string name="tv_further">Further</string>
     <string name="btn_change_the_subject">Change The Subject</string>
     <string name="google">The subscription function requires a Google account</string>
+    <string name="not_sign">Вы не зарегестрированы</string>
 </resources>

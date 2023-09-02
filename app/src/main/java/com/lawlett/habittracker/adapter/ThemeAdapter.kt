@@ -1,9 +1,10 @@
-package com.lawlett.habittracker.helper.theme
+package com.lawlett.habittracker.adapter
 
 import android.graphics.Color
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.databinding.ItemThemeBinding
+import com.lawlett.habittracker.models.ThemeModel
 
 class ThemeAdapter : BaseAdapter<ThemeModel, ItemThemeBinding>(
     R.layout.item_theme,

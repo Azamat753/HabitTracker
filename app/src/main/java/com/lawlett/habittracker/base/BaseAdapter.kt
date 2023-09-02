@@ -12,7 +12,7 @@ import com.lawlett.habittracker.R
 abstract class BaseAdapter<T, Binding : ViewBinding>(
     private val holderLayoutId: Int,
     var data: List<T>,
-    private val inflater: (LayoutInflater) -> Binding
+    private val inflater: (LayoutInflater,ViewGroup,Boolean) -> Binding
 ) : RecyclerView.Adapter<BaseAdapter<T, Binding>.BaseViewHolder>() {
 
     var listener: IBaseAdapterClickListener<T>? = null
@@ -22,7 +22,7 @@ abstract class BaseAdapter<T, Binding : ViewBinding>(
     var lastPosition: Int = -1
     var positionAdapter: Int = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-        _binding = inflater.invoke(LayoutInflater.from(parent.context))
+        _binding = inflater.invoke(LayoutInflater.from(parent.context),parent,false)
         return BaseViewHolder(binding)
     }
 

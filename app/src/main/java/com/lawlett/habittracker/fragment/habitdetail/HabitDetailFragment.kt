@@ -146,7 +146,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                 getString(R.string.detail_habit_attempts)
             )
             val fiveSpot = setSpotLightTarget(
-                binding.recordTv,
+                binding.recordTitleTv,
                 first,
                 getString(R.string.detail_habit_record)
             )
@@ -196,7 +196,9 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                 habitModelGlobal?.startDate,
                 habitModelGlobal?.endDate
             )
-            helper.signInGoogle()
+            if (firebaseHelper.isSigned()) {
+                helper.signInGoogle()
+            }
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
@@ -205,12 +207,13 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
 
     @SuppressLint("SetTextI18n")
     private fun showRecord() {
-        val nowRecord = binding.recordTv.text.toString().ifEmpty { "0" }.toInt()
+        val nowRecord =
+            binding.recordTitleTv.text.toString().substringAfter("-").trim().ifEmpty { "0" }.toInt()
         val newRecord = dataHelper.startTimeFromPref()?.getDays().toString().toInt()
         if (newRecord > nowRecord) {
             binding.recordTitleTv.toVisible()
-            binding.recordTv.toVisible()
-            binding.recordTv.text = newRecord.toString()
+            binding.recordTitleTv.toVisible()
+            binding.recordTitleTv.text = getString(R.string.tv_record, newRecord.toString().toInt())
             habitModelGlobal?.id?.let { id ->
                 viewModel.updateRecord(newRecord.toString(), id)
             } ?: kotlin.run {
@@ -249,19 +252,19 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
             habitModelGlobal = requireArguments().getParcelable("key") as HabitModel?
             isFollow = requireArguments().getBoolean("isFollow")
             isStartTimer = requireArguments().getBoolean("isStartTimer")
+            val record = habitModelGlobal?.record ?: 0
             habitModelGlobal?.let { model ->
                 with(binding) {
                     iconTv.text = model.icon
                     habitProgress.max = model.allDays
                     habitTv.text = habitModelGlobal?.title
-                    recordTv.text = habitModelGlobal?.record
+                    recordTitleTv.text = getString(R.string.tv_record, record.toString().toInt())
                     viewModel.record = habitModelGlobal?.attempts ?: 0
                     habitModelGlobal?.let { model ->
                         if (model.record?.toInt() == 0 || model.record == null) {
-                            recordTv.toGone()
                             recordTitleTv.toGone()
                         } else {
-                            recordTv.text = habitModelGlobal?.record
+                            recordTitleTv.text = habitModelGlobal?.record
                         }
                         if (model.attempts == 0) {
                             attemptCard.toGone()
@@ -283,6 +286,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                         nameTv.text = habitModelGlobal?.fbName?.replaceAfter(":", "")
                         btnRelapse.toGone()
                     } else {
+                        nameTv.toGone()
                         dataHelper =
                             DataHelper(
                                 requireActivity(),

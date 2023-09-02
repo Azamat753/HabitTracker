@@ -3,8 +3,6 @@ package com.lawlett.habittracker.helper
 import android.content.Context
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import com.lawlett.habittracker.ext.LanguagePreference
-import com.lawlett.habittracker.helper.Key.KEY_FOR_COLOR
 import com.lawlett.habittracker.helper.Key.KEY_SAVE_DIALOG
 import com.lawlett.habittracker.helper.Key.LOUNGE_PREFERENCE
 import java.lang.reflect.Type
@@ -22,7 +20,7 @@ class CacheManager(context: Context) {
         sharedPreferences.edit().putInt("color", s).apply()
     }
 
-    fun setLounge(s: Int) {
+    fun setLanguage(s: Int) {
         sharedPreferences.edit().putInt(LOUNGE_PREFERENCE, s).apply()
     }
 
@@ -86,18 +84,4 @@ class CacheManager(context: Context) {
     fun saveLanguage(s: String) {
         sharedPreferences.edit().putString("language_", s).apply()
     }
-
-//    companion object {
-//        @Volatile
-//        var instance: CacheManager? = null
-//        fun getInstance(context: Context): CacheManager? {
-//            if (instance == null) CacheManager(context)
-//            return instance
-//        }
-//    }
-
-//    init {
-//        instance = this
-//        sharedPreferences = context.getSharedPreferences("my_language", Context.MODE_PRIVATE)
-//    }
 }

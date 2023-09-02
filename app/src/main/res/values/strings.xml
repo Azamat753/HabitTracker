@@ -35,7 +35,7 @@
     <string name="btn_new_habit">Новая привычка</string>
     <string name="tv_new_habit">Новая привычка</string>
     <string name="tv_attempt">Попытка : </string>
-    <string name="tv_record">Рекорд : </string>
+    <string name="tv_record">Рекорд - %d </string>
     <string name="tv_main">Главная</string>
     <string name="tv_subscriptions">Подписки</string>
     <string name="tv_settings">Настройки</string>
@@ -83,4 +83,5 @@
     <string name="tv_further">Далее...</string>
     <string name="btn_change_the_subject">Поменять Тему</string>
     <string name="google">Для работы функции подписки требуется Google аккаунт</string>
+    <string name="not_sign">Вы не зарегестрированы</string>
 </resources>

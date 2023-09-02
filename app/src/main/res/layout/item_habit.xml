@@ -16,24 +16,30 @@
 
         <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/habit_progress"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="12dp"
             android:progress="70"
             android:progressDrawable="@drawable/circle_progress"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/cardsLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/habit_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/inter_medium"
-            app:layout_constraintBottom_toTopOf="@+id/habit_progress"
-            app:layout_constraintEnd_toEndOf="parent"
             android:textColor="?attr/iconColor"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/cardsLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/habit_progress"
+            app:layout_constraintStart_toStartOf="@id/cardsLayout"
+            app:layout_constraintTop_toTopOf="@id/habit_progress"
             tools:text="habit" />
 
 
@@ -41,30 +47,74 @@
             android:id="@+id/habit_count"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/rectangle_background_no_top"
             android:gravity="center"
             android:padding="5dp"
             android:textAlignment="center"
             android:textColor="?attr/textColor"
             android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@drawable/rectangle_background_notop"
             app:layout_constraintTop_toBottomOf="@id/habit_progress"
             tools:text="10/10" />
-
 
         <TextView
             android:id="@+id/habit_image"
             android:layout_width="wrap_content"
-            android:text="$"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
+            android:text="$"
             android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/habit_progress"
+            app:layout_constraintEnd_toEndOf="@id/habit_progress"
+            app:layout_constraintStart_toStartOf="@id/habit_progress"
+            app:layout_constraintTop_toTopOf="@id/habit_progress" />
+
+        <LinearLayout
+            android:id="@+id/cardsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/habit_progress"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/habit_progress">
+
+            <TextView
+                android:id="@+id/tv_attempts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:text="@string/tv_attempts"
+                android:textColor="?attr/iconColor"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/recordTitleTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/tv_record"
+                    android:textColor="?attr/iconColor"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

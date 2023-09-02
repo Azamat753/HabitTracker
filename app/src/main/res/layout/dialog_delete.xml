@@ -74,7 +74,7 @@
                     android:layout_marginStart="31dp"
                     android:layout_marginBottom="17dp"
                     android:background="@drawable/rectangle_background"
-                    android:backgroundTint="@color/blue"
+                    android:backgroundTint="?attr/iconColor"
                     android:text="@string/btn_yes"
                     android:textAllCaps="false"
                     android:textColor="?attr/textColor" />

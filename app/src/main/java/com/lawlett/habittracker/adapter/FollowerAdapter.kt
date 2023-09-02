@@ -4,12 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ViewHolderInflater
+import com.lawlett.habittracker.databinding.ItemFollowerBinding
 import com.lawlett.habittracker.databinding.ItemHabitBinding
 import com.lawlett.habittracker.models.HabitModel
 
 class FollowerAdapter(var click: (model :HabitModel)-> Unit) :
     ViewHolderInflater<HabitModel, FollowerAdapter.FollowViewHolder>() {
-   inner class FollowViewHolder(var binding: ItemHabitBinding) : RecyclerView.ViewHolder(binding.root) {
+   inner class FollowViewHolder(var binding: ItemFollowerBinding) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(habitModel: HabitModel) {
             binding.habitTitle.text = habitModel.title
             binding.habitImage.text = habitModel.icon
@@ -28,7 +29,7 @@ class FollowerAdapter(var click: (model :HabitModel)-> Unit) :
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): FollowViewHolder {
         return FollowViewHolder(
-            ItemHabitBinding.inflate(
+            ItemFollowerBinding.inflate(
                 LayoutInflater.from(parent.context), parent,
                 false
             )

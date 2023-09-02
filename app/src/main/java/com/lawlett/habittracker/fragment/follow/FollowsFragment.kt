@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenCallback {
+class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, TokenCallback {
     private val binding: FragmentFollowBinding by viewBinding()
     lateinit var multiTypeAdapter: MultiTypeAdapter
     lateinit var items: MutableList<Any>
@@ -45,17 +45,25 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
         super.onViewCreated(view, savedInstanceState)
         helper = GoogleSignInHelper(this, tokenCallback = this)
         initMultiAdapter()
+//        spotlight()
+        getFromFb()
+        initClickers()
+        setupUI()
+        checkOnEmpty()
+    }
+
+    private fun getFromFb() {
+        if (firebaseHelper.isSigned()) {
+            fetchFromFB()
+        }
+    }
+
+    private fun spotlight() {
         if (!cacheManager.isPass()) {
             if (!cacheManager.isUserSeen()) {
                 searchlight()
             }
         }
-        if (firebaseHelper.isSigned()) {
-            fetchFromFB()
-        }
-        initClickers()
-        setupUI()
-        checkOnEmpty()
     }
 
     private fun initClickers() {
@@ -163,11 +171,13 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
     private fun fetchFromFB() {
         binding.progressBar.toVisible()
         items = ArrayList()
+        var names = 0
         cacheManager.getFollowers()?.distinct()?.let { array ->
             array.forEach { userName ->
                 firebaseHelper.db.collection(userName!!).get().addOnCompleteListener { result ->
                     if (result.result.size() != 0) {
                         items.add(Pair(userName.makeUserName(), userName))
+                        ++names
                     } else {
                         binding.progressBar.toGone()
                     }
@@ -188,9 +198,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
                             attempts = attempts
                         )
                         items.add(model)
-                        if (items.size == result.result.documents.size + if (cacheManager.getFollowers() != null) cacheManager.getFollowers()!!
-                                .distinct().size else 0
-                        ) {
+                        if (items.size == result.result.documents.size + names) {
                             multiTypeAdapter.items = items
                             multiTypeAdapter.notifyDataSetChanged()
                             checkOnEmpty()

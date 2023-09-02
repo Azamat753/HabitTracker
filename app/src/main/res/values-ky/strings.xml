@@ -36,7 +36,7 @@
     <string name="btn_new_habit">Жаңы адат</string>
     <string name="tv_new_habit">Жаңы адат</string>
     <string name="tv_attempt">Аракет : </string>
-    <string name="tv_record">Жазуу : </string>
+    <string name="tv_record">Жазуу : %d </string>
     <string name="tv_main">Башкы</string>
     <string name="tv_subscriptions">Жазылуулар</string>
     <string name="tv_settings">Орнотуулар</string>
@@ -84,4 +84,5 @@
     <string name="tv_further">Кийинки...</string>
     <string name="btn_change_the_subject">Теманы Өзгөртүү</string>
     <string name="google">Жазылуу өзгөчөлүгү Google каттоо эсебин талап кылат</string>
+    <string name="not_sign">Вы не зарегестрированы</string>
 </resources>

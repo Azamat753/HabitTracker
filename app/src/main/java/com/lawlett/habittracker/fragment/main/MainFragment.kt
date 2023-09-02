@@ -1,12 +1,11 @@
 package com.lawlett.habittracker.fragment.main
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.firebase.Timestamp
+import com.lawlett.habittracker.MainActivity
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.adapter.HabitAdapter
 import com.lawlett.habittracker.api.SignApi
@@ -27,8 +27,9 @@ import com.lawlett.habittracker.databinding.FragmentMainBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
 import com.lawlett.habittracker.helper.CacheManager
+import com.lawlett.habittracker.helper.EventCallback
 import com.lawlett.habittracker.helper.FirebaseHelper
-import com.lawlett.habittracker.helper.launge.ChooseLoungeBottomSheetDialog
+import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -40,7 +41,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main),
     BaseAdapter.IBaseAdapterClickListener<HabitModel>,
-    BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> {
+    BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> ,EventCallback{
 
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
@@ -59,16 +60,20 @@ class MainFragment : Fragment(R.layout.fragment_main),
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         initClickers()
+//        firstLaunchDialog()
+        viewModel.getHabits()
+        observe()
+        viewModel.viewModelScope.launch {
+            delay(100)
+            checkOnEmpty()
+        }
+    }
+
+    private fun firstLaunchDialog() {
         if (!cacheManager.isLangeSeen()) {
             languageChanged()
         } else if (!cacheManager.isUserSeenDialog()) {
             dialogTest()
-        }
-        viewModel.getHabits()
-        observe()
-        viewModel.viewModelScope.launch {
-            delay(1000)
-            checkOnEmpty()
         }
     }
 
@@ -89,7 +94,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
 
     private fun languageChanged() {
         cacheManager.saveLangeSeen()
-        val bottomDialog = ChooseLoungeBottomSheetDialog()
+        val bottomDialog = ChooseLanguageBottomSheetDialog()
         bottomDialog.show(requireActivity().supportFragmentManager, "TAG")
        // requireActivity().changeLanguage()
     }
@@ -167,14 +172,14 @@ class MainFragment : Fragment(R.layout.fragment_main),
                         attempts = attempts
                     )
                     listHabit.add(model)
-                    if (listHabit.size == result.result.documents.size + if (cacheManager.getFollowers() != null) cacheManager.getFollowers()
-                            ?.distinct()?.size!! else 0
-                    ) {
+                    if (listHabit.size == result.result.documents.size ) {
                         adapter.setData(listHabit)
                         checkOnEmpty()
                         adapter.data.forEach {
                             viewModel.insert(it)
                         }
+                        binding.progressBar.toGone()
+                    }else{
                         binding.progressBar.toGone()
                     }
                 }
@@ -228,6 +233,13 @@ class MainFragment : Fragment(R.layout.fragment_main),
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
+    }
+
+    override fun call() {
+        startActivity(Intent(requireContext(), MainActivity::class.java))
+        requireActivity().overridePendingTransition(
+            android.R.anim.fade_in, android.R.anim.fade_out
+        )
     }
 
 }

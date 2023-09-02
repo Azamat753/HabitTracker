@@ -9,10 +9,10 @@
     app:cardUseCompatPadding="true">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lounge_recycler"
+        android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_launge"
-        app:layoutManager="LinearLayoutManager" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_language" />
 
 </androidx.cardview.widget.CardView>

@@ -3,8 +3,8 @@ package com.lawlett.habittracker.fragment.settings
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,16 +12,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.lawlett.habittracker.MainActivity
 import com.lawlett.habittracker.R
+import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentSettingsBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.settings.viewModel.SettingsViewModel
-import com.lawlett.habittracker.helper.CacheManager
-import com.lawlett.habittracker.helper.FirebaseHelper
-import com.lawlett.habittracker.helper.GoogleSignInHelper
-import com.lawlett.habittracker.helper.launge.ChooseLoungeBottomSheetDialog
-import com.lawlett.habittracker.helper.theme.ChooseThemeBottomSheetDialog
+import com.lawlett.habittracker.helper.*
+import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
+import com.lawlett.habittracker.adapter.LanguageAdapter
+import com.lawlett.habittracker.bottomsheet.ChooseThemeBottomSheetDialog
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.asSharedFlow
@@ -30,7 +31,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class SettingsFragment : Fragment(R.layout.fragment_settings) {
+class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
     private val binding: FragmentSettingsBinding by viewBinding()
 
     lateinit var helper: GoogleSignInHelper
@@ -40,15 +41,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
 
+    val adapter = LanguageAdapter()
+
     @Inject
     lateinit var cacheManager: CacheManager
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!cacheManager.isPass()) {
-            if (!cacheManager.isUserSeen()) {
-                searchlight()
-            }
-        }
+//        spotlight()
         helper = GoogleSignInHelper(this)
         initClickers()
         setupUI()
@@ -57,6 +56,14 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 viewModel.completeFlow.asSharedFlow().collect() {
                     showProgressBar(it)
                 }
+            }
+        }
+    }
+
+    private fun spotlight() {
+        if (!cacheManager.isPass()) {
+            if (!cacheManager.isUserSeen()) {
+                searchlight()
             }
         }
     }
@@ -110,16 +117,16 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun showProgressBar(visible: Boolean) {
-        if (visible) {
-            binding.progressBar.toVisible()
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
-        } else {
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            binding.progressBar.toGone()
-        }
+//        if (visible) {
+//            binding.progressBar.toVisible()
+//            requireActivity().window.setFlags(
+//                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+//                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+//            )
+//        } else {
+//            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//            binding.progressBar.toGone()
+//        }
     }
 
     private fun initClickers() {
@@ -128,8 +135,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 helper.signInGoogle()
             }
             shareBtn.setOnClickListener {
-                share()
+                if (firebaseHelper.isSigned()) {
+                    share()
+                } else {
+                    showToast(getString(R.string.not_sign))
+                }
             }
+
             syncBtn.setOnClickListener {
                 val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
                 dialog.first.txtTitle.text = "Привычки будут синхронизированы"
@@ -149,12 +161,16 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
 
             binding.changeLang.setOnClickListener {
-                val bottomDialog = ChooseLoungeBottomSheetDialog()
-                bottomDialog.show(requireActivity().supportFragmentManager, "TAG")
-
+                ChooseLanguageBottomSheetDialog().show(
+                    requireActivity().supportFragmentManager,
+                    "TAG"
+                )
             }
         }
     }
-//                changeLounge()
-//                requireActivity().changeLanguage()
+
+    override fun newToken(authCode: String) {
+        binding.signBtn.toGone()
+        showToast(getString(R.string.success))
+    }
 }
