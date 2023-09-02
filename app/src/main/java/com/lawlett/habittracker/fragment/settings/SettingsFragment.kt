@@ -3,8 +3,8 @@ package com.lawlett.habittracker.fragment.settings
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,17 +12,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.lawlett.habittracker.MainActivity
 import com.lawlett.habittracker.R
-import com.lawlett.habittracker.base.BaseAdapter
+import com.lawlett.habittracker.bottomsheet.ChooseThemeBottomSheetDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentSettingsBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.settings.viewModel.SettingsViewModel
 import com.lawlett.habittracker.helper.*
-import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
-import com.lawlett.habittracker.adapter.LanguageAdapter
-import com.lawlett.habittracker.bottomsheet.ChooseThemeBottomSheetDialog
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.asSharedFlow
@@ -62,7 +58,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
 
     private fun spotlight() {
         if (!cacheManager.isPass()) {
-            if (!cacheManager.isUserSeen()) {
+            if (!cacheManager.isUserSeen(Key.KEY_SEARCH_SETTINGS)) {
                 searchlight()
             }
         }
@@ -84,7 +80,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
         val first = layoutInflater.inflate(R.layout.layout_target_detail, root)
 
         Handler().postDelayed({
-            cacheManager.saveUserSeen()
+            cacheManager.saveUserSeen(KEY_SEARCH_SETTINGS)
             val views = setSpotLightTarget(
                 binding.mainSettings, first, getString(R.string.settings_display)
             )
@@ -128,16 +124,16 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
     }
 
     private fun showProgressBar(visible: Boolean) {
-//        if (visible) {
-//            binding.progressBar.toVisible()
-//            requireActivity().window.setFlags(
-//                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-//                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-//            )
-//        } else {
-//            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//            binding.progressBar.toGone()
-//        }
+        if (visible) {
+            binding.progressBar.toVisible()
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+        } else {
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            binding.progressBar.toGone()
+        }
     }
 
     private fun initClickers() {

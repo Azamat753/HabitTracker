@@ -32,12 +32,20 @@ class CacheManager(context: Context) {
 
     fun getToken(): String? = sharedPreferences.getString("token", null)
 
-    fun isUserSeen(): Boolean {
-        return sharedPreferences.getBoolean(Key.KEY_BORD, false)
+    fun isUserSeen(key: String): Boolean {
+        return sharedPreferences.getBoolean(key, false)
     }
 
-    fun saveUserSeen() {
-        sharedPreferences.edit().putBoolean(Key.KEY_BORD, true).apply()
+    fun saveUserSeen(key: String) {
+        sharedPreferences.edit().putBoolean(key, true).apply()
+    }
+
+    fun isUserSeenTwo(key: String): Boolean {
+        return sharedPreferences.getBoolean(key, false)
+    }
+
+    fun saveUserSeenTwo(key: String) {
+        sharedPreferences.edit().putBoolean(key, true).apply()
     }
 
     fun isLangeSeen(): Boolean {

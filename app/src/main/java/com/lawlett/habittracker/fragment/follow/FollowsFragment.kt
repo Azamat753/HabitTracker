@@ -21,6 +21,7 @@ import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentFollowBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.helper.*
+import com.lawlett.habittracker.helper.Key.KEY_SEARCH_FOLLOWS
 import com.takusemba.spotlight.Target
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +40,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
 
     @Inject
     lateinit var cacheManager: CacheManager
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         helper = GoogleSignInHelper(this, tokenCallback = this)
@@ -58,7 +60,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
 
     private fun spotlight() {
         if (!cacheManager.isPass()) {
-            if (!cacheManager.isUserSeen()) {
+            if (!cacheManager.isUserSeen(KEY_SEARCH_FOLLOWS)) {
                 searchlight()
             }
         }
@@ -97,7 +99,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
         val first = layoutInflater.inflate(R.layout.layout_target_follows, root)
 
         Handler().postDelayed({
-            cacheManager.saveUserSeen()
+            cacheManager.saveUserSeen(KEY_SEARCH_FOLLOWS)
             val vi = setSpotLightTarget(
                 binding.mainFollow, first, getString(R.string.follows_display)
             )

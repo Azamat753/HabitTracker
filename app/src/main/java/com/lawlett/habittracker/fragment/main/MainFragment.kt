@@ -70,9 +70,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
     }
 
     private fun firstLaunchDialog() {
-        if (!cacheManager.isLangeSeen()) {
-            languageChanged()
-        } else if (!cacheManager.isUserSeenDialog()) {
+        if (!cacheManager.isUserSeenDialog()) {
             dialogTest()
         }
     }
