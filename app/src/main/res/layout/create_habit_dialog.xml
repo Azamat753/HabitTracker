@@ -19,15 +19,18 @@
         <include layout="@layout/title_card" />
 
         <EditText
+            android:singleLine="true"
             android:maxLines="1"
             android:id="@+id/nameEd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_bg"
             android:hint="@string/tv_title"
+            android:imeOptions="actionDone"
             android:padding="12dp" />
 
         <EditText
+            android:singleLine="true"
             android:id="@+id/emojiEd"
             android:layout_width="wrap_content"
             android:layout_gravity="center"

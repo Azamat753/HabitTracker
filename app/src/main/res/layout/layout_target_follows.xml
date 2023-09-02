@@ -5,14 +5,15 @@
     android:layout_height="match_parent">
 
     <Button
-        
         android:id="@+id/next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="60dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="20sp"
         android:background="@drawable/rectangle_background"
         android:padding="18dp"
-        android:text="@string/btn_further"
+        android:text="@string/tv_further"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -34,5 +35,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.58" />
+        app:layout_constraintVertical_bias="0.696" />
 </androidx.constraintlayout.widget.ConstraintLayout>

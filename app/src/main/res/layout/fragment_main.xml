@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_display"
     android:layout_width="match_parent"
-    android:background="?attr/backgroundColor"
     android:layout_height="match_parent"
+    android:background="?attr/backgroundColor"
     android:orientation="vertical"
-    android:padding="12dp"
     tools:context="com.lawlett.habittracker.fragment.main.MainFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,6 +15,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/habitRecycler"
+            android:padding="12dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
@@ -25,10 +25,10 @@
         <LinearLayout
             android:id="@+id/emptyLayout"
             android:layout_width="match_parent"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -63,6 +63,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
@@ -70,8 +71,10 @@
             android:backgroundTint="@color/white"
             android:src="@drawable/ic_add"
             android:tint="?attr/iconColor"
+            android:layout_margin="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

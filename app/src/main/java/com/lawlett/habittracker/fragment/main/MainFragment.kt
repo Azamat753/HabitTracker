@@ -102,7 +102,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
     private fun searchlight() {
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
-        val first = layoutInflater.inflate(R.layout.layout_target, root)
+        val first = layoutInflater.inflate(R.layout.layout_target_main, root)
 
         Handler().postDelayed({
             val views = setSpotLightTarget(
@@ -112,7 +112,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
             )
 
             val firstSpot = setSpotLightTarget(
-                binding.habitRecycler,
+                binding.mainDisplay,
                 first,
                 getString(R.string.main_habit_list)
             )

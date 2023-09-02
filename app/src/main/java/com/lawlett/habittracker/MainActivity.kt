@@ -21,9 +21,9 @@ import com.lawlett.habittracker.helper.Key.IS_SETTING
 import com.lawlett.habittracker.helper.MyFirebaseMessagingService
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
+
     private val binding: ActivityMainBinding by viewBinding()
     private lateinit var navController: NavController
 

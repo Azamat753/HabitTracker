@@ -3,6 +3,8 @@ package com.lawlett.habittracker.ext
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.helper.CacheManager
@@ -35,11 +37,11 @@ fun Context.checkedTheme() {
         }
 
         6 -> {
-            this.setTheme(R.style.AppTheme_NewColor)
+            this.setTheme(R.style.AppTheme_brown)
         }
 
         7 -> {
-            this.setTheme(R.style.AppTheme_NewColor2)
+            this.setTheme(R.style.AppTheme_Blue_Grey)
         }
     }
 }
@@ -75,5 +77,15 @@ fun loadLocale(context: Context) {
     val language: String? = CacheManager(context).getLanguage
     if (language != null) {
         setLocale(language, context)
+    }
+}
+
+fun EditText.onDone(callback: () -> Unit) {
+    setOnEditorActionListener { _, actionId, _ ->
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            callback.invoke()
+            return@setOnEditorActionListener true
+        }
+        false
     }
 }

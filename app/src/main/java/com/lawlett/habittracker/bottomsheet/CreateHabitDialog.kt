@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
 import com.lawlett.habittracker.databinding.CreateHabitDialogBinding
-import com.lawlett.habittracker.ext.historyArrayToJson
 import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.models.HabitModel
@@ -20,8 +19,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class CreateHabitDialog :
@@ -53,6 +53,7 @@ class CreateHabitDialog :
                 }
             }
         }
+
     }
 
     private fun observe() {
@@ -99,9 +100,3 @@ class CreateHabitDialog :
         }
     }
 }
-
-
-
-
-
-

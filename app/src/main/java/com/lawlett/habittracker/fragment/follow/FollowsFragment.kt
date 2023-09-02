@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, TokenCallback {
+class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenCallback {
     private val binding: FragmentFollowBinding by viewBinding()
     lateinit var multiTypeAdapter: MultiTypeAdapter
     lateinit var items: MutableList<Any>
@@ -37,10 +37,8 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
 
     lateinit var helper: GoogleSignInHelper
 
-
     @Inject
     lateinit var cacheManager: CacheManager
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         helper = GoogleSignInHelper(this, tokenCallback = this)
@@ -96,7 +94,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
     private fun searchlight() {
         val targets = ArrayList<Target>()
         val root = FrameLayout(requireContext())
-        val first = layoutInflater.inflate(R.layout.layout_target, root)
+        val first = layoutInflater.inflate(R.layout.layout_target_follows, root)
 
         Handler().postDelayed({
             cacheManager.saveUserSeen()

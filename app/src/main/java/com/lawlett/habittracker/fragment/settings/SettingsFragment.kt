@@ -81,7 +81,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
     private fun searchlight() {
         val targets = ArrayList<Target>()
         val root = FrameLayout(requireContext())
-        val first = layoutInflater.inflate(R.layout.second_target, root)
+        val first = layoutInflater.inflate(R.layout.layout_target_detail, root)
 
         Handler().postDelayed({
             cacheManager.saveUserSeen()
@@ -100,10 +100,21 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
                 binding.changeLang, first, getString(R.string.settings_display_changeLang)
             )
 
+            val changeTheme = setSpotLightTarget(
+                binding.changeTheme,first, getString(R.string.btn_change_theme)
+            )
+
+            val syncStop = setSpotLightTarget(
+                binding.syncBtn,first, getString(R.string.btn_sync)
+            )
+
             targets.add(views)
             targets.add(firstStop)
             targets.add(secondStop)
             targets.add(thirdStop)
+            targets.add(changeTheme)
+            targets.add(syncStop)
+
             setSpotLightBuilder(requireActivity(), targets, first)
         }, 100)
     }

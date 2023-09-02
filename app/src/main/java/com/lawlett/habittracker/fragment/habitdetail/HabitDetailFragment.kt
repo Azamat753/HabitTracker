@@ -102,7 +102,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     private fun searchlight() {
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
-        val first = layoutInflater.inflate(R.layout.second_target, root)
+        val first = layoutInflater.inflate(R.layout.layout_target_detail, root)
 
         Handler().postDelayed({
             cacheManager.saveUserSeen()
@@ -116,12 +116,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                 binding.habitTv,
                 first,
                 getString(R.string.detail_habit_name_habit)
-            )
-
-            val nameStop = setSpotLightTarget(
-                binding.nameTv,
-                first,
-                getString(R.string.detail_habit_name)
             )
 
             val firstSpot = setSpotLightTarget(
@@ -140,32 +134,31 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                 getString(R.string.detail_habit_btn_relapse)
             )
 
-            val fourSpot = setSpotLightTarget(
-                binding.tvAttempts,
-                first,
-                getString(R.string.detail_habit_attempts)
-            )
-            val fiveSpot = setSpotLightTarget(
-                binding.recordTitleTv,
-                first,
-                getString(R.string.detail_habit_record)
-            )
-
-            val sixStop = setSpotLightTarget(
-                binding.recyclerHistory,
-                first,
-                getString(R.string.detail_habit_history_list)
-            )
+//            val fourSpot = setSpotLightTarget(
+//                binding.tvAttempts,
+//                first,
+//                getString(R.string.detail_habit_attempts)
+//            )
+//            val fiveSpot = setSpotLightTarget(
+//                binding.recordTitleTv,
+//                first,
+//                getString(R.string.detail_habit_record)
+//            )
+//
+//            val sixStop = setSpotLightTarget(
+//                binding.recyclerHistory,
+//                first,
+//                getString(R.string.detail_habit_history_list)
+//            )
 
             targets.add(views)
             targets.add(zeroStop)
-            targets.add(nameStop)
             targets.add(firstSpot)
             targets.add(secondSpot)
             targets.add(thirdSpot)
-            targets.add(fourSpot)
-            targets.add(fiveSpot)
-            targets.add(sixStop)
+//            targets.add(fourSpot)
+//            targets.add(fiveSpot)
+//            targets.add(sixStop)
             setSpotLightBuilder(requireActivity(), targets, first)
         }, 100)
     }
