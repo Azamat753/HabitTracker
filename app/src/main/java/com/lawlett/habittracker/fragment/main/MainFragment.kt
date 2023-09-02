@@ -59,9 +59,10 @@ class MainFragment : Fragment(R.layout.fragment_main),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
-        if (!cacheManager.isLangeSeen()) {
-            languageChanged()
-        } else if (!cacheManager.isUserSeenDialog()) {
+//        if (!cacheManager.isLangeSeen()) {
+//            languageChanged()
+//        } else
+            if (!cacheManager.isUserSeenDialog()) {
             dialogTest()
         }
         initAdapter()

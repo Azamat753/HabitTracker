@@ -20,6 +20,7 @@ import com.lawlett.habittracker.fragment.settings.viewModel.SettingsViewModel
 import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.helper.GoogleSignInHelper
+import com.lawlett.habittracker.helper.Key.KEY_SEARCH_SETTINGS
 import com.lawlett.habittracker.helper.launge.ChooseLoungeBottomSheetDialog
 import com.lawlett.habittracker.helper.theme.ChooseThemeBottomSheetDialog
 import com.takusemba.spotlight.Target
@@ -45,7 +46,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (!cacheManager.isPass()) {
-            if (!cacheManager.isUserSeen()) {
+            if (!cacheManager.isUserSeen(KEY_SEARCH_SETTINGS)) {
                 searchlight()
             }
         }
@@ -77,7 +78,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         val first = layoutInflater.inflate(R.layout.layout_target_detail, root)
 
         Handler().postDelayed({
-            cacheManager.saveUserSeen()
+            cacheManager.saveUserSeen(KEY_SEARCH_SETTINGS)
             val views = setSpotLightTarget(
                 binding.mainSettings, first, getString(R.string.settings_display)
             )

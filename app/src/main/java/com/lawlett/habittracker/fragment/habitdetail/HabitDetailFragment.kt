@@ -21,6 +21,7 @@ import com.lawlett.habittracker.fragment.habitdetail.viewmodel.HabitDetailViewMo
 import com.lawlett.habittracker.helper.*
 import com.lawlett.habittracker.ext.toGone
 import com.lawlett.habittracker.helper.CacheManager
+import com.lawlett.habittracker.helper.Key.KEY_SEARCH_DETAIL
 import com.lawlett.habittracker.models.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +62,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         prepare()
         helper = GoogleSignInHelper(fragment = this, tokenCallback = this)
         if (!cacheManager.isPass()) {
-            if (!cacheManager.isUserSeen()) {
+            if (!cacheManager.isUserSeen(KEY_SEARCH_DETAIL)) {
                 searchlight()
             }
         }
@@ -105,7 +106,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         val first = layoutInflater.inflate(R.layout.layout_target_detail, root)
 
         Handler().postDelayed({
-            cacheManager.saveUserSeen()
+            cacheManager.saveUserSeen(KEY_SEARCH_DETAIL)
             val views = setSpotLightTarget(
                 binding.minaDetail,
                 first,

@@ -3,8 +3,6 @@ package com.lawlett.habittracker.helper
 import android.content.Context
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import com.lawlett.habittracker.ext.LanguagePreference
-import com.lawlett.habittracker.helper.Key.KEY_FOR_COLOR
 import com.lawlett.habittracker.helper.Key.KEY_SAVE_DIALOG
 import com.lawlett.habittracker.helper.Key.LOUNGE_PREFERENCE
 import java.lang.reflect.Type
@@ -34,12 +32,20 @@ class CacheManager(context: Context) {
 
     fun getToken(): String? = sharedPreferences.getString("token", null)
 
-    fun isUserSeen(): Boolean {
-        return sharedPreferences.getBoolean(Key.KEY_BORD, false)
+    fun isUserSeen(key: String): Boolean {
+        return sharedPreferences.getBoolean(key, false)
     }
 
-    fun saveUserSeen() {
-        sharedPreferences.edit().putBoolean(Key.KEY_BORD, true).apply()
+    fun saveUserSeen(key: String) {
+        sharedPreferences.edit().putBoolean(key, true).apply()
+    }
+
+    fun isUserSeenTwo(key: String): Boolean {
+        return sharedPreferences.getBoolean(key, false)
+    }
+
+    fun saveUserSeenTwo(key: String) {
+        sharedPreferences.edit().putBoolean(key, true).apply()
     }
 
     fun isLangeSeen(): Boolean {

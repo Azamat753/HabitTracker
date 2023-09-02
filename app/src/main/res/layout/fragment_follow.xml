@@ -75,7 +75,6 @@
 
             <Button
                 android:layout_margin="12dp"
-
                 android:id="@+id/signBtn"
                 android:layout_width="match_parent"
                 android:layout_marginTop="30dp"
