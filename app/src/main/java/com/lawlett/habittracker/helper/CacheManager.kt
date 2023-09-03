@@ -92,4 +92,5 @@ class CacheManager(context: Context) {
     fun saveLanguage(s: String) {
         sharedPreferences.edit().putString("language_", s).apply()
     }
+
 }
