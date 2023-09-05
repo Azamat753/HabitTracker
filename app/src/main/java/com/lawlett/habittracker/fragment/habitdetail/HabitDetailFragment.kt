@@ -19,8 +19,6 @@ import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.fragment.habitdetail.adapter.HabitDetailAdapter
 import com.lawlett.habittracker.fragment.habitdetail.viewmodel.HabitDetailViewModel
 import com.lawlett.habittracker.helper.*
-import com.lawlett.habittracker.ext.toGone
-import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.Key.KEY_SEARCH_DETAIL
 import com.lawlett.habittracker.models.*
 import dagger.hilt.android.AndroidEntryPoint
