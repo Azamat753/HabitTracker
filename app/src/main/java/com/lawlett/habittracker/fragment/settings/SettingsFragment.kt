@@ -143,7 +143,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
     private fun initClickers() {
         with(binding) {
             signBtn.setOnClickListener {
-//                helper.signInGoogle()
                 helper.signInGoogle()
             }
             shareBtn.setOnClickListener {

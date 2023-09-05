@@ -52,10 +52,10 @@ class ChooseThemeBottomSheetDialog :
         listThemeModels.add(ThemeModel(getString(R.string.heavenly), "#73AFBA"))
         listThemeModels.add(ThemeModel(getString(R.string.green), "#6CB86F"))
         listThemeModels.add(ThemeModel(getString(R.string.pink), "#FC9885"))
-        listThemeModels.add(ThemeModel(getString(R.string.black), "#323232"))
+//        listThemeModels.add(ThemeModel(getString(R.string.black), "#323232"))
         listThemeModels.add(ThemeModel(getString(R.string.bilberry), "#464196"))
         listThemeModels.add(ThemeModel(getString(R.string.dark_brown), "#78524b"))
-        listThemeModels.add(ThemeModel(getString(R.string.greyish_blue), "#3E6B8F"))
+//        listThemeModels.add(ThemeModel(getString(R.string.greyish_blue), "#3E6B8F"))
         return listThemeModels
     }
 }

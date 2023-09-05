@@ -238,7 +238,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         )
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "StringFormatInvalid")
     private fun prepare() {
         if (arguments != null) {
             habitModelGlobal = requireArguments().getParcelable("key") as HabitModel?
@@ -261,8 +261,9 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                         if (model.attempts == 0) {
                             attemptCard.toGone()
                         } else {
+                            val attempts = habitModelGlobal?.attempts ?: 0
                             tvAttempts.text =
-                                "${getString(R.string.tv_attempt)} ${habitModelGlobal?.attempts.toString()}"
+                                getString(R.string.tv_attempts, attempts)
                         }
                         checkHistoryOnEmpty()
                     }

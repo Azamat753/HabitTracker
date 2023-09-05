@@ -8,7 +8,7 @@
     <string name="tv_hours">Часы</string>
     <string name="tv_minutes">Мин</string>
     <string name="tv_relapse">Рецидив</string>
-    <string name="tv_attempts">Попыток - 0</string>
+    <string name="tv_attempts">Попыток - %d</string>
     <string name="tv_history">История</string>
     <string name="tv_month">января</string>
     <string name="tv_year">2023 г.</string>

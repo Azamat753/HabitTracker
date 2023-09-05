@@ -1,11 +1,9 @@
 package com.lawlett.habittracker.ext
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.helper.CacheManager
 import java.util.Locale
@@ -29,25 +27,17 @@ fun Context.checkedTheme() {
         }
 
         4 -> {
-            this.setTheme(R.style.AppTheme_Dark)
-        }
-
-        5 -> {
             this.setTheme(R.style.AppTheme_Bilberry)
         }
 
-        6 -> {
+        5 -> {
             this.setTheme(R.style.AppTheme_brown)
-        }
-
-        7 -> {
-            this.setTheme(R.style.AppTheme_Blue_Grey)
         }
     }
 }
 
 fun Context.changeLanguage() {
-    when (CacheManager(this).getLounge()) {
+    when (CacheManager(this).getLanguage()) {
         0 -> {
             setLocale("ru", this)
         }

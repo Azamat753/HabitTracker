@@ -37,11 +37,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         destinationListener()
         askNotificationPermission()
         MyFirebaseMessagingService()
-        navigate()
+//        navigate()
     }
 
     private fun navigate() {
-        if (intent.getBooleanExtra(IS_SETTING, false)) {
+        val isFromSetting = intent.getBooleanExtra(IS_SETTING, false)
+        if (isFromSetting) {
+            intent.removeExtra(IS_SETTING)
             navController.navigate(R.id.settingsFragment)
         }
     }
@@ -52,7 +54,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         if (isGranted) {
             Toast.makeText(this, getString(R.string.success), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Уведомления не будут приходить", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Уведомления не будут приходить", Toast.LENGTH_SHORT).show()
         }
     }
 

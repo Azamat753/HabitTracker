@@ -31,6 +31,7 @@ import com.lawlett.habittracker.helper.EventCallback
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
 import com.lawlett.habittracker.databinding.CreateHabitDialogBinding
+import com.lawlett.habittracker.helper.Key
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -42,7 +43,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main),
     BaseAdapter.IBaseAdapterClickListener<HabitModel>,
-    BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> ,EventCallback{
+    BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> {
 
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
@@ -231,13 +232,6 @@ class MainFragment : Fragment(R.layout.fragment_main),
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
-    }
-
-    override fun call() {
-        startActivity(Intent(requireContext(), MainActivity::class.java))
-        requireActivity().overridePendingTransition(
-            android.R.anim.fade_in, android.R.anim.fade_out
-        )
     }
 
 }
