@@ -12,6 +12,6 @@ object Key {
     const val KEY_LANGE = "LANGE"
     const val IS_SETTING = "isSetting"
 
-    const val LOUNGE_PREFERENCE = "lounge_pref"
+    const val LANGUAGE_PREFERENCE = "lounge_pref"
 
 }

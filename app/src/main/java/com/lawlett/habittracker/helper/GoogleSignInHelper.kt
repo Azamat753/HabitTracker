@@ -33,18 +33,6 @@ class GoogleSignInHelper(var fragment: Fragment, var tokenCallback: TokenCallbac
     private var googleSignInClient: GoogleSignInClient
 
     init {
-        val signInRequest = BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    // Your server's client ID, not your Android client ID.
-                    .setServerClientId(fragment.getString(R.string.server_client_id))
-                    // Only show accounts previously used to sign in.
-                    .setFilterByAuthorizedAccounts(true)
-                    .build())
-            .build()
-
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestScopes(Scope("https://www.googleapis.com/auth/firebase.messaging"))
             .requestIdToken(fragment.getString(R.string.server_client_id))

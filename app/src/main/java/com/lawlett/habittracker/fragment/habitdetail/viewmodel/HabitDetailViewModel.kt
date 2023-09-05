@@ -52,9 +52,14 @@ class HabitDetailViewModel @Inject constructor(private val repository: Repositor
         }
     }
 
-    fun sendRemoteNotification(notificationModel: NotificationModel,token:String) {
+    fun sendRemoteNotification(notificationModel: NotificationModel, token: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.sendRemoteNotification(notificationModel,token)
+            try {
+
+                repository.sendRemoteNotification(notificationModel, token)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import com.lawlett.habittracker.helper.Key.KEY_SAVE_DIALOG
-import com.lawlett.habittracker.helper.Key.LOUNGE_PREFERENCE
+import com.lawlett.habittracker.helper.Key.LANGUAGE_PREFERENCE
 import java.lang.reflect.Type
 import java.util.ArrayList
 
@@ -21,11 +21,11 @@ class CacheManager(context: Context) {
     }
 
     fun setLanguage(s: Int) {
-        sharedPreferences.edit().putInt(LOUNGE_PREFERENCE, s).apply()
+        sharedPreferences.edit().putInt(LANGUAGE_PREFERENCE, s).apply()
     }
 
-    fun getLounge(): Int {
-        return sharedPreferences.getInt(LOUNGE_PREFERENCE, 0)
+    fun getLanguage(): Int {
+        return sharedPreferences.getInt(LANGUAGE_PREFERENCE, 0)
     }
 
     fun setToken(token: String) = sharedPreferences.edit().putString("token", token).apply()

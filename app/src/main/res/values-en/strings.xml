@@ -82,7 +82,7 @@
     <string name="greyish_blue">Greyish Blue</string>
     <string name="btn_further">Furhter</string>
     <string name="tv_further">Further</string>
-    <string name="btn_change_the_subject">Change The Subject</string>
+    <string name="btn_change_the_subject">Change theme</string>
     <string name="google">The subscription function requires a Google account</string>
     <string name="btn_change_theme">You can change the theme of the application</string>
     <string name="btn_sync">When you click on this button, your habits are instantly synchronized with the server, and they are automatically added to your home screen, even if you have changed your device and logged into the application from another phone. </string>
