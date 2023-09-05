@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.lawlett.habittracker.MainActivity
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.adapter.LanguageAdapter
 import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
@@ -100,11 +101,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
             )
 
             val changeTheme = setSpotLightTarget(
-                binding.changeTheme,first, getString(R.string.btn_change_theme)
+                binding.changeTheme, first, getString(R.string.btn_change_theme)
             )
 
             val syncStop = setSpotLightTarget(
-                binding.syncBtn,first, getString(R.string.btn_sync)
+                binding.syncBtn, first, getString(R.string.btn_sync)
             )
 
             targets.add(views)
@@ -142,6 +143,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
     private fun initClickers() {
         with(binding) {
             signBtn.setOnClickListener {
+//                helper.signInGoogle()
                 helper.signInGoogle()
             }
             shareBtn.setOnClickListener {
@@ -180,7 +182,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
     }
 
     override fun newToken(authCode: String) {
-        binding.signBtn.toGone()
         showToast(getString(R.string.success))
+        binding.signBtn.toGone()
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.putExtra(Key.IS_SETTING, true)
+        startActivity(intent)
+        requireActivity().overridePendingTransition(
+            android.R.anim.fade_in, android.R.anim.fade_out
+        )
     }
 }

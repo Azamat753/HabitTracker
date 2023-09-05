@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.FirebaseOptions
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
 import com.lawlett.habittracker.databinding.CreateHabitDialogBinding
