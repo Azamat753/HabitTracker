@@ -1,7 +1,10 @@
 package com.lawlett.habittracker
 
 import android.Manifest
+import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +17,13 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.lawlett.habittracker.databinding.ActivityMainBinding
 import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.ext.changeLanguage
@@ -31,7 +41,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val binding: ActivityMainBinding by viewBinding()
     private lateinit var navController: NavController
     @Inject lateinit var cacheManager: CacheManager
-
+    var appUpdateManager: AppUpdateManager? = null
+    private val UPDATE_CODE = 22
     override fun onCreate(savedInstanceState: Bundle?) {
         checkedTheme()
         changeLanguage()
@@ -42,6 +53,59 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         destinationListener()
         MyFirebaseMessagingService()
         askNotificationPermission()
+    }
+
+    private fun popUp() {
+        val snackbar = Snackbar.make(
+            findViewById(androidx.appcompat.R.id.content),
+            "App Update Almost Done.",
+            Snackbar.LENGTH_INDEFINITE
+        )
+        snackbar.setAction(
+            "Reload"
+        ) { appUpdateManager?.completeUpdate() }
+        snackbar.setTextColor(Color.parseColor("#FF0000"))
+        snackbar.show()
+    }
+    val listener = InstallStateUpdatedListener { installState ->
+        if (installState.installStatus() == InstallStatus.DOWNLOADED) {
+            popUp()
+        }
+    }
+
+    private fun checkUpdate() {
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+
+        val appUpdateInfoTask = appUpdateManager?.appUpdateInfo
+        appUpdateInfoTask?.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {
+                try {
+                    appUpdateManager?.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        AppUpdateType.FLEXIBLE,
+                        this@MainActivity,
+                        UPDATE_CODE
+                    )
+                } catch (e: IntentSender.SendIntentException) {
+                    e.printStackTrace()
+                    Log.e("ololo", "onSuccess:$e ")
+                }
+            }
+        }?.addOnFailureListener {
+            Log.e("ololo", "onFailure: $it")
+        }
+        appUpdateManager?.registerListener(listener)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == UPDATE_CODE) {
+            if (resultCode != RESULT_OK) {
+                Log.e("ololo", "onActivityResult: RESULT_OK")
+            }
+        }
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -77,6 +141,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             binding.toolbarMain.isVisible = when (destination.id) {
                 R.id.habitDetailFragment -> false
                 else -> true
+            }
+            when(destination.id){
+                R.id.mainFragment->{
+                    checkUpdate()
+                }
             }
 
             binding.toolbarMain.text = when (destination.id) {
