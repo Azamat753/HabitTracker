@@ -38,6 +38,7 @@ class ChooseThemeBottomSheetDialog :
 
     override fun onClick(model: ThemeModel, position: Int) {
         cacheManager.setTheme(position)
+        cacheManager.setChanged(true)
         val intent = Intent(requireContext(), MainActivity::class.java)
         intent.putExtra(IS_SETTING,true)
         startActivity(intent)

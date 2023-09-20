@@ -9,7 +9,7 @@
     <string name="tv_hours">Саат</string>
     <string name="tv_minutes">Мин</string>
     <string name="tv_relapse">Кайталануу</string>
-    <string name="tv_attempts">Аракеттер - 0</string>
+    <string name="tv_attempts">Аракеттер : %d</string>
     <string name="tv_history">Тарыхы</string>
     <string name="tv_month">Үчтүн айы</string>
     <string name="tv_year">2023 г.</string>
@@ -21,7 +21,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tv_title">Аталышы</string>
-    <string name="tv_emoji">Түрү</string>
+    <string name="tv_emoji">Смайлик 🎸 </string>
     <string name="tv_create">Түзүү</string>
     <string name="tv_delete">Чыгаруу?</string>
     <string name="btn_no">Жок</string>
@@ -31,7 +31,7 @@
     <string name="_00_00_00_00">00:00:00:00</string>
     <string name="tv_record_9">Жазуу - 9 дней</string>
     <string name="btn_register">Катталуу</string>
-    <string name="btn_share">Бөлүшүү</string>
+    <string name="btn_share">Код бөлүшүү</string>
     <string name="tv_sign_in">Кирүү</string>
     <string name="btn_new_habit">Жаңы адат</string>
     <string name="tv_new_habit">Жаңы адат</string>
@@ -87,4 +87,13 @@
     <string name="not_sign">Вы не зарегестрированы</string>
     <string name="btn_change_theme">Колдонмонун темасын өзгөртө аласыз</string>
     <string name="btn_sync">Бул баскычты басканда, адаттарыңыз заматта сервер менен шайкештештирилет жана сиз түзмөктү алмаштырып, башка телефондон Колдонмого кирсеңиз дагы, алар автоматтык түрдө үй экраныңызга кошулат.</string>
+    <string name="habit_sync">Адаттар шайкештештирилет</string>
+    <string name="actual_data">Абоненттери үчүн маалыматтарды актуалдаштыруу</string>
+    <string name="notification_not_come">Эскертмелер келбейт</string>
+    <string name="want_pass_instruction">Сиз тренингден өтүүнү каалайсызбы?</string>
+    <string name="follow_delete">Жазылуу алынып салынат</string>
+    <string name="relapse_habit">Адаттын кайталанышы : %s</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="exit_account">Выйти с аккаунта</string>
+    <string name="my_code">Мой код</string>
 </resources>

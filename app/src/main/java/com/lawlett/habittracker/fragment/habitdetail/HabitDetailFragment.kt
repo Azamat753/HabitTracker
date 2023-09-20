@@ -53,7 +53,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     @Inject
     lateinit var cacheManager: CacheManager
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
@@ -91,7 +90,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                 topic = topic,
                 notification = NotificationMessage(
                     name,
-                    "Рецедив привычки : ${habitModelGlobal?.title.toString()}"
+                    getString(R.string.relapse_habit, habitModelGlobal?.title.toString())
                 )
             )
         )
@@ -133,31 +132,11 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                 getString(R.string.detail_habit_btn_relapse)
             )
 
-//            val fourSpot = setSpotLightTarget(
-//                binding.tvAttempts,
-//                first,
-//                getString(R.string.detail_habit_attempts)
-//            )
-//            val fiveSpot = setSpotLightTarget(
-//                binding.recordTitleTv,
-//                first,
-//                getString(R.string.detail_habit_record)
-//            )
-//
-//            val sixStop = setSpotLightTarget(
-//                binding.recyclerHistory,
-//                first,
-//                getString(R.string.detail_habit_history_list)
-//            )
-
             targets.add(views)
             targets.add(zeroStop)
             targets.add(firstSpot)
             targets.add(secondSpot)
             targets.add(thirdSpot)
-//            targets.add(fourSpot)
-//            targets.add(fiveSpot)
-//            targets.add(sixStop)
             setSpotLightBuilder(requireActivity(), targets, first)
         }, 100)
     }
@@ -200,7 +179,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     @SuppressLint("SetTextI18n")
     private fun showRecord() {
         val nowRecord =
-            binding.recordTitleTv.text.toString().substringAfter("-").trim().ifEmpty { "0" }.toInt()
+            binding.recordTitleTv.text.toString().substringAfter(":").trim().ifEmpty { "0" }.toInt()
         val newRecord = dataHelper.startTimeFromPref()?.getDays().toString().toInt()
         if (newRecord > nowRecord) {
             binding.recordTitleTv.toVisible()
@@ -208,8 +187,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
             binding.recordTitleTv.text = getString(R.string.tv_record, newRecord.toString().toInt())
             habitModelGlobal?.id?.let { id ->
                 viewModel.updateRecord(newRecord.toString(), id)
-            } ?: kotlin.run {
-                showToast("Произошла ошибка обновления")
             }
         }
     }
@@ -217,19 +194,23 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     @SuppressLint("SetTextI18n")
     private fun launch() {
         timerManager = TimerManager(dataHelper, binding)
-        addAttempts()
+        changeAttempts()
         updateHistory()
         habitModelGlobal?.let {
             val model = HabitModel(
+                id = it.id,
                 title = it.title,
-                allDays = it.allDays,
+                allDays = it.currentDay + 7,
                 currentDay = it.currentDay,
                 icon = it.icon,
-                startDate = dataHelper.startTime(),
+                startDate = Date(),
                 endDate = dataHelper.stopTime(),
-                history = it.history
+                history = historyArrayToJson(listHistory),
+                attempts = it.attempts,
+                record = it.record
             )
             firebaseHelper.insertOrUpdateHabitFB(model)
+            viewModel.update(model)
         }
         timerManager.startStopAction(
             isFollow,
@@ -256,16 +237,17 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                         if (model.record?.toInt() == 0 || model.record == null) {
                             recordTitleTv.toGone()
                         } else {
-                            recordTitleTv.text = habitModelGlobal?.record
+                            recordTitleTv.text =
+                                getString(R.string.tv_record, record.toString().toInt())
                         }
                         if (model.attempts == 0) {
                             attemptCard.toGone()
                         } else {
-                            val attempts = habitModelGlobal?.attempts ?: 0
+                            viewModel.attemptsNumbers.value = habitModelGlobal?.attempts?:0
+                            val attempts = viewModel.attemptsNumbers.value
                             tvAttempts.text =
                                 getString(R.string.tv_attempts, attempts)
                         }
-                        checkHistoryOnEmpty()
                     }
 
                     if (isFollow) {
@@ -276,7 +258,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                                 "${model.title} stop ${model.fbName}"
                             )
                         dataHelper.setTimerCounting(true)
-                        nameTv.text = habitModelGlobal?.fbName?.replaceAfter(":", "")
+                        nameTv.text = habitModelGlobal?.fbName?.makeUserName()
                         btnRelapse.toGone()
                     } else {
                         nameTv.toGone()
@@ -286,11 +268,19 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                                 "${model.title} start",
                                 "${model.title} stop"
                             )
+                        if (!habitModelGlobal?.fbName.isNullOrEmpty() && !isStartTimer) {
+                            //fixme
+                            dataHelper.setStartTime(habitModelGlobal?.startDate)
+                            dataHelper.setTimerCounting(true)
+                        }
                     }
                     habitProgress.progress = dataHelper.startTimeFromPref()?.getDays()?.toInt() ?: 0
                     habitModelGlobal?.history?.let { history ->
                         listHistory = historyToArray(history)
                         adapter.setData(listHistory)
+                        checkHistoryOnEmpty()
+                    }.run {
+                        checkHistoryOnEmpty()
                     }
                 }
             }
@@ -308,9 +298,13 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     }
 
     @SuppressLint("SetTextI18n")
-    private fun addAttempts() {
+    private fun changeAttempts(isMinus:Boolean= false) {
         binding.attemptCard.toVisible()
-        viewModel.addAttempt()
+        if (isMinus){
+            viewModel.minusAttempt()
+        }else{
+            viewModel.addAttempt()
+        }
         viewModel.attemptsNumber.observe(requireActivity()) {
             it?.let { attempts ->
                 this.attempts = attempts
@@ -328,13 +322,14 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         viewModel.updateHistory(historyArrayToJson(listHistory), habitModelGlobal?.id!!)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun onClick(historyString: String, position: Int) {
         val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
-        dialog.first.txtDescription.text = "$historyString \n Будет удалена"
+        dialog.first.txtDescription.text = "$historyString \n ${getString(R.string.tv_delete)}"
         dialog.first.btnYes.setOnClickListener {
             listHistory.remove(historyString)
+            changeAttempts(true)
             viewModel.updateHistory(historyArrayToJson(listHistory), habitModelGlobal?.id!!)
-            viewModel.minusAttempt()
             adapter.notifyItemRemoved(position)
             checkHistoryOnEmpty()
             dialog.second.dismiss()
@@ -363,4 +358,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     override fun newToken(authCode: String) {
         viewModel.getToken(authCode)
     }
+
+    override fun signSuccess() {}
 }

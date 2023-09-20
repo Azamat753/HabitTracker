@@ -1,7 +1,6 @@
 package com.lawlett.habittracker.fragment.main
 
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -16,22 +15,22 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.firebase.Timestamp
-import com.lawlett.habittracker.MainActivity
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.adapter.HabitAdapter
-import com.lawlett.habittracker.api.SignApi
 import com.lawlett.habittracker.base.BaseAdapter
+import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentMainBinding
-import com.lawlett.habittracker.ext.*
+import com.lawlett.habittracker.ext.TAG
+import com.lawlett.habittracker.ext.createDialog
+import com.lawlett.habittracker.ext.setSpotLightBuilder
+import com.lawlett.habittracker.ext.setSpotLightTarget
+import com.lawlett.habittracker.ext.toGone
+import com.lawlett.habittracker.ext.toVisible
 import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
 import com.lawlett.habittracker.helper.CacheManager
-import com.lawlett.habittracker.helper.EventCallback
 import com.lawlett.habittracker.helper.FirebaseHelper
-import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
-import com.lawlett.habittracker.databinding.CreateHabitDialogBinding
-import com.lawlett.habittracker.helper.Key
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -53,34 +52,46 @@ class MainFragment : Fragment(R.layout.fragment_main),
     lateinit var firebaseHelper: FirebaseHelper
 
     @Inject
-    lateinit var signApi: SignApi
-
-    @Inject
     lateinit var cacheManager: CacheManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         initClickers()
-        firstLaunchDialog()
         viewModel.getHabits()
         observe()
+        navigate()
+        firstLaunchDialog()
         viewModel.viewModelScope.launch {
             delay(100)
             checkOnEmpty()
         }
     }
 
+    private fun navigate() {
+        if (cacheManager.isUserSeenDialog()) {
+            if (cacheManager.isChanged()) {
+                cacheManager.setChanged(false)
+                findNavController().popBackStack()
+                findNavController().navigate(R.id.settingsFragment)
+            }
+        }
+    }
+
     private fun firstLaunchDialog() {
-        if (!cacheManager.isUserSeenDialog()) {
-            dialogTest()
+        if (!cacheManager.isLangeSeen()) {
+            languageChanged()
+        } else {
+            if (!cacheManager.isUserSeenDialog()) {
+                dialogTest()
+            }
         }
     }
 
     private fun dialogTest() {
         cacheManager.saveUserSeenDialog()
         val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
-        dialog.first.txtTitle.text = "Желаете ли вы пройти обучение?"
+        dialog.first.txtTitle.text = getString(R.string.want_pass_instruction)
         dialog.first.txtDescription.toGone()
         dialog.first.btnYes.setOnClickListener {
             searchlight()
@@ -155,12 +166,14 @@ class MainFragment : Fragment(R.layout.fragment_main),
                     binding.progressBar.toGone()
                 }
                 for (document in result.result) {
-                    val title = document.data["title"] as String
+                    val title = document.data["title"] as String?
                     val attempts = (document.data["attempts"] as Long).toInt()
-                    val icon = document.data["icon"] as String
+                    val icon = document.data["icon"] as String?
+                    val record = document.data["record"] as String?
                     val currentDay = (document.data["currentDay"] as Long).toInt()
                     val allDays = (document.data["allDays"] as Long).toInt()
                     val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
+                    val history = document.data["history"] as String?
                     val model = HabitModel(
                         title = title,
                         icon = icon,
@@ -168,17 +181,19 @@ class MainFragment : Fragment(R.layout.fragment_main),
                         allDays = allDays,
                         startDate = startDate,
                         fbName = firebaseHelper.getUserName(),
-                        attempts = attempts
+                        attempts = attempts,
+                        record = record,
+                        history = history
                     )
                     listHabit.add(model)
-                    if (listHabit.size == result.result.documents.size ) {
+                    if (listHabit.size == result.result.documents.size) {
                         adapter.setData(listHabit)
                         checkOnEmpty()
                         adapter.data.forEach {
                             viewModel.insert(it)
                         }
                         binding.progressBar.toGone()
-                    }else{
+                    } else {
                         binding.progressBar.toGone()
                     }
                 }
@@ -191,7 +206,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.habitFlow.asSharedFlow().collect() { habits ->
+                viewModel.habitFlow.asSharedFlow().collect { habits ->
                     adapter.setData(habits)
                 }
             }

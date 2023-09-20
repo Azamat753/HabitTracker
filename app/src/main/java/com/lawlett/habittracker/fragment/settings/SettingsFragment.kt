@@ -1,6 +1,8 @@
 package com.lawlett.habittracker.fragment.settings
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -12,17 +14,28 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.lawlett.habittracker.MainActivity
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
+import com.google.zxing.qrcode.QRCodeWriter
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.adapter.LanguageAdapter
 import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
 import com.lawlett.habittracker.bottomsheet.ChooseThemeBottomSheetDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
+import com.lawlett.habittracker.databinding.DialogQrBinding
 import com.lawlett.habittracker.databinding.FragmentSettingsBinding
-import com.lawlett.habittracker.ext.*
+import com.lawlett.habittracker.ext.createDialog
+import com.lawlett.habittracker.ext.setSpotLightBuilder
+import com.lawlett.habittracker.ext.setSpotLightTarget
+import com.lawlett.habittracker.ext.showToast
+import com.lawlett.habittracker.ext.toGone
+import com.lawlett.habittracker.ext.toVisible
 import com.lawlett.habittracker.fragment.settings.viewModel.SettingsViewModel
-import com.lawlett.habittracker.helper.*
+import com.lawlett.habittracker.helper.CacheManager
+import com.lawlett.habittracker.helper.FirebaseHelper
+import com.lawlett.habittracker.helper.GoogleSignInHelper
 import com.lawlett.habittracker.helper.Key.KEY_SEARCH_SETTINGS
+import com.lawlett.habittracker.helper.TokenCallback
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.asSharedFlow
@@ -48,7 +61,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         spotlight()
-        helper = GoogleSignInHelper(this)
+        helper = GoogleSignInHelper(
+            this, this
+        ) { setupUI() }
         initClickers()
         setupUI()
         viewLifecycleOwner.lifecycleScope.launch {
@@ -62,18 +77,27 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
 
     private fun spotlight() {
         if (!cacheManager.isPass()) {
-            if (!cacheManager.isUserSeen(Key.KEY_SEARCH_SETTINGS)) {
+            if (!cacheManager.isUserSeen(KEY_SEARCH_SETTINGS)) {
                 searchlight()
             }
         }
+    }
+
+    private fun showQr() {
+        val dialog = requireContext().createDialog(DialogQrBinding::inflate)
+        dialog.first.qrImage.setImageBitmap(getQrCodeBitmap(firebaseHelper.getUserName()))
     }
 
     private fun setupUI() {
         with(binding) {
             if (firebaseHelper.isSigned()) {
                 signBtn.toGone()
+                showQrBtn.toVisible()
+                exitBtn.toVisible()
             } else {
                 signBtn.toVisible()
+                showQrBtn.toGone()
+                exitBtn.toGone()
             }
         }
     }
@@ -140,6 +164,21 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
         }
     }
 
+    private fun getQrCodeBitmap(info: String): Bitmap {
+        val size = 512 //pixels
+        val qrCodeContent = info
+        val hints = hashMapOf<EncodeHintType, String>()
+        hints[EncodeHintType.CHARACTER_SET] = "utf-8"
+        val bits = QRCodeWriter().encode(qrCodeContent, BarcodeFormat.QR_CODE, size, size, hints)
+        return Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565).also {
+            for (x in 0 until size) {
+                for (y in 0 until size) {
+                    it.setPixel(x, y, if (bits[x, y]) Color.BLACK else Color.WHITE)
+                }
+            }
+        }
+    }
+
     private fun initClickers() {
         with(binding) {
             signBtn.setOnClickListener {
@@ -154,40 +193,48 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
             }
 
             syncBtn.setOnClickListener {
-                val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
-                dialog.first.txtTitle.text = "Привычки будут синхронизированы"
-                dialog.first.txtDescription.text =
-                    "Актуализация данных для подписчиков"
-                dialog.first.btnYes.setOnClickListener {
-                    viewModel.sync()
-                    showProgressBar(true)
-                    dialog.second.dismiss()
+                if (firebaseHelper.isSigned()) {
+                    val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+                    dialog.first.txtTitle.text = getString(R.string.habit_sync)
+                    dialog.first.txtDescription.text =
+                        getString(R.string.actual_data)
+                    dialog.first.btnYes.setOnClickListener {
+                        viewModel.sync()
+                        showProgressBar(true)
+                        dialog.second.dismiss()
+                    }
+                    dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
+                } else {
+                    showToast(getString(R.string.not_sign))
                 }
-                dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
             }
 
-            binding.changeTheme.setOnClickListener {
+            changeTheme.setOnClickListener {
                 val bottomDialog = ChooseThemeBottomSheetDialog()
                 bottomDialog.show(requireActivity().supportFragmentManager, "TAG")
             }
 
-            binding.changeLang.setOnClickListener {
+            changeLang.setOnClickListener {
                 ChooseLanguageBottomSheetDialog().show(
                     requireActivity().supportFragmentManager,
                     "TAG"
                 )
             }
+            showQrBtn.setOnClickListener {
+                showQr()
+            }
+            exitBtn.setOnClickListener {
+                firebaseHelper.logOut()
+                showToast(getString(R.string.success))
+                setupUI()
+            }
         }
     }
 
-    override fun newToken(authCode: String) {
+    override fun newToken(authCode: String) {}
+
+    override fun signSuccess() {
         showToast(getString(R.string.success))
-        binding.signBtn.toGone()
-        val intent = Intent(requireContext(), MainActivity::class.java)
-        intent.putExtra(Key.IS_SETTING, true)
-        startActivity(intent)
-        requireActivity().overridePendingTransition(
-            android.R.anim.fade_in, android.R.anim.fade_out
-        )
+        setupUI()
     }
 }
