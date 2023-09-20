@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -25,6 +28,8 @@ import com.lawlett.habittracker.helper.Key.KEY_SEARCH_FOLLOWS
 import com.takusemba.spotlight.Target
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -55,7 +60,9 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
 
     private fun getFromFb() {
         if (firebaseHelper.isSigned()) {
-            fetchFromFB()
+            if (view!=null){
+                fetchFromFB()
+            }
         }
     }
 
@@ -124,18 +131,20 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
     }
 
     private fun checkOnEmpty() {
-        with(binding) {
-            if (firebaseHelper.isSigned()) {
-                if (multiTypeAdapter.items.isEmpty()) {
-                    recyclerFriends.toGone()
-                    signLayout.toGone()
-                    emptyLayout.toVisible()
-                    if (cacheManager.getFollowers().isNullOrEmpty()) {
-                        progressBar.toGone()
+        if (view != null) {
+            with(binding) {
+                if (firebaseHelper.isSigned()) {
+                    if (multiTypeAdapter.items.isEmpty()) {
+                        recyclerFriends.toGone()
+                        signLayout.toGone()
+                        emptyLayout.toVisible()
+                        if (cacheManager.getFollowers().isNullOrEmpty()) {
+                            progressBar.toGone()
+                        }
+                    } else {
+                        recyclerFriends.toVisible()
+                        emptyLayout.toGone()
                     }
-                } else {
-                    recyclerFriends.toVisible()
-                    emptyLayout.toGone()
                 }
             }
         }
