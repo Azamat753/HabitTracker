@@ -28,10 +28,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenCallback {
+class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, TokenCallback {
     private val binding: FragmentFollowBinding by viewBinding()
     lateinit var multiTypeAdapter: MultiTypeAdapter
     lateinit var items: MutableList<Any>
+
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
@@ -43,7 +44,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        helper = GoogleSignInHelper(this, tokenCallback = this)
+        helper = GoogleSignInHelper(this, tokenCallback = this) { reInitAdapter() }
         initMultiAdapter()
         spotlight()
         getFromFb()
@@ -61,14 +62,20 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
     private fun spotlight() {
         if (!cacheManager.isPass()) {
             if (!cacheManager.isUserSeen(KEY_SEARCH_FOLLOWS)) {
-                searchlight()
+                showSpotlight()
             }
         }
     }
 
     private fun initClickers() {
         with(binding) {
-            fab.setOnClickListener {
+            cameraFab.setOnClickListener {
+                ScannerDialog(this@FollowsFragment).show(
+                    requireActivity().supportFragmentManager,
+                    ""
+                )
+            }
+            penFab.setOnClickListener {
                 FollowDialog(this@FollowsFragment).show(
                     requireActivity().supportFragmentManager,
                     ""
@@ -85,15 +92,17 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
             if (!firebaseHelper.isSigned()) {
                 recyclerFriends.toGone()
                 signLayout.toVisible()
+                checkOnEmpty()
             } else {
-                progressBar.toGone()
                 recyclerFriends.toVisible()
                 signLayout.toGone()
+                binding.progressBar.toGone()
+                checkOnEmpty()
             }
         }
     }
 
-    private fun searchlight() {
+    private fun showSpotlight() {
         val targets = ArrayList<Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target_follows, root)
@@ -121,6 +130,9 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
                     recyclerFriends.toGone()
                     signLayout.toGone()
                     emptyLayout.toVisible()
+                    if (cacheManager.getFollowers().isNullOrEmpty()) {
+                        progressBar.toGone()
+                    }
                 } else {
                     recyclerFriends.toVisible()
                     emptyLayout.toGone()
@@ -152,10 +164,10 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
         binding.recyclerFriends.adapter = multiTypeAdapter
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "StringFormatInvalid")
     private fun removeFollower(name: String) {
         val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
-        dialog.first.txtDescription.text = "Подписка на ${name.makeUserName()} будет удалена"
+        dialog.first.txtDescription.text = getString(R.string.follow_delete, name.makeUserName())
         dialog.first.btnYes.setOnClickListener {
             val array = cacheManager.getFollowers()!!
             array.remove(name)
@@ -172,6 +184,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
         binding.progressBar.toVisible()
         items = ArrayList()
         var names = 0
+
         cacheManager.getFollowers()?.distinct()?.let { array ->
             array.forEach { userName ->
                 firebaseHelper.db.collection(userName!!).get().addOnCompleteListener { result ->
@@ -182,12 +195,14 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
                         binding.progressBar.toGone()
                     }
                     for (document in result.result) {
-                        val title = document.data["title"] as String
+                        val title = document.data["title"] as String?
                         val attempts = (document.data["attempts"] as Long).toInt()
-                        val icon = document.data["icon"] as String
+                        val icon = document.data["icon"] as String?
+                        val record = document.data["record"] as String?
                         val currentDay = (document.data["currentDay"] as Long).toInt()
                         val allDays = (document.data["allDays"] as Long).toInt()
                         val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
+                        val history = document.data["history"] as String?
                         val model = HabitModel(
                             title = title,
                             icon = icon,
@@ -195,7 +210,9 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
                             allDays = allDays,
                             startDate = startDate,
                             fbName = userName,
-                            attempts = attempts
+                            attempts = attempts,
+                            record = record,
+                            history = history
                         )
                         items.add(model)
                         if (items.size == result.result.documents.size + names) {
@@ -210,8 +227,6 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
                     Log.e(TAG, "Error read document", it)
                 }
             }
-        }.run {
-            binding.progressBar.toGone()
         }
     }
 
@@ -225,7 +240,11 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback,TokenC
         checkOnEmpty()
     }
 
-    override fun newToken(authCode: String) {
+    override fun newToken(authCode: String) {}
+
+    override fun signSuccess() {
+        showToast(getString(R.string.success))
+        binding.progressBar.toGone()
         reInitAdapter()
     }
 }

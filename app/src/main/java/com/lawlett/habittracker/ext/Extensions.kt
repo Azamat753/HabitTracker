@@ -13,8 +13,11 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.lawlett.habittracker.databinding.FollowDialogBinding
+import com.lawlett.habittracker.helper.CacheManager
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -67,6 +70,13 @@ fun historyToArray(json: String): ArrayList<String> {
     } catch (e: Exception) {
         arrayListOf()
     }
+}
+
+fun saveNewSubscriber(name:String,cacheManager:CacheManager) {
+    val array = cacheManager.getFollowers() ?: ArrayList()
+    array.add(name.trim())
+    FirebaseMessaging.getInstance().subscribeToTopic(name.trim().makeTopic())
+    cacheManager.saveFollowers(array)
 }
 
 inline fun <reified T> Gson.fromJson(json: String) =

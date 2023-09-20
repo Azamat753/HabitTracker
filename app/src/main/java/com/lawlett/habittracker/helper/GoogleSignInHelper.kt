@@ -1,32 +1,26 @@
 package com.lawlett.habittracker.helper
 
 import android.app.Activity
-import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.RemoteMessage
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.ext.showToast
 
-class GoogleSignInHelper(var fragment: Fragment, var tokenCallback: TokenCallback? = null) {
+class GoogleSignInHelper(
+    var fragment: Fragment,
+    var tokenCallback: TokenCallback? = null,
+    var successSign: (() -> Unit)? =null
+) {
 
     var auth: FirebaseAuth
 
@@ -59,6 +53,8 @@ class GoogleSignInHelper(var fragment: Fragment, var tokenCallback: TokenCallbac
 
     private fun handleResults(task: Task<GoogleSignInAccount>) {
         if (task.isSuccessful) {
+            successSign?.invoke()
+            tokenCallback?.signSuccess()
             val account: GoogleSignInAccount? = task.result
             if (account != null) {
                 updateUI(account)

@@ -22,7 +22,7 @@ data class HabitModel(
     val attempts: Int = 0,
     val record: String?=null,
     val fbName: String? = null,
-    val startDate: Date? = null,
+    var startDate: Date? = null,
     val endDate: Date? = null
 ) : Parcelable {
 

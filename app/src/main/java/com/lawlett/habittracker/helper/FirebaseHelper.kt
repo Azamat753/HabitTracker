@@ -31,6 +31,10 @@ class FirebaseHelper {
         return auth.currentUser != null
     }
 
+    fun logOut() {
+        auth.signOut()
+    }
+
     fun getUserName() = "${auth.currentUser?.displayName}:${auth.currentUser?.uid}"
 
     fun delete(model: HabitModel) {
@@ -73,6 +77,4 @@ class FirebaseHelper {
             }
         }
     }
-
-
 }

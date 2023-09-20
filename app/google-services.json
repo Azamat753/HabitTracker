@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "547684386780-8inos2h11jgie73s51ckrc5vpfhpdf6g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lawlett.habittracker",
+            "certificate_hash": "9f2aba4bcb2720357149881212757b8153d77b17"
+          }
+        },
+        {
           "client_id": "547684386780-d6020mjarjhdscrklp2j7549drm8cb9q.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

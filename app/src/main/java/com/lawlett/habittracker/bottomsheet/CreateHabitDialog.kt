@@ -37,6 +37,7 @@ class CreateHabitDialog :
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickers()
@@ -46,17 +47,23 @@ class CreateHabitDialog :
         with(binding) {
             emojiEd.addTextChangedListener(SmileyTextWatcher())
             createBtn.setOnClickListener {
-                val model = HabitModel(
-                    title = nameEd.text.toString(),
-                    icon = emojiEd.text.toString().ifEmpty { "$" }, allDays = 7,
-                    fbName = firebaseHelper.getUserName(),
-                    startDate = Date()
-                )
-                viewModel.insert(model)
-                viewModel.viewModelScope.launch {
-                    delay(200)
-                    viewModel.getLastHabit()
-                    observe()
+                if (nameEd.text.toString().isEmpty()) {
+                    nameEd.error = getString(R.string.tv_title)
+                } else if (emojiEd.text.toString().isEmpty()) {
+                    emojiEd.error = getString(R.string.tv_emoji)
+                } else {
+                    val model = HabitModel(
+                        title = nameEd.text.toString(),
+                        icon = emojiEd.text.toString(), allDays = 7,
+                        fbName = firebaseHelper.getUserName(),
+                        startDate = Date()
+                    )
+                    viewModel.insert(model)
+                    viewModel.viewModelScope.launch {
+                        delay(200)
+                        viewModel.getLastHabit()
+                        observe()
+                    }
                 }
             }
         }

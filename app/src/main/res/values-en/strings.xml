@@ -8,7 +8,7 @@
     <string name="tv_hours">Hours</string>
     <string name="tv_minutes">Min</string>
     <string name="tv_relapse">Relapse</string>
-    <string name="tv_attempts">Attempts - 0</string>
+    <string name="tv_attempts">Attempts : %d</string>
     <string name="tv_history">History</string>
     <string name="tv_month">January</string>
     <string name="tv_year">2023 г.</string>
@@ -20,7 +20,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tv_title">Title</string>
-    <string name="tv_emoji">Emoji</string>
+    <string name="tv_emoji">Emoji 🎸 </string>
     <string name="tv_create">Create</string>
     <string name="tv_delete">Delete?</string>
     <string name="btn_no">No</string>
@@ -30,7 +30,7 @@
     <string name="_00_00_00_00">00:00:00:00</string>
     <string name="tv_record_9">Record - 9 day</string>
     <string name="btn_register">Register</string>
-    <string name="btn_share">Share</string>
+    <string name="btn_share">Share code</string>
     <string name="tv_sign_in">Sign in</string>
     <string name="btn_new_habit">New Habit</string>
     <string name="tv_new_habit">New Habit</string>
@@ -86,5 +86,14 @@
     <string name="google">The subscription function requires a Google account</string>
     <string name="btn_change_theme">You can change the theme of the application</string>
     <string name="btn_sync">When you click on this button, your habits are instantly synchronized with the server, and they are automatically added to your home screen, even if you have changed your device and logged into the application from another phone. </string>
-    <string name="not_sign">Вы не зарегестрированы</string>
+    <string name="not_sign">You are not registered</string>
+    <string name="habit_sync">Habits will be synchronized</string>
+    <string name="actual_data">Updating data for subscribers</string>
+    <string name="notification_not_come">Notifications will not come</string>
+    <string name="want_pass_instruction">Do you want to pass trained?</string>
+    <string name="follow_delete">The subscription to will be deleted</string>
+    <string name="relapse_habit">Relapse of the habit : %s</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="exit_account">Выйти с аккаунта</string>
+    <string name="my_code">Мой код</string>
 </resources>

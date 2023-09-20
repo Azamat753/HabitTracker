@@ -30,7 +30,7 @@ class HabitAdapter : BaseAdapter<HabitModel, ItemHabitBinding>(
             habitProgress.max = model.allDays
             habitProgress.progress = currentDay
             recordTitleTv.text = root.context?.resources?.getString(R.string.tv_record, record.toInt())
-            tvAttempts.text ="${root.context?.resources?.getString(R.string.tv_attempts,attempts)}"
+            tvAttempts.text = root.context?.resources?.getString(R.string.tv_attempts,attempts)
         }
     }
 }

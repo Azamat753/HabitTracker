@@ -8,7 +8,7 @@
     <string name="tv_hours">Часы</string>
     <string name="tv_minutes">Мин</string>
     <string name="tv_relapse">Рецидив</string>
-    <string name="tv_attempts">Попыток - %d</string>
+    <string name="tv_attempts">Попыток : %d</string>
     <string name="tv_history">История</string>
     <string name="tv_month">января</string>
     <string name="tv_year">2023 г.</string>
@@ -20,7 +20,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tv_title">Название</string>
-    <string name="tv_emoji">Смайлик</string>
+    <string name="tv_emoji">Смайлик 🎸 </string>
     <string name="tv_create">Создать</string>
     <string name="tv_delete">Удалить?</string>
     <string name="btn_no">Нет</string>
@@ -30,12 +30,12 @@
     <string name="_00_00_00_00">00:00:00:00</string>
     <string name="tv_record_9">Рекорд - 9 дней</string>
     <string name="btn_register">Зарегистрироваться</string>
-    <string name="btn_share">Поделиться</string>
+    <string name="btn_share">Поделиться кодом</string>
     <string name="tv_sign_in">sign in</string>
     <string name="btn_new_habit">Новая привычка</string>
     <string name="tv_new_habit">Новая привычка</string>
     <string name="tv_attempt">Попытка : </string>
-    <string name="tv_record">Рекорд - %d </string>
+    <string name="tv_record">Рекорд : %d </string>
     <string name="tv_main">Главная</string>
     <string name="tv_subscriptions">Подписки</string>
     <string name="tv_settings">Настройки</string>
@@ -86,4 +86,13 @@
     <string name="btn_change_theme">Можете изменить тему приложения</string>
     <string name="btn_sync">При нажатии на эту кнопку, ваши привычки мгновенно синхронизируются с сервером, и они автоматически добавляются на ваш главный экран, даже если вы сменили устройство и вошли в приложение с другого телефона.</string>
     <string name="not_sign">Вы не зарегестрированы</string>
+    <string name="habit_sync">Привычки будут синхронизированы</string>
+    <string name="actual_data">Актуализация данных для подписчиков</string>
+    <string name="notification_not_come">Уведомления не будут приходить</string>
+    <string name="want_pass_instruction">Желаете ли вы пройти обучение?</string>
+    <string name="follow_delete">Подписка на %s  будет удалена</string>
+    <string name="relapse_habit">Рецедив привычки : %s</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="exit_account">Выйти с аккаунта</string>
+    <string name="my_code">Мой код</string>
 </resources>

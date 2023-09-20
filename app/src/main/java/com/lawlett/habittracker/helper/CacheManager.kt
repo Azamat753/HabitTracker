@@ -36,6 +36,14 @@ class CacheManager(context: Context) {
         return sharedPreferences.getBoolean(key, false)
     }
 
+    fun isChanged():Boolean{
+        return sharedPreferences.getBoolean("isChanged", false)
+    }
+
+    fun setChanged(isChanged:Boolean) {
+        sharedPreferences.edit().putBoolean("isChanged", isChanged).apply()
+    }
+
     fun saveUserSeen(key: String) {
         sharedPreferences.edit().putBoolean(key, true).apply()
     }

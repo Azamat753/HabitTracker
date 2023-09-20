@@ -170,13 +170,13 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
+                    android:paddingHorizontal="20dp"
                     android:layout_height="match_parent">
 
                     <TextView
                         android:id="@+id/tv_attempts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
                         android:text="@string/tv_attempts"
                         android:textColor="?attr/iconColor"
                         android:textSize="16sp"

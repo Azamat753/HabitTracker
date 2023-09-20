@@ -26,18 +26,12 @@ class HabitDetailViewModel @Inject constructor(private val repository: Repositor
 
     val habitFlow = MutableSharedFlow<String>()
 
-    val isNotificationPushed = MutableSharedFlow<Boolean>()
-
     val tokenModelFlow = MutableSharedFlow<TokenModel>()
 
-
-    private val dateTime = MutableLiveData<String>()
-    val date: LiveData<String>
-        get() = dateTime
-
-    private val attemptsNumbers = MutableLiveData<Int>()
+     val attemptsNumbers = MutableLiveData<Int>()
     val attemptsNumber: LiveData<Int>
         get() = attemptsNumbers
+
 
     var record = 0
     fun update(model: HabitModel) {

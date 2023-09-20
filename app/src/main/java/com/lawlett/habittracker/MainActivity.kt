@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -14,18 +15,22 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.lawlett.habittracker.databinding.ActivityMainBinding
+import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.ext.changeLanguage
 import com.lawlett.habittracker.ext.checkedTheme
 import com.lawlett.habittracker.ext.loadLocale
+import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.Key.IS_SETTING
 import com.lawlett.habittracker.helper.MyFirebaseMessagingService
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val binding: ActivityMainBinding by viewBinding()
     private lateinit var navController: NavController
+    @Inject lateinit var cacheManager: CacheManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         checkedTheme()
@@ -35,17 +40,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         setContentView(binding.root)
         initNavigationGraph()
         destinationListener()
-        askNotificationPermission()
         MyFirebaseMessagingService()
-//        navigate()
-    }
-
-    private fun navigate() {
-        val isFromSetting = intent.getBooleanExtra(IS_SETTING, false)
-        if (isFromSetting) {
-            intent.removeExtra(IS_SETTING)
-            navController.navigate(R.id.settingsFragment)
-        }
+        askNotificationPermission()
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -54,7 +50,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         if (isGranted) {
             Toast.makeText(this, getString(R.string.success), Toast.LENGTH_SHORT).show()
         } else {
-//            Toast.makeText(this, "Уведомления не будут приходить", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.notification_not_come), Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -25,7 +25,7 @@ class SettingsViewModel @Inject constructor(private val repository: Repository,v
             repository.getHabits()
                 .flowOn(Dispatchers.IO).onEach {
                     firebaseHelper.deleteAll()
-                    delay(1000)
+                    delay(3000)
                     it.forEach {
                         firebaseHelper.insertOrUpdateHabitFB(it)
                     }

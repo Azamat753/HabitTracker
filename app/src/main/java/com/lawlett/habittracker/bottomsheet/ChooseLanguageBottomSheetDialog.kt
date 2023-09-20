@@ -2,13 +2,11 @@ package com.lawlett.habittracker.bottomsheet
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import com.lawlett.habittracker.MainActivity
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
 import com.lawlett.habittracker.databinding.LanguageDialogBinding
-import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.adapter.LanguageAdapter
 import com.lawlett.habittracker.helper.Key
@@ -39,7 +37,7 @@ class ChooseLanguageBottomSheetDialog :
         cacheManager.setLanguage(position)
         val intent = Intent(requireContext(), MainActivity::class.java)
         if (tag != "main") {
-            intent.putExtra(Key.IS_SETTING, true)
+            cacheManager.setChanged(true)
         }
         startActivity(intent)
         requireActivity().overridePendingTransition(
