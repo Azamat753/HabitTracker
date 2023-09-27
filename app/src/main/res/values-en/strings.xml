@@ -93,7 +93,9 @@
     <string name="want_pass_instruction">Do you want to pass trained?</string>
     <string name="follow_delete">The subscription to will be deleted</string>
     <string name="relapse_habit">Relapse of the habit : %s</string>
-    <string name="subscribe">Подписаться</string>
-    <string name="exit_account">Выйти с аккаунта</string>
-    <string name="my_code">Мой код</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="exit_account">Log out</string>
+    <string name="my_code">My Code</string>
+    <string name="scan">Scan</string>
+    <string name="enter_code">Enter code</string>
 </resources>

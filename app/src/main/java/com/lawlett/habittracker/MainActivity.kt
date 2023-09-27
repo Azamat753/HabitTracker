@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -40,7 +41,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val binding: ActivityMainBinding by viewBinding()
     private lateinit var navController: NavController
-    @Inject lateinit var cacheManager: CacheManager
+
+    @Inject
+    lateinit var cacheManager: CacheManager
     var appUpdateManager: AppUpdateManager? = null
     private val UPDATE_CODE = 22
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +58,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         askNotificationPermission()
     }
 
+    fun isClickableBottom(isClickable: Boolean) {
+        binding.bottomNavigation.menu.forEach { it.isEnabled = isClickable }
+    }
+
     private fun popUp() {
         val snackbar = Snackbar.make(
             findViewById(androidx.appcompat.R.id.content),
@@ -67,6 +74,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         snackbar.setTextColor(Color.parseColor("#FF0000"))
         snackbar.show()
     }
+
     val listener = InstallStateUpdatedListener { installState ->
         if (installState.installStatus() == InstallStatus.DOWNLOADED) {
             popUp()
@@ -114,7 +122,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         if (isGranted) {
             Toast.makeText(this, getString(R.string.success), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, getString(R.string.notification_not_come), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.notification_not_come), Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -142,8 +151,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 R.id.habitDetailFragment -> false
                 else -> true
             }
-            when(destination.id){
-                R.id.mainFragment->{
+            when (destination.id) {
+                R.id.mainFragment -> {
                     checkUpdate()
                 }
             }

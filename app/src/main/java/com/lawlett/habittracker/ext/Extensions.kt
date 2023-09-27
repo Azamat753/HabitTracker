@@ -1,5 +1,6 @@
 package com.lawlett.habittracker.ext
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -16,6 +17,7 @@ import androidx.viewbinding.ViewBinding
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.lawlett.habittracker.MainActivity
 import com.lawlett.habittracker.databinding.FollowDialogBinding
 import com.lawlett.habittracker.helper.CacheManager
 import java.util.*
@@ -72,11 +74,21 @@ fun historyToArray(json: String): ArrayList<String> {
     }
 }
 
-fun saveNewSubscriber(name:String,cacheManager:CacheManager) {
+fun saveNewSubscriber(name: String, cacheManager: CacheManager) {
     val array = cacheManager.getFollowers() ?: ArrayList()
     array.add(name.trim())
     FirebaseMessaging.getInstance().subscribeToTopic(name.trim().makeTopic())
     cacheManager.saveFollowers(array)
+}
+
+fun Activity.isClickableBottom(boolean: Boolean) {
+    val activity: MainActivity? = this as MainActivity?
+    activity?.isClickableBottom(boolean)
+}
+
+fun Fragment.isClickableScreen(isClickable: Boolean, vararg view: View) {
+    view.forEach { it.isEnabled = isClickable }
+    requireActivity().isClickableBottom(isClickable)
 }
 
 inline fun <reified T> Gson.fromJson(json: String) =

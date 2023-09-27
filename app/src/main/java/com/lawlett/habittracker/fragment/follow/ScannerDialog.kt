@@ -28,24 +28,17 @@ import java.io.IOException
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ScannerDialog(var eventCallback: EventCallback) : BaseBottomSheetDialog<FragmentScannerBinding>(FragmentScannerBinding::inflate) {
-    private val requestCodeCameraPermission = 1001
+class ScannerDialog(var eventCallback: EventCallback) :
+    BaseBottomSheetDialog<FragmentScannerBinding>(FragmentScannerBinding::inflate) {
     private lateinit var cameraSource: CameraSource
     private lateinit var barcodeDetector: BarcodeDetector
     private var scannedValue = ""
+
     @Inject
     lateinit var cacheManager: CacheManager
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (ContextCompat.checkSelfPermission(
-                requireContext(), android.Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            askForCameraPermission()
-        } else {
-            setupControls()
-        }
-
+        setupControls()
         val aniSlide: Animation =
             AnimationUtils.loadAnimation(requireActivity(), R.anim.scanner_animation)
         binding.barcodeLine.startAnimation(aniSlide)
@@ -100,10 +93,9 @@ class ScannerDialog(var eventCallback: EventCallback) : BaseBottomSheetDialog<Fr
                 val barcodes = detections.detectedItems
                 if (barcodes.size() == 1) {
                     scannedValue = barcodes.valueAt(0).rawValue
-
-                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                         cameraSource.stop()
-                        saveNewSubscriber(scannedValue,cacheManager)
+                        saveNewSubscriber(scannedValue, cacheManager)
                         eventCallback.call()
                         showToast(getString(R.string.success))
                         dismiss()
@@ -111,29 +103,6 @@ class ScannerDialog(var eventCallback: EventCallback) : BaseBottomSheetDialog<Fr
                 }
             }
         })
-    }
-
-    private fun askForCameraPermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(android.Manifest.permission.CAMERA),
-            requestCodeCameraPermission
-        )
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == requestCodeCameraPermission && grantResults.isNotEmpty()) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setupControls()
-            } else {
-                showToast("Permission Denied")
-            }
-        }
     }
 
     override fun onDestroy() {

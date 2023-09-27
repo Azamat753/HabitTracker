@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallback {
+class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallback, SpotlightEnd {
 
     private val binding: FragmentHabitDetailBinding by viewBinding()
     private val adapter = HabitDetailAdapter(this::onClick)
@@ -101,7 +101,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target_detail, root)
-
+        isClickableScreen(false, binding.btnRelapse)
         Handler().postDelayed({
             cacheManager.saveUserSeen(KEY_SEARCH_DETAIL)
             val views = setSpotLightTarget(
@@ -243,7 +243,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                         if (model.attempts == 0) {
                             attemptCard.toGone()
                         } else {
-                            viewModel.attemptsNumbers.value = habitModelGlobal?.attempts?:0
+                            viewModel.attemptsNumbers.value = habitModelGlobal?.attempts ?: 0
                             val attempts = viewModel.attemptsNumbers.value
                             tvAttempts.text =
                                 getString(R.string.tv_attempts, attempts)
@@ -298,11 +298,11 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     }
 
     @SuppressLint("SetTextI18n")
-    private fun changeAttempts(isMinus:Boolean= false) {
+    private fun changeAttempts(isMinus: Boolean = false) {
         binding.attemptCard.toVisible()
-        if (isMinus){
+        if (isMinus) {
             viewModel.minusAttempt()
-        }else{
+        } else {
             viewModel.addAttempt()
         }
         viewModel.attemptsNumber.observe(requireActivity()) {
@@ -360,4 +360,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     }
 
     override fun signSuccess() {}
+    override fun end() {
+        isClickableScreen(true, binding.btnRelapse)
+    }
 }

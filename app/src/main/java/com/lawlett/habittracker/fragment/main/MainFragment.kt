@@ -24,6 +24,7 @@ import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentMainBinding
 import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.ext.createDialog
+import com.lawlett.habittracker.ext.isClickableScreen
 import com.lawlett.habittracker.ext.setSpotLightBuilder
 import com.lawlett.habittracker.ext.setSpotLightTarget
 import com.lawlett.habittracker.ext.toGone
@@ -31,6 +32,7 @@ import com.lawlett.habittracker.ext.toVisible
 import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
 import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
+import com.lawlett.habittracker.helper.SpotlightEnd
 import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -42,7 +44,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main),
     BaseAdapter.IBaseAdapterClickListener<HabitModel>,
-    BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> {
+    BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> ,SpotlightEnd{
 
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
@@ -94,7 +96,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         dialog.first.txtTitle.text = getString(R.string.want_pass_instruction)
         dialog.first.txtDescription.toGone()
         dialog.first.btnYes.setOnClickListener {
-            searchlight()
+            spotlight()
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener {
@@ -109,11 +111,11 @@ class MainFragment : Fragment(R.layout.fragment_main),
         bottomDialog.show(requireActivity().supportFragmentManager, "main")
     }
 
-    private fun searchlight() {
+    private fun spotlight() {
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target_main, root)
-
+        isClickableScreen(false,binding.fab)
         Handler().postDelayed({
             val views = setSpotLightTarget(
                 binding.mainDisplay,
@@ -136,7 +138,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
             targets.add(views)
             targets.add(firstSpot)
             targets.add(secondSpot)
-            setSpotLightBuilder(requireActivity(), targets, first)
+            setSpotLightBuilder(requireActivity(), targets, first,this)
         }, 100)
     }
 
@@ -214,17 +216,19 @@ class MainFragment : Fragment(R.layout.fragment_main),
     }
 
     private fun checkOnEmpty() {
-        with(binding) {
-            if (adapter.data.isEmpty()) {
-                habitRecycler.toGone()
-                emptyLayout.toVisible()
-                if (firebaseHelper.isSigned()) {
-                    getHabitsFromFB()
+        if (view != null) {
+            with(binding) {
+                if (adapter.data.isEmpty()) {
+                    habitRecycler.toGone()
+                    emptyLayout.toVisible()
+                    if (firebaseHelper.isSigned()) {
+                        getHabitsFromFB()
+                    }
+                } else {
+                    binding.progressBar.toGone()
+                    habitRecycler.toVisible()
+                    emptyLayout.toGone()
                 }
-            } else {
-                binding.progressBar.toGone()
-                habitRecycler.toVisible()
-                emptyLayout.toGone()
             }
         }
     }
@@ -247,6 +251,10 @@ class MainFragment : Fragment(R.layout.fragment_main),
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
+    }
+
+    override fun end() {
+        isClickableScreen(true,binding.fab)
     }
 
 }

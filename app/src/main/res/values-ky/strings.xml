@@ -93,7 +93,9 @@
     <string name="want_pass_instruction">Сиз тренингден өтүүнү каалайсызбы?</string>
     <string name="follow_delete">Жазылуу алынып салынат</string>
     <string name="relapse_habit">Адаттын кайталанышы : %s</string>
-    <string name="subscribe">Подписаться</string>
-    <string name="exit_account">Выйти с аккаунта</string>
-    <string name="my_code">Мой код</string>
+    <string name="subscribe">Жазылуу</string>
+    <string name="exit_account">Чыгуу</string>
+    <string name="my_code">Менин кодум</string>
+    <string name="scan">Скандоо</string>
+    <string name="enter_code">Кодду жазуу</string>
 </resources>

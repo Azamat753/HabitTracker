@@ -95,4 +95,6 @@
     <string name="subscribe">Подписаться</string>
     <string name="exit_account">Выйти с аккаунта</string>
     <string name="my_code">Мой код</string>
+    <string name="scan">Сканировать</string>
+    <string name="enter_code">Ввести код</string>
 </resources>

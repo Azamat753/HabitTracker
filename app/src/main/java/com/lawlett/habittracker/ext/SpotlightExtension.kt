@@ -6,13 +6,18 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import com.lawlett.habittracker.R
+import com.lawlett.habittracker.helper.SpotlightEnd
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.OnTargetListener
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.effet.RippleEffect
 import com.takusemba.spotlight.shape.RoundedRectangle
 
-fun setSpotLightTarget(targetView: View, backLayoutView: View, discription: String ):com.takusemba.spotlight.Target{
+fun setSpotLightTarget(
+    targetView: View,
+    backLayoutView: View,
+    description: String
+): com.takusemba.spotlight.Target {
     val target1 = com.takusemba.spotlight.Target.Builder()
         .setAnchor(targetView)
         .setShape(RoundedRectangle(targetView.height.toFloat(), targetView.width.toFloat(), 30F))
@@ -20,7 +25,7 @@ fun setSpotLightTarget(targetView: View, backLayoutView: View, discription: Stri
         .setOverlay(backLayoutView)
         .setOnTargetListener(object : OnTargetListener {
             override fun onStarted() {
-                backLayoutView.findViewById<TextView>(R.id.text_target).text = discription
+                backLayoutView.findViewById<TextView>(R.id.text_target).text = description
             }
 
             override fun onEnded() {
@@ -31,8 +36,12 @@ fun setSpotLightTarget(targetView: View, backLayoutView: View, discription: Stri
 }
 
 
-
-fun setSpotLightBuilder(activity: Activity, targets: ArrayList<com.takusemba.spotlight.Target>, backLayoutView: View){
+fun setSpotLightBuilder(
+    activity: Activity,
+    targets: ArrayList<com.takusemba.spotlight.Target>,
+    backLayoutView: View,
+    spotlightEnd: SpotlightEnd? = null
+) {
     android.os.Handler().postDelayed({
         val spotlight = Spotlight.Builder(activity)
             .setTargets(targets)
@@ -45,7 +54,7 @@ fun setSpotLightBuilder(activity: Activity, targets: ArrayList<com.takusemba.spo
                 }
 
                 override fun onEnded() {
-
+                    spotlightEnd?.end()
                 }
             })
             .build()
