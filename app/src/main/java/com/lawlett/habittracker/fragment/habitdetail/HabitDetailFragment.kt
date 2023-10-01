@@ -33,7 +33,7 @@ import javax.inject.Inject
 class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallback, SpotlightEnd {
 
     private val binding: FragmentHabitDetailBinding by viewBinding()
-    private val adapter = HabitDetailAdapter(this::onClick)
+    private var adapter = HabitDetailAdapter(this::onClick)
     private val viewModel: HabitDetailViewModel by viewModels()
     lateinit var dataHelper: DataHelper
     private val timer = Timer()
@@ -55,19 +55,21 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getDataArguments()
         initAdapter()
         prepare()
-        helper = GoogleSignInHelper(fragment = this, tokenCallback = this)
-        if (!cacheManager.isPass()) {
-            if (!cacheManager.isUserSeen(KEY_SEARCH_DETAIL)) {
-                searchlight()
-            }
-        }
-        habitModelGlobal?.id?.let { id ->
-            viewModel.getHistory(id)
-        }
         initClickers()
         observe()
+    }
+
+    private fun getDataArguments() {
+        if (arguments != null) {
+            isFollow = requireArguments().getBoolean("isFollow")
+            habitModelGlobal = requireArguments().getParcelable("key") as HabitModel?
+            isFollow = requireArguments().getBoolean("isFollow")
+            isStartTimer = requireArguments().getBoolean("isStartTimer")
+        }
+
     }
 
 
@@ -101,7 +103,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target_detail, root)
-        isClickableScreen(false, binding.btnRelapse)
+        isClickableScreen(false, binding.btnRelapse,binding.backArrowImg)
         Handler().postDelayed({
             cacheManager.saveUserSeen(KEY_SEARCH_DETAIL)
             val views = setSpotLightTarget(
@@ -137,11 +139,12 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
             targets.add(firstSpot)
             targets.add(secondSpot)
             targets.add(thirdSpot)
-            setSpotLightBuilder(requireActivity(), targets, first)
+            setSpotLightBuilder(requireActivity(), targets, first,this)
         }, 100)
     }
 
     private fun initAdapter() {
+        adapter = HabitDetailAdapter(this::onClick, isFollow)
         binding.recyclerHistory.adapter = adapter
     }
 
@@ -221,67 +224,62 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
 
     @SuppressLint("SetTextI18n", "StringFormatInvalid")
     private fun prepare() {
-        if (arguments != null) {
-            habitModelGlobal = requireArguments().getParcelable("key") as HabitModel?
-            isFollow = requireArguments().getBoolean("isFollow")
-            isStartTimer = requireArguments().getBoolean("isStartTimer")
-            val record = habitModelGlobal?.record ?: 0
-            habitModelGlobal?.let { model ->
-                with(binding) {
-                    iconTv.text = model.icon
-                    habitProgress.max = model.allDays
-                    habitTv.text = habitModelGlobal?.title
-                    recordTitleTv.text = getString(R.string.tv_record, record.toString().toInt())
-                    viewModel.record = habitModelGlobal?.attempts ?: 0
-                    habitModelGlobal?.let { model ->
-                        if (model.record?.toInt() == 0 || model.record == null) {
-                            recordTitleTv.toGone()
-                        } else {
-                            recordTitleTv.text =
-                                getString(R.string.tv_record, record.toString().toInt())
-                        }
-                        if (model.attempts == 0) {
-                            attemptCard.toGone()
-                        } else {
-                            viewModel.attemptsNumbers.value = habitModelGlobal?.attempts ?: 0
-                            val attempts = viewModel.attemptsNumbers.value
-                            tvAttempts.text =
-                                getString(R.string.tv_attempts, attempts)
-                        }
-                    }
-
-                    if (isFollow) {
-                        dataHelper =
-                            DataHelper(
-                                requireActivity(),
-                                "${model.title} start ${model.fbName}",
-                                "${model.title} stop ${model.fbName}"
-                            )
-                        dataHelper.setTimerCounting(true)
-                        nameTv.text = habitModelGlobal?.fbName?.makeUserName()
-                        btnRelapse.toGone()
+        val record = habitModelGlobal?.record ?: 0
+        habitModelGlobal?.let { model ->
+            with(binding) {
+                iconTv.text = model.icon
+                habitProgress.max = model.allDays
+                habitTv.text = habitModelGlobal?.title
+                recordTitleTv.text = getString(R.string.tv_record, record.toString().toInt())
+                viewModel.record = habitModelGlobal?.attempts ?: 0
+                habitModelGlobal?.let { model ->
+                    if (model.record?.toInt() == 0 || model.record == null) {
+                        recordTitleTv.toGone()
                     } else {
-                        nameTv.toGone()
-                        dataHelper =
-                            DataHelper(
-                                requireActivity(),
-                                "${model.title} start",
-                                "${model.title} stop"
-                            )
-                        if (!habitModelGlobal?.fbName.isNullOrEmpty() && !isStartTimer) {
-                            //fixme
-                            dataHelper.setStartTime(habitModelGlobal?.startDate)
-                            dataHelper.setTimerCounting(true)
-                        }
+                        recordTitleTv.text =
+                            getString(R.string.tv_record, record.toString().toInt())
                     }
-                    habitProgress.progress = dataHelper.startTimeFromPref()?.getDays()?.toInt() ?: 0
-                    habitModelGlobal?.history?.let { history ->
-                        listHistory = historyToArray(history)
-                        adapter.setData(listHistory)
-                        checkHistoryOnEmpty()
-                    }.run {
-                        checkHistoryOnEmpty()
+                    if (model.attempts == 0) {
+                        attemptCard.toGone()
+                    } else {
+                        viewModel.attemptsNumbers.value = habitModelGlobal?.attempts ?: 0
+                        val attempts = viewModel.attemptsNumbers.value
+                        tvAttempts.text =
+                            getString(R.string.tv_attempts, attempts)
                     }
+                }
+
+                if (isFollow) {
+                    dataHelper =
+                        DataHelper(
+                            requireActivity(),
+                            "${model.title} start ${model.fbName}",
+                            "${model.title} stop ${model.fbName}"
+                        )
+                    dataHelper.setTimerCounting(true)
+                    nameTv.text = habitModelGlobal?.fbName?.makeUserName()
+                    btnRelapse.toGone()
+                } else {
+                    nameTv.toGone()
+                    dataHelper =
+                        DataHelper(
+                            requireActivity(),
+                            "${model.title} start",
+                            "${model.title} stop"
+                        )
+                    if (!habitModelGlobal?.fbName.isNullOrEmpty() && !isStartTimer) {
+                        //fixme
+                        dataHelper.setStartTime(habitModelGlobal?.startDate)
+                        dataHelper.setTimerCounting(true)
+                    }
+                }
+                habitProgress.progress = dataHelper.startTimeFromPref()?.getDays()?.toInt() ?: 0
+                habitModelGlobal?.history?.let { history ->
+                    listHistory = historyToArray(history)
+                    adapter.setData(listHistory)
+                    checkHistoryOnEmpty()
+                }.run {
+                    checkHistoryOnEmpty()
                 }
             }
         }
@@ -294,6 +292,15 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
 
         if (isStartTimer) {
             timerManager.startStopAction()
+        }
+        helper = GoogleSignInHelper(fragment = this, tokenCallback = this)
+        if (!cacheManager.isPass()) {
+            if (!cacheManager.isUserSeen(KEY_SEARCH_DETAIL)) {
+                searchlight()
+            }
+        }
+        habitModelGlobal?.id?.let { id ->
+            viewModel.getHistory(id)
         }
     }
 
@@ -361,6 +368,6 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
 
     override fun signSuccess() {}
     override fun end() {
-        isClickableScreen(true, binding.btnRelapse)
+        isClickableScreen(true, binding.btnRelapse,binding.backArrowImg)
     }
 }

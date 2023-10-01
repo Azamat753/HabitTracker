@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.cardview.widget.CardView
         android:layout_width="328dp"
@@ -37,7 +38,7 @@
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/inter"
-                android:text="Привычка “курение” будет удалена"
+                tools:text="Привычка “курение” будет удалена"
                 android:textAlignment="center"
                 android:textColor="?attr/iconColor"
                 android:textSize="16sp"

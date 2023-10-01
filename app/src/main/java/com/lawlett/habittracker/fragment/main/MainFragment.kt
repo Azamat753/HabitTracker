@@ -44,7 +44,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main),
     BaseAdapter.IBaseAdapterClickListener<HabitModel>,
-    BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> ,SpotlightEnd{
+    BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel>, SpotlightEnd {
 
     private val binding: FragmentMainBinding by viewBinding()
     private val viewModel: MainViewModel by viewModels()
@@ -115,7 +115,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target_main, root)
-        isClickableScreen(false,binding.fab)
+        isClickableScreen(false, binding.fab)
         Handler().postDelayed({
             val views = setSpotLightTarget(
                 binding.mainDisplay,
@@ -138,7 +138,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
             targets.add(views)
             targets.add(firstSpot)
             targets.add(secondSpot)
-            setSpotLightBuilder(requireActivity(), targets, first,this)
+            setSpotLightBuilder(requireActivity(), targets, first, this)
         }, 100)
     }
 
@@ -169,7 +169,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
                 }
                 for (document in result.result) {
                     val title = document.data["title"] as String?
-                    val attempts = (document.data["attempts"] as Long).toInt()
+                    val attempts = (document.data["attempts"] as Long?)?.toInt()
                     val icon = document.data["icon"] as String?
                     val record = document.data["record"] as String?
                     val currentDay = (document.data["currentDay"] as Long).toInt()
@@ -183,7 +183,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
                         allDays = allDays,
                         startDate = startDate,
                         fbName = firebaseHelper.getUserName(),
-                        attempts = attempts,
+                        attempts = attempts ?: 0,
                         record = record,
                         history = history
                     )
@@ -194,9 +194,13 @@ class MainFragment : Fragment(R.layout.fragment_main),
                         adapter.data.forEach {
                             viewModel.insert(it)
                         }
-                        binding.progressBar.toGone()
+                        if (isAdded) {
+                            binding.progressBar.toGone()
+                        }
                     } else {
-                        binding.progressBar.toGone()
+                        if (isAdded) {
+                            binding.progressBar.toGone()
+                        }
                     }
                 }
             }.addOnFailureListener {
@@ -241,6 +245,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
 
     override fun onLongClick(model: HabitModel, itemView: View, position: Int) {
         val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+        dialog.first.txtDescription.text = getString(R.string.habit_delete, model.title)
         dialog.first.btnYes.setOnClickListener {
             viewModel.delete(model)
             firebaseHelper.delete(model)
@@ -254,7 +259,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
     }
 
     override fun end() {
-        isClickableScreen(true,binding.fab)
+        isClickableScreen(true, binding.fab)
     }
 
 }

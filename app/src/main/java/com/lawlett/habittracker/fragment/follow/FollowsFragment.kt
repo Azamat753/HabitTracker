@@ -105,7 +105,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     askForCameraPermission()
-                }else{
+                } else {
                     showScanner()
                 }
             }
@@ -226,50 +226,57 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
 
     @SuppressLint("NotifyDataSetChanged")
     private fun fetchFromFB() {
-        binding.progressBar.toVisible()
-        items = ArrayList()
-        var names = 0
+        if (activity != null && isAdded) {
 
-        cacheManager.getFollowers()?.distinct()?.let { array ->
-            array.forEach { userName ->
-                firebaseHelper.db.collection(userName!!).get().addOnCompleteListener { result ->
-                    if (result.result.size() != 0) {
-                        items.add(Pair(userName.makeUserName(), userName))
-                        ++names
-                    } else {
-                        binding.progressBar.toGone()
-                    }
-                    for (document in result.result) {
-                        val title = document.data["title"] as String?
-                        val attempts = (document.data["attempts"] as Long).toInt()
-                        val icon = document.data["icon"] as String?
-                        val record = document.data["record"] as String?
-                        val currentDay = (document.data["currentDay"] as Long).toInt()
-                        val allDays = (document.data["allDays"] as Long).toInt()
-                        val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
-                        val history = document.data["history"] as String?
-                        val model = HabitModel(
-                            title = title,
-                            icon = icon,
-                            currentDay = currentDay,
-                            allDays = allDays,
-                            startDate = startDate,
-                            fbName = userName,
-                            attempts = attempts,
-                            record = record,
-                            history = history
-                        )
-                        items.add(model)
-                        if (items.size == result.result.documents.size + names) {
-                            multiTypeAdapter.items = items
-                            multiTypeAdapter.notifyDataSetChanged()
-                            checkOnEmpty()
+            binding.progressBar.toVisible()
+            items = ArrayList()
+            var names = 0
+
+            cacheManager.getFollowers()?.distinct()?.let { array ->
+                array.forEach { userName ->
+                    firebaseHelper.db.collection(userName!!).get().addOnCompleteListener { result ->
+                        if (result.result.size() != 0) {
+                            items.add(Pair(userName.makeUserName(), userName))
+                            ++names
+                        } else {
+                            binding.progressBar.toGone()
                         }
+                        for (document in result.result) {
+                            val title = document.data["title"] as String?
+                            val attempts = (document.data["attempts"] as Long).toInt()
+                            val icon = document.data["icon"] as String?
+                            val record = document.data["record"] as String?
+                            val currentDay = (document.data["currentDay"] as Long).toInt()
+                            val allDays = (document.data["allDays"] as Long).toInt()
+                            val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
+                            val history = document.data["history"] as String?
+                            val model = HabitModel(
+                                title = title,
+                                icon = icon,
+                                currentDay = currentDay,
+                                allDays = allDays,
+                                startDate = startDate,
+                                fbName = userName,
+                                attempts = attempts,
+                                record = record,
+                                history = history
+                            )
+                            items.add(model)
+                            if (items.size == result.result.documents.size + names) {
+                                multiTypeAdapter.items = items
+                                multiTypeAdapter.notifyDataSetChanged()
+                                checkOnEmpty()
+                            }
+                        }
+                        if (isAdded) {
+                            binding.progressBar.toGone()
+                        }
+                    }.addOnFailureListener {
+                        if (isAdded) {
+                            binding.progressBar.toGone()
+                        }
+                        Log.e(TAG, "Error read document", it)
                     }
-                    binding.progressBar.toGone()
-                }.addOnFailureListener {
-                    binding.progressBar.toGone()
-                    Log.e(TAG, "Error read document", it)
                 }
             }
         }
@@ -285,11 +292,19 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
         checkOnEmpty()
     }
 
-    override fun newToken(authCode: String) {}
+    override fun newToken(authCode: String) {
+        successSign()
+    }
 
     override fun signSuccess() {
+        successSign()
+    }
+
+    private fun successSign() {
         showToast(getString(R.string.success))
-        binding.progressBar.toGone()
+        if (isAdded) {
+            binding.progressBar.toGone()
+        }
         reInitAdapter()
     }
 

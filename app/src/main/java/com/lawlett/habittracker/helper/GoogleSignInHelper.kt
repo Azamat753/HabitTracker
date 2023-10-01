@@ -1,6 +1,7 @@
 package com.lawlett.habittracker.helper
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -60,6 +61,7 @@ class GoogleSignInHelper(
                 updateUI(account)
             }
         } else {
+            Log.e("ololo", "handleResults: ${task.exception.toString()}", )
             fragment.showToast(task.exception.toString())
         }
     }
@@ -70,6 +72,7 @@ class GoogleSignInHelper(
             if (it.isSuccessful) {
                 tokenCallback?.newToken(account.serverAuthCode ?: "")
             } else {
+                Log.e("ololo", "updateUI: ${it.exception.toString()}", )
                 fragment.showToast(it.exception.toString())
             }
         }

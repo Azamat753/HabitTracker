@@ -233,15 +233,20 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback, Sp
             }
             exitBtn.setOnClickListener {
                 firebaseHelper.logOut()
-                showToast(getString(R.string.success))
-                setupUI()
+                successSign()
             }
         }
     }
 
-    override fun newToken(authCode: String) {}
+    override fun newToken(authCode: String) {
+        successSign()
+    }
 
     override fun signSuccess() {
+        successSign()
+    }
+
+    private fun successSign() {
         showToast(getString(R.string.success))
         setupUI()
     }
