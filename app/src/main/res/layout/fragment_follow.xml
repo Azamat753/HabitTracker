@@ -96,6 +96,18 @@
             android:layout_margin="12dp"
             android:orientation="vertical" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_add"
+            android:tint="?attr/iconColor"
+            android:visibility="invisible"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/fab"
             android:layout_width="wrap_content"

@@ -157,7 +157,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
             )
 
             val firstStop = setSpotLightTarget(
-                binding.fab, first, getString(R.string.follows_fab)
+                binding.fabInvisible, first, getString(R.string.follows_fab)
             )
 
             targets.add(vi)
