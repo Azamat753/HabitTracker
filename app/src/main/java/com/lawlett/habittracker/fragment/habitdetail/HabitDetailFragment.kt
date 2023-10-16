@@ -37,7 +37,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     private val viewModel: HabitDetailViewModel by viewModels()
     lateinit var dataHelper: DataHelper
     private val timer = Timer()
-    private var habitModelGlobal: HabitModel? = null
+    private var badHabitModelGlobal: BadHabitModel? = null
     private var isFollow = false
     private var isStartTimer = false
     private var attempts = 0
@@ -65,7 +65,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
     private fun getDataArguments() {
         if (arguments != null) {
             isFollow = requireArguments().getBoolean("isFollow")
-            habitModelGlobal = requireArguments().getParcelable("key") as HabitModel?
+            badHabitModelGlobal = requireArguments().getParcelable("key") as BadHabitModel?
             isFollow = requireArguments().getBoolean("isFollow")
             isStartTimer = requireArguments().getBoolean("isStartTimer")
         }
@@ -92,7 +92,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                 topic = topic,
                 notification = NotificationMessage(
                     name,
-                    getString(R.string.relapse_habit, habitModelGlobal?.title.toString())
+                    getString(R.string.relapse_habit, badHabitModelGlobal?.title.toString())
                 )
             )
         )
@@ -167,8 +167,8 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
             timerManager.resetAction()
             timerManager.startStopAction(
                 isFollow,
-                habitModelGlobal?.startDate,
-                habitModelGlobal?.endDate
+                badHabitModelGlobal?.startDate,
+                badHabitModelGlobal?.endDate
             )
             if (firebaseHelper.isSigned()) {
                 helper.signInGoogle()
@@ -188,7 +188,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
             binding.recordTitleTv.toVisible()
             binding.recordTitleTv.toVisible()
             binding.recordTitleTv.text = getString(R.string.tv_record, newRecord.toString().toInt())
-            habitModelGlobal?.id?.let { id ->
+            badHabitModelGlobal?.id?.let { id ->
                 viewModel.updateRecord(newRecord.toString(), id)
             }
         }
@@ -199,8 +199,8 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         timerManager = TimerManager(dataHelper, binding)
         changeAttempts()
         updateHistory()
-        habitModelGlobal?.let {
-            val model = HabitModel(
+        badHabitModelGlobal?.let {
+            val model = BadHabitModel(
                 id = it.id,
                 title = it.title,
                 allDays = it.currentDay + 7,
@@ -217,22 +217,22 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         }
         timerManager.startStopAction(
             isFollow,
-            habitModelGlobal?.startDate,
-            habitModelGlobal?.endDate
+            badHabitModelGlobal?.startDate,
+            badHabitModelGlobal?.endDate
         )
     }
 
     @SuppressLint("SetTextI18n", "StringFormatInvalid")
     private fun prepare() {
-        val record = habitModelGlobal?.record ?: 0
-        habitModelGlobal?.let { model ->
+        val record = badHabitModelGlobal?.record ?: 0
+        badHabitModelGlobal?.let { model ->
             with(binding) {
                 iconTv.text = model.icon
                 habitProgress.max = model.allDays
-                habitTv.text = habitModelGlobal?.title
+                habitTv.text = badHabitModelGlobal?.title
                 recordTitleTv.text = getString(R.string.tv_record, record.toString().toInt())
-                viewModel.record = habitModelGlobal?.attempts ?: 0
-                habitModelGlobal?.let { model ->
+                viewModel.record = badHabitModelGlobal?.attempts ?: 0
+                badHabitModelGlobal?.let { model ->
                     if (model.record?.toInt() == 0 || model.record == null) {
                         recordTitleTv.toGone()
                     } else {
@@ -242,7 +242,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                     if (model.attempts == 0) {
                         attemptCard.toGone()
                     } else {
-                        viewModel.attemptsNumbers.value = habitModelGlobal?.attempts ?: 0
+                        viewModel.attemptsNumbers.value = badHabitModelGlobal?.attempts ?: 0
                         val attempts = viewModel.attemptsNumbers.value
                         tvAttempts.text =
                             getString(R.string.tv_attempts, attempts)
@@ -257,7 +257,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                             "${model.title} stop ${model.fbName}"
                         )
                     dataHelper.setTimerCounting(true)
-                    nameTv.text = habitModelGlobal?.fbName?.makeUserName()
+                    nameTv.text = badHabitModelGlobal?.fbName?.makeUserName()
                     btnRelapse.toGone()
                 } else {
                     nameTv.toGone()
@@ -267,14 +267,14 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                             "${model.title} start",
                             "${model.title} stop"
                         )
-                    if (!habitModelGlobal?.fbName.isNullOrEmpty() && !isStartTimer) {
+                    if (!badHabitModelGlobal?.fbName.isNullOrEmpty() && !isStartTimer) {
                         //fixme
-                        dataHelper.setStartTime(habitModelGlobal?.startDate)
+                        dataHelper.setStartTime(badHabitModelGlobal?.startDate)
                         dataHelper.setTimerCounting(true)
                     }
                 }
                 habitProgress.progress = dataHelper.startTimeFromPref()?.getDays()?.toInt() ?: 0
-                habitModelGlobal?.history?.let { history ->
+                badHabitModelGlobal?.history?.let { history ->
                     listHistory = historyToArray(history)
                     adapter.setData(listHistory)
                     checkHistoryOnEmpty()
@@ -299,7 +299,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
                 searchlight()
             }
         }
-        habitModelGlobal?.id?.let { id ->
+        badHabitModelGlobal?.id?.let { id ->
             viewModel.getHistory(id)
         }
     }
@@ -316,7 +316,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
             it?.let { attempts ->
                 this.attempts = attempts
                 binding.tvAttempts.text = getString(R.string.tv_attempt) + " " + this.attempts
-                viewModel.updateAttempts(attempts, habitModelGlobal?.id!!)
+                viewModel.updateAttempts(attempts, badHabitModelGlobal?.id!!)
             }
         }
     }
@@ -326,7 +326,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         listHistory.add(historyItem)
         binding.historyTv.toVisible()
         adapter.setData(listHistory)
-        viewModel.updateHistory(historyArrayToJson(listHistory), habitModelGlobal?.id!!)
+        viewModel.updateHistory(historyArrayToJson(listHistory), badHabitModelGlobal?.id!!)
     }
 
     @SuppressLint("SetTextI18n")
@@ -336,7 +336,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         dialog.first.btnYes.setOnClickListener {
             listHistory.remove(historyString)
             changeAttempts(true)
-            viewModel.updateHistory(historyArrayToJson(listHistory), habitModelGlobal?.id!!)
+            viewModel.updateHistory(historyArrayToJson(listHistory), badHabitModelGlobal?.id!!)
             adapter.notifyItemRemoved(position)
             checkHistoryOnEmpty()
             dialog.second.dismiss()
@@ -356,7 +356,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         override fun run() {
             if (dataHelper.timerCounting()) {
                 lifecycleScope.launch(Dispatchers.Main) {
-                    timerManager.updateTime(isFollow, habitModelGlobal?.startDate)
+                    timerManager.updateTime(isFollow, badHabitModelGlobal?.startDate)
                 }
             }
         }

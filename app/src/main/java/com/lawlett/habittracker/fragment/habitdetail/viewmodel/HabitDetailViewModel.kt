@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lawlett.habittracker.Repository
-import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.models.BadHabitModel
 import com.lawlett.habittracker.models.NotificationModel
 import com.lawlett.habittracker.models.TokenModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +34,7 @@ class HabitDetailViewModel @Inject constructor(private val repository: Repositor
 
 
     var record = 0
-    fun update(model: HabitModel) {
+    fun update(model: BadHabitModel) {
         viewModelScope.launch {
             repository.update(model)
         }

@@ -19,8 +19,6 @@
         <include layout="@layout/title_card" />
 
         <EditText
-            android:singleLine="true"
-            android:maxLines="1"
             android:id="@+id/nameEd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,7 +47,7 @@
             android:layout_marginTop="12dp"
             android:background="@drawable/rectangle_background"
             android:text="@string/tv_create"
-            android:textColor="?attr/textColor"/>
+            android:textColor="?attr/textColor" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

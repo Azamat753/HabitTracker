@@ -98,5 +98,12 @@
     <string name="my_code">Менин кодум</string>
     <string name="scan">Скандоо</string>
     <string name="enter_code">Кодду жазуу</string>
-    <string name="habit_delete">Привычка %s будет удалена</string>
+    <string name="habit_delete">Адат %s алынып салынат</string>
+    <string name="bad">Жаман</string>
+    <string name="good">Жакшы</string>
+    <string name="bad_habit">Жаман адаттар</string>
+    <string name="good_habit">Жакшы адаттар</string>
+    <string name="today_check">Бүгүн белгиленген</string>
+    <string name="you_sure">Сиз бүгүн чындыгында %s адатын бекемдедиңизби ?</string>
+    <string name="last_check">%s Адаттын акыркы белгиси \n\n %s</string>
 </resources>

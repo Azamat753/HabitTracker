@@ -1,5 +1,6 @@
 package com.lawlett.habittracker.ext
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -20,6 +21,7 @@ import com.google.gson.reflect.TypeToken
 import com.lawlett.habittracker.MainActivity
 import com.lawlett.habittracker.databinding.FollowDialogBinding
 import com.lawlett.habittracker.helper.CacheManager
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -34,6 +36,11 @@ fun View.toGone() {
 fun View.toVisible() {
     isVisible = true
 }
+
+fun View.toInvisible() {
+    isVisible = false
+}
+
 
 fun String.makeTopic() = this.replaceBefore(":", "")
     .replace(":", "")
@@ -89,6 +96,18 @@ fun Activity.isClickableBottom(boolean: Boolean) {
 fun Fragment.isClickableScreen(isClickable: Boolean, vararg view: View) {
     view.forEach { it.isEnabled = isClickable }
     requireActivity().isClickableBottom(isClickable)
+}
+
+@SuppressLint("SimpleDateFormat")
+fun Date.getTodayFormatDate(): String {
+    val sdf = SimpleDateFormat("dd.MM.yy hh:mm:ss")
+    return sdf.format(Date())
+}
+
+@SuppressLint("SimpleDateFormat")
+fun Date.formatDateToString():String{
+    val sdf = SimpleDateFormat("dd.MM.yy hh:mm:ss")
+    return sdf.format(this)
 }
 
 inline fun <reified T> Gson.fromJson(json: String) =

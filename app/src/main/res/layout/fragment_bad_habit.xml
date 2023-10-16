@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor"
     android:orientation="vertical"
-    tools:context="com.lawlett.habittracker.fragment.main.MainFragment">
+    tools:context="com.lawlett.habittracker.fragment.bad.BadHabitFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="1"
-            tools:listitem="@layout/item_habit" />
+            tools:listitem="@layout/item_bad_habit" />
 
         <LinearLayout
             android:id="@+id/emptyLayout"

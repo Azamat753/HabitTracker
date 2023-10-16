@@ -98,5 +98,12 @@
     <string name="my_code">My Code</string>
     <string name="scan">Scan</string>
     <string name="enter_code">Enter code</string>
-    <string name="habit_delete">Привычка %s будет удалена</string>
+    <string name="habit_delete">Habit %s will delete</string>
+    <string name="bad">Bad</string>
+    <string name="good">Good</string>
+    <string name="bad_habit">Bad habits</string>
+    <string name="good_habit">Good habits</string>
+    <string name="today_check">Today it was noted</string>
+    <string name="you_sure">Have you really fixed the \n habit %s ?</string>
+    <string name="last_check">The last mark of the habit \n %s was \n\n %s</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.lawlett.habittracker.fragment.main
+package com.lawlett.habittracker.fragment.bad
 
 
 import android.os.Bundle
@@ -16,12 +16,12 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.firebase.Timestamp
 import com.lawlett.habittracker.R
-import com.lawlett.habittracker.adapter.HabitAdapter
+import com.lawlett.habittracker.adapter.BadHabitAdapter
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
-import com.lawlett.habittracker.databinding.FragmentMainBinding
+import com.lawlett.habittracker.databinding.FragmentBadHabitBinding
 import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.ext.createDialog
 import com.lawlett.habittracker.ext.isClickableScreen
@@ -29,11 +29,11 @@ import com.lawlett.habittracker.ext.setSpotLightBuilder
 import com.lawlett.habittracker.ext.setSpotLightTarget
 import com.lawlett.habittracker.ext.toGone
 import com.lawlett.habittracker.ext.toVisible
-import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
+import com.lawlett.habittracker.fragment.bad.viewModel.BadHabitViewModel
 import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.helper.SpotlightEnd
-import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.models.BadHabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asSharedFlow
@@ -42,13 +42,13 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainFragment : Fragment(R.layout.fragment_main),
-    BaseAdapter.IBaseAdapterClickListener<HabitModel>,
-    BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel>, SpotlightEnd {
+class BadHabitFragment : Fragment(R.layout.fragment_bad_habit),
+    BaseAdapter.IBaseAdapterClickListener<BadHabitModel>,
+    BaseAdapter.IBaseAdapterLongClickListenerWithModel<BadHabitModel>, SpotlightEnd {
 
-    private val binding: FragmentMainBinding by viewBinding()
-    private val viewModel: MainViewModel by viewModels()
-    private val adapter = HabitAdapter()
+    private val binding: FragmentBadHabitBinding by viewBinding()
+    private val viewModel: BadHabitViewModel by viewModels()
+    private val adapter = BadHabitAdapter()
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
@@ -163,7 +163,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.progressBar.toVisible()
         firebaseHelper.db.collection(firebaseHelper.getUserName()).get()
             .addOnCompleteListener { result ->
-                val listHabit = arrayListOf<HabitModel>()
+                val listHabit = arrayListOf<BadHabitModel>()
                 if (result.result.documents.size == 0) {
                     binding.progressBar.toGone()
                 }
@@ -176,7 +176,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
                     val allDays = (document.data["allDays"] as Long).toInt()
                     val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
                     val history = document.data["history"] as String?
-                    val model = HabitModel(
+                    val model = BadHabitModel(
                         title = title,
                         icon = icon,
                         currentDay = currentDay,
@@ -237,13 +237,13 @@ class MainFragment : Fragment(R.layout.fragment_main),
         }
     }
 
-    override fun onClick(model: HabitModel, position: Int) {
+    override fun onClick(model: BadHabitModel, position: Int) {
         val bundle = Bundle()
         bundle.putParcelable("key", model)
         findNavController().navigate(R.id.habitDetailFragment, bundle)
     }
 
-    override fun onLongClick(model: HabitModel, itemView: View, position: Int) {
+    override fun onLongClick(model: BadHabitModel, itemView: View, position: Int) {
         val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
         dialog.first.txtDescription.text = getString(R.string.habit_delete, model.title)
         dialog.first.btnYes.setOnClickListener {

@@ -18,16 +18,20 @@ import com.google.firebase.Timestamp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.adapter.FollowerAdapter
+import com.lawlett.habittracker.adapter.FollowerGoodHabitAdapter
 import com.lawlett.habittracker.adapter.NameAdapter
 import com.lawlett.habittracker.bottomsheet.FollowDialog
+import com.lawlett.habittracker.databinding.DialogCheckHabitBinding
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentFollowBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.helper.*
 import com.lawlett.habittracker.helper.Key.KEY_SEARCH_FOLLOWS
-import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.models.BadHabitModel
+import com.lawlett.habittracker.models.GoodHabitModel
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -186,9 +190,9 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
         }
     }
 
-    private fun openDetail(habitModel: HabitModel) {
+    private fun openDetail(badHabitModel: BadHabitModel) {
         val bundle = Bundle()
-        bundle.putParcelable("key", habitModel)
+        bundle.putParcelable("key", badHabitModel)
         bundle.putBoolean("isFollow", true)
         findNavController().navigate(R.id.habitDetailFragment, bundle)
     }
@@ -197,16 +201,29 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
         multiTypeAdapter = MultiTypeAdapter()
         multiTypeAdapter.register(NameAdapter(click = ({ name -> removeFollower(name) })))
         multiTypeAdapter.register(FollowerAdapter(click = ({ model -> openDetail(model) })))
+        multiTypeAdapter.register(FollowerGoodHabitAdapter(click = ({ model -> showLastDate(model) })))
         val layoutManager = GridLayoutManager(requireContext(), 2)
         val spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 val item = items[position]
-                return if (item is HabitModel) 1 else 2
+                return if (item is BadHabitModel || item is GoodHabitModel) 1 else 2
             }
         }
         layoutManager.spanSizeLookup = spanSizeLookup
         binding.recyclerFriends.layoutManager = layoutManager
         binding.recyclerFriends.adapter = multiTypeAdapter
+    }
+
+    private fun showLastDate(goodHabitModel: GoodHabitModel) {
+        val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+        dialog.first.txtDescription.text = getString(
+            R.string.last_check,
+            goodHabitModel.title,
+            goodHabitModel.lastDate?.formatDateToString()
+        )
+        dialog.first.txtTitle.text = goodHabitModel.icon
+        dialog.first.btnNo.toGone()
+        dialog.first.btnYes.toGone()
     }
 
     @SuppressLint("SetTextI18n", "StringFormatInvalid")
@@ -243,25 +260,38 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
                         }
                         for (document in result.result) {
                             val title = document.data["title"] as String?
-                            val attempts = (document.data["attempts"] as Long).toInt()
+                            val attempts = (document.data["attempts"] as Long?)?.toInt()
                             val icon = document.data["icon"] as String?
                             val record = document.data["record"] as String?
                             val currentDay = (document.data["currentDay"] as Long).toInt()
                             val allDays = (document.data["allDays"] as Long).toInt()
                             val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
                             val history = document.data["history"] as String?
-                            val model = HabitModel(
-                                title = title,
-                                icon = icon,
-                                currentDay = currentDay,
-                                allDays = allDays,
-                                startDate = startDate,
-                                fbName = userName,
-                                attempts = attempts,
-                                record = record,
-                                history = history
-                            )
-                            items.add(model)
+                            val lastDate = (document.data["lastDate"] as Timestamp?)?.toDate()
+                            if (lastDate != null) {
+                                val model = GoodHabitModel(
+                                    title = title,
+                                    icon = icon,
+                                    currentDay = currentDay,
+                                    allDays = allDays,
+                                    fbName = userName,
+                                    lastDate = lastDate
+                                )
+                                items.add(model)
+                            } else {
+                                val model = BadHabitModel(
+                                    title = title,
+                                    icon = icon,
+                                    currentDay = currentDay,
+                                    allDays = allDays,
+                                    startDate = startDate,
+                                    fbName = userName,
+                                    attempts = attempts ?: 0,
+                                    record = record,
+                                    history = history
+                                )
+                                items.add(model)
+                            }
                             if (items.size == result.result.documents.size + names) {
                                 multiTypeAdapter.items = items
                                 multiTypeAdapter.notifyDataSetChanged()

@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ViewHolderInflater
 import com.lawlett.habittracker.databinding.NameCardBinding
-import com.lawlett.habittracker.models.HabitModel
 
 class NameAdapter(var click: (model : String)-> Unit) : ViewHolderInflater<Pair<String,String>, NameAdapter.ViewHolder>() {
 

@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     lateinit var cacheManager: CacheManager
     var appUpdateManager: AppUpdateManager? = null
     private val UPDATE_CODE = 22
+
     override fun onCreate(savedInstanceState: Bundle?) {
         checkedTheme()
         changeLanguage()
@@ -152,13 +153,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 else -> true
             }
             when (destination.id) {
-                R.id.mainFragment -> {
+                R.id.badHabitFragment -> {
                     checkUpdate()
                 }
             }
 
             binding.toolbarMain.text = when (destination.id) {
-                R.id.mainFragment -> getString(R.string.tv_main)
+                R.id.badHabitFragment -> getString(R.string.bad_habit)
+                R.id.goodHabitFragment -> getString(R.string.good_habit)
                 R.id.followFragment -> getString(R.string.tv_subscriptions)
                 R.id.settingsFragment -> getString(R.string.tv_settings)
                 else -> getString(R.string.tv_main)

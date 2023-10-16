@@ -1,28 +1,31 @@
 package com.lawlett.habittracker.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ViewHolderInflater
 import com.lawlett.habittracker.databinding.ItemFollowerBinding
 import com.lawlett.habittracker.models.BadHabitModel
+import com.lawlett.habittracker.models.GoodHabitModel
 
-class FollowerAdapter(var click: (model :BadHabitModel)-> Unit) :
-    ViewHolderInflater<BadHabitModel, FollowerAdapter.FollowViewHolder>() {
+class FollowerGoodHabitAdapter(var click: (model :GoodHabitModel)-> Unit) :
+    ViewHolderInflater<GoodHabitModel, FollowerGoodHabitAdapter.FollowViewHolder>() {
    inner class FollowViewHolder(var binding: ItemFollowerBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun onBind(badHabitModel: BadHabitModel) {
-            binding.habitTitle.text = badHabitModel.title
-            binding.habitImage.text = badHabitModel.icon
-            binding.habitCount.text = badHabitModel.currentDay.toString() + " / " + badHabitModel.allDays
-            binding.habitProgress.max = badHabitModel.allDays ?: 0//change
-            binding.habitProgress.progress = badHabitModel.currentDay ?: 0
+        @SuppressLint("SetTextI18n")
+        fun onBind(model: GoodHabitModel) {
+            binding.habitTitle.text = model.title
+            binding.habitImage.text = model.icon
+            binding.habitCount.text = model.currentDay.toString() + " / " + model.allDays
+            binding.habitProgress.max = model.allDays ?: 0//change
+            binding.habitProgress.progress = model.currentDay ?: 0
             binding.root.setOnClickListener {
-                click.invoke(badHabitModel)
+                click.invoke(model)
             }
         }
     }
 
-    override fun onBindViewHolder(holder: FollowViewHolder, item: BadHabitModel) {
+    override fun onBindViewHolder(holder: FollowViewHolder, item: GoodHabitModel) {
         holder.onBind(item)
     }
 

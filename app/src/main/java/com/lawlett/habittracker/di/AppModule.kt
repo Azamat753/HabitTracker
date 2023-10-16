@@ -52,7 +52,11 @@ class AppModule {
             .build()
 
     @Provides
-    fun provideHabitDao(@ApplicationContext context: Context) = provideDataBase(context).habitDao()
+    fun provideHabitDao(@ApplicationContext context: Context) = provideDataBase(context).badHabitDao()
+
+    @Provides
+    fun provideGoodHabitDao(@ApplicationContext context: Context) = provideDataBase(context).goodHabitDao()
+
 
     @Provides
     fun provideFirebaseHelper() = FirebaseHelper()

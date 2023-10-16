@@ -98,4 +98,11 @@
     <string name="scan">Сканировать</string>
     <string name="enter_code">Ввести код</string>
     <string name="habit_delete">Привычка %s будет удалена</string>
+    <string name="bad">Плохие</string>
+    <string name="good">Хорошие</string>
+    <string name="bad_habit">Плохие привычки</string>
+    <string name="good_habit">Хорошие привычки</string>
+    <string name="today_check">Сегодня было отмечено</string>
+    <string name="you_sure">Вы действительно сегодня закрепили \n привычку %s ?</string>
+    <string name="last_check">Последняя отметка привычки \n %s была \n\n %s</string>
 </resources>

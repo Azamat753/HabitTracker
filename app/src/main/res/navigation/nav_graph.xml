@@ -3,17 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph.xml"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/badHabitFragment">
 
     <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.lawlett.habittracker.fragment.main.MainFragment"
+        android:id="@+id/badHabitFragment"
+        android:name="com.lawlett.habittracker.fragment.bad.BadHabitFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main">
-        <action
-            android:id="@+id/action_mainFragment_to_habitDetailFragment"
-            app:destination="@id/habitDetailFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_bad_habit"/>
+
+    <fragment
+        android:id="@+id/goodHabitFragment"
+        android:name="com.lawlett.habittracker.fragment.good.GoodHabitFragment"
+        android:label="fragment_good_habit"
+        tools:layout="@layout/fragment_good_habit" />
+
     <fragment
         android:id="@+id/followFragment"
         android:name="com.lawlett.habittracker.fragment.follow.FollowsFragment"
