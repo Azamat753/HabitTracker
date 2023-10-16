@@ -175,7 +175,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
 
     @SuppressLint("SetTextI18n", "StringFormatInvalid")
     private fun removeFollower(name: String) {
-        val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+        val dialog = requireContext().  createDialog(DialogDeleteBinding::inflate)
         dialog.first.txtDescription.text = getString(R.string.follow_delete, name.makeUserName())
         dialog.first.btnYes.setOnClickListener {
             val array = cacheManager.getFollowers()!!

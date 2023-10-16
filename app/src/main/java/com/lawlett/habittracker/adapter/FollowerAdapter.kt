@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ViewHolderInflater
 import com.lawlett.habittracker.databinding.ItemFollowerBinding
-import com.lawlett.habittracker.databinding.ItemHabitBinding
 import com.lawlett.habittracker.models.HabitModel
 
 class FollowerAdapter(var click: (model :HabitModel)-> Unit) :
