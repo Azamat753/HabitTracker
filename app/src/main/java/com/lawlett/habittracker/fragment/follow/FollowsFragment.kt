@@ -41,7 +41,6 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
     lateinit var multiTypeAdapter: MultiTypeAdapter
     lateinit var items: MutableList<Any>
 
-
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
 
@@ -53,13 +52,15 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        helper = GoogleSignInHelper(this, tokenCallback = this) { reInitAdapter() }
-        initMultiAdapter()
-        spotlight()
-        getFromFb()
-        initClickers()
-        setupUI()
-        checkOnEmpty()
+        if (getView() != null) {
+            helper = GoogleSignInHelper(this, tokenCallback = this) { reInitAdapter() }
+            initMultiAdapter()
+            spotlight()
+            getFromFb()
+            initClickers()
+            setupUI()
+            checkOnEmpty()
+        }
     }
 
     private fun getFromFb() {

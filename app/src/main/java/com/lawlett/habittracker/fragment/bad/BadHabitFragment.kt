@@ -58,15 +58,17 @@ class BadHabitFragment : Fragment(R.layout.fragment_bad_habit),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAdapter()
-        initClickers()
-        viewModel.getHabits()
-        observe()
-        navigate()
-        firstLaunchDialog()
-        viewModel.viewModelScope.launch {
-            delay(100)
-            checkOnEmpty()
+        if (getView() != null) {
+            initAdapter()
+            initClickers()
+            viewModel.getHabits()
+            observe()
+            navigate()
+            firstLaunchDialog()
+            viewModel.viewModelScope.launch {
+                delay(100)
+                checkOnEmpty()
+            }
         }
     }
 

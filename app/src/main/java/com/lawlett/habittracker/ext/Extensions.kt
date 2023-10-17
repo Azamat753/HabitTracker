@@ -100,13 +100,13 @@ fun Fragment.isClickableScreen(isClickable: Boolean, vararg view: View) {
 
 @SuppressLint("SimpleDateFormat")
 fun Date.getTodayFormatDate(): String {
-    val sdf = SimpleDateFormat("dd.MM.yy hh:mm:ss")
+    val sdf = SimpleDateFormat("dd.MM.yy HH:mm:ss")
     return sdf.format(Date())
 }
 
 @SuppressLint("SimpleDateFormat")
 fun Date.formatDateToString():String{
-    val sdf = SimpleDateFormat("dd.MM.yy hh:mm:ss")
+    val sdf = SimpleDateFormat("dd.MM.yy HH:mm:ss")
     return sdf.format(this)
 }
 

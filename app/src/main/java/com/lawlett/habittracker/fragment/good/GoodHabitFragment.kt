@@ -25,6 +25,8 @@ import com.lawlett.habittracker.ext.createDialog
 import com.lawlett.habittracker.ext.getDays
 import com.lawlett.habittracker.ext.getTodayFormatDate
 import com.lawlett.habittracker.ext.showToast
+import com.lawlett.habittracker.ext.toGone
+import com.lawlett.habittracker.ext.toVisible
 import com.lawlett.habittracker.fragment.bad.viewModel.BadHabitViewModel
 import com.lawlett.habittracker.fragment.good.viewModel.GoodHabitViewModel
 import com.lawlett.habittracker.helper.CacheManager
@@ -56,10 +58,16 @@ class GoodHabitFragment : Fragment(R.layout.fragment_good_habit),
     lateinit var cacheManager: CacheManager
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAdapter()
-        initClickers()
-        viewModel.getHabits()
-        observe()
+        if (getView() != null) {
+            initAdapter()
+            initClickers()
+            viewModel.getHabits()
+            observe()
+            viewModel.viewModelScope.launch {
+                delay(100)
+                checkOnEmpty()
+            }
+        }
     }
 
     private fun observe() {
@@ -82,6 +90,24 @@ class GoodHabitFragment : Fragment(R.layout.fragment_good_habit),
         with(binding) {
             fab.setOnClickListener {
                 CreateHabitDialog().show(requireActivity().supportFragmentManager, IS_GOOD)
+            }
+        }
+    }
+
+    private fun checkOnEmpty() {
+        if (view != null) {
+            with(binding) {
+                if (adapter.data.isEmpty()) {
+                    habitRecycler.toGone()
+                    emptyLayout.toVisible()
+//                    if (firebaseHelper.isSigned()) {
+//                        getHabitsFromFB()
+//                    }
+                } else {
+                    binding.progressBar.toGone()
+                    habitRecycler.toVisible()
+                    emptyLayout.toGone()
+                }
             }
         }
     }
@@ -118,9 +144,9 @@ class GoodHabitFragment : Fragment(R.layout.fragment_good_habit),
         val currentDate = Date().getTodayFormatDate().removeRange(8, 17)
         var lastDay = "empty"
 
-        if (habitModel.lastDate==null){
+        if (habitModel.lastDate == null) {
             lastDay = "empty"
-        }else{
+        } else {
             lastDay = sdf.format(habitModel.lastDate!!).removeRange(8, 17)
         }
         if (currentDate != lastDay) {

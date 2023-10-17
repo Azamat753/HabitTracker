@@ -33,15 +33,14 @@
             android:textAlignment="textStart"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/inter_medium"
-            android:textColor="?attr/iconColor"
+            android:textColor="@color/black"
             android:layout_marginStart="50dp"
-            android:textSize="16sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/cardsLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/habit_progress"
             app:layout_constraintTop_toTopOf="@id/habit_progress"
             tools:text="habit" />
-
 
         <TextView
             android:id="@+id/habit_count"
@@ -93,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="08.10.23 14:12:43"
-                android:textColor="?attr/iconColor"
+                android:textColor="@color/black"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

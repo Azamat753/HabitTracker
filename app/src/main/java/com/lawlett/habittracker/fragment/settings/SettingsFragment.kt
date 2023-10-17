@@ -63,15 +63,18 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback, Sp
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         spotlight()
-        helper = GoogleSignInHelper(
-            this, this
-        ) { setupUI() }
-        initClickers()
-        setupUI()
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.completeFlow.asSharedFlow().collect() {
-                    showProgressBar(it)
+        if (getView() != null) {
+            helper = GoogleSignInHelper(
+                this, this
+            ) { setupUI() }
+            initClickers()
+            setupUI()
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.completeFlow.asSharedFlow().collect() {
+                        showProgressBar(it)
+                    }
                 }
             }
         }
@@ -136,16 +139,16 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback, Sp
                 binding.changeTheme, first, getString(R.string.btn_change_theme)
             )
 
-            val syncStop = setSpotLightTarget(
-                binding.syncBtn, first, getString(R.string.btn_sync)
-            )
+//            val syncStop = setSpotLightTarget(
+//                binding.syncBtn, first, getString(R.string.btn_sync)
+//            )
 
             targets.add(views)
             targets.add(firstStop)
             targets.add(secondStop)
             targets.add(thirdStop)
             targets.add(changeTheme)
-            targets.add(syncStop)
+//            targets.add(syncStop)
 
             setSpotLightBuilder(requireActivity(), targets, first, this)
         }, 100)
