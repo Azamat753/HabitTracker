@@ -46,11 +46,44 @@ fun Context.changeLanguage() {
             setLocale("en", this)
         }
 
-        2->{
-            setLocale("ky",this)
+        2 -> {
+            setLocale("ky", this)
+        }
+
+        3 -> {
+            setLocale("fr", this)
+        }
+
+        4 -> {
+            setLocale("pt", this)
+        }
+
+        5 -> {
+            setLocale("ko", this)
+        }
+
+        6 -> {
+            setLocale("zh", this)
+        }
+
+        7 -> {
+            setLocale("be", this)
+        }
+
+        8 -> {
+            setLocale("uk", this)
+        }
+
+        9 -> {
+            setLocale("de", this)
+        }
+
+        10 -> {
+            setLocale("tr", this)
         }
     }
 }
+
 private fun setLocale(s: String, context: Context) {
     val locale = Locale(s)
     Locale.setDefault(locale)

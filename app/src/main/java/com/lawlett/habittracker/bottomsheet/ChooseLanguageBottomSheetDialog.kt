@@ -30,7 +30,21 @@ class ChooseLanguageBottomSheetDialog :
     private fun initAdapter() {
         adapter.listener = this
         binding.recycler.adapter = adapter
-        adapter.setData(arrayListOf("Русский", "English", "Кыргызча"))
+        adapter.setData(
+            arrayListOf(
+                "Русский",
+                "English",
+                "Кыргызча",
+                "Français",
+                "Português",
+                "한국어",
+                "中文",
+                "Беларуская мова",
+                "Український",
+                "Deutsch",
+                "Türk"
+            )
+        )
     }
 
     override fun onClick(model: String, position: Int) {

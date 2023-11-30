@@ -142,7 +142,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
             } else {
                 recyclerFriends.toVisible()
                 signLayout.toGone()
-                binding.progressBar.toGone()
+//                binding.progressBar.toGone()
                 checkOnEmpty()
             }
         }
@@ -215,6 +215,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
         binding.recyclerFriends.adapter = multiTypeAdapter
     }
 
+    @SuppressLint("StringFormatMatches")
     private fun showLastDate(goodHabitModel: GoodHabitModel) {
         val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
         dialog.first.txtDescription.text = getString(
