@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallback, SpotlightEnd {
-
+ // he he
     private val binding: FragmentHabitDetailBinding by viewBinding()
     private var adapter = HabitDetailAdapter(this::onClick)
     private val viewModel: HabitDetailViewModel by viewModels()
