@@ -38,7 +38,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
-
+    //Ibrahim
     private val binding: ActivityMainBinding by viewBinding()
     private lateinit var navController: NavController
 
