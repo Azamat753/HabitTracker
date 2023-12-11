@@ -117,7 +117,7 @@ class TimerManager(
         }
     }
 
-    fun updateTime(isFollow: Boolean = false, startTime: Date? = null) {
+    fun updateTime(isFollow: Boolean = false, startTime: Date? = null,) {
         if (dataHelper.timerCounting()) {
             val time =
                 Date().time - (if (isFollow) startTime?.time ?: 0 else dataHelper.startTime()?.time
@@ -137,7 +137,7 @@ class TimerManager(
     }
 
 
-    fun timeStringFromLong(ms: Long): String {
+    private fun timeStringFromLong(ms: Long): String {
         val seconds = (ms / 1000) % 60
         val minutes = (ms / (1000 * 60) % 60)
         val hours = (ms / (1000 * 60 * 60) % 24)

@@ -25,6 +25,7 @@ import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.DialogQrBinding
 import com.lawlett.habittracker.databinding.FragmentSettingsBinding
 import com.lawlett.habittracker.ext.createDialog
+import com.lawlett.habittracker.ext.isClickableScreen
 import com.lawlett.habittracker.ext.setSpotLightBuilder
 import com.lawlett.habittracker.ext.setSpotLightTarget
 import com.lawlett.habittracker.ext.showToast
@@ -35,6 +36,7 @@ import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
 import com.lawlett.habittracker.helper.GoogleSignInHelper
 import com.lawlett.habittracker.helper.Key.KEY_SEARCH_SETTINGS
+import com.lawlett.habittracker.helper.SpotlightEnd
 import com.lawlett.habittracker.helper.TokenCallback
 import com.takusemba.spotlight.Target
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,7 +46,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
+class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback, SpotlightEnd {
     private val binding: FragmentSettingsBinding by viewBinding()
 
     lateinit var helper: GoogleSignInHelper
@@ -78,7 +80,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
     private fun spotlight() {
         if (!cacheManager.isPass()) {
             if (!cacheManager.isUserSeen(KEY_SEARCH_SETTINGS)) {
-                searchlight()
+                showSpotlight()
             }
         }
     }
@@ -102,10 +104,16 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
         }
     }
 
-    private fun searchlight() {
+    private fun showSpotlight() {
         val targets = ArrayList<Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target_detail, root)
+        with(binding) {
+            isClickableScreen(
+                false,
+                signBtn, shareBtn, changeLang, changeTheme, syncBtn, exitBtn
+            )
+        }
 
         Handler().postDelayed({
             cacheManager.saveUserSeen(KEY_SEARCH_SETTINGS)
@@ -139,7 +147,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
             targets.add(changeTheme)
             targets.add(syncStop)
 
-            setSpotLightBuilder(requireActivity(), targets, first)
+            setSpotLightBuilder(requireActivity(), targets, first, this)
         }, 100)
     }
 
@@ -225,16 +233,28 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), TokenCallback {
             }
             exitBtn.setOnClickListener {
                 firebaseHelper.logOut()
-                showToast(getString(R.string.success))
-                setupUI()
+                successSign()
             }
         }
     }
 
-    override fun newToken(authCode: String) {}
+    override fun newToken(authCode: String) {
+        successSign()
+    }
 
     override fun signSuccess() {
+        successSign()
+    }
+
+    private fun successSign() {
         showToast(getString(R.string.success))
         setupUI()
+    }
+
+
+    override fun end() {
+        with(binding) {
+            isClickableScreen(true, signBtn, shareBtn, changeLang, changeTheme, syncBtn, exitBtn)
+        }
     }
 }

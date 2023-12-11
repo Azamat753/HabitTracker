@@ -10,13 +10,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.FirebaseOptions
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseBottomSheetDialog
 import com.lawlett.habittracker.databinding.CreateHabitDialogBinding
-import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
+import com.lawlett.habittracker.fragment.bad.viewModel.BadHabitViewModel
+import com.lawlett.habittracker.fragment.good.viewModel.GoodHabitViewModel
 import com.lawlett.habittracker.helper.FirebaseHelper
-import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.helper.Key.IS_GOOD
+import com.lawlett.habittracker.models.BadHabitModel
+import com.lawlett.habittracker.models.GoodHabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asSharedFlow
@@ -28,7 +30,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class CreateHabitDialog :
     BaseBottomSheetDialog<CreateHabitDialogBinding>(CreateHabitDialogBinding::inflate) {
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: BadHabitViewModel by viewModels()
+    private val goodViewModel: GoodHabitViewModel by viewModels()
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
@@ -52,17 +55,30 @@ class CreateHabitDialog :
                 } else if (emojiEd.text.toString().isEmpty()) {
                     emojiEd.error = getString(R.string.tv_emoji)
                 } else {
-                    val model = HabitModel(
-                        title = nameEd.text.toString(),
-                        icon = emojiEd.text.toString(), allDays = 7,
-                        fbName = firebaseHelper.getUserName(),
-                        startDate = Date()
-                    )
-                    viewModel.insert(model)
-                    viewModel.viewModelScope.launch {
-                        delay(200)
-                        viewModel.getLastHabit()
-                        observe()
+                    if (tag == IS_GOOD) {
+                        val model = GoodHabitModel(
+                            title = nameEd.text.toString(),
+                            icon = emojiEd.text.toString(), allDays = 7,
+                            fbName = firebaseHelper.getUserName(),
+                            currentDay = 0
+                        )
+                        goodViewModel.insert(model)
+                        dismiss()
+                        findNavController().navigate(R.id.goodHabitFragment)
+                    } else {
+                        val model = BadHabitModel(
+                            title = nameEd.text.toString(),
+                            icon = emojiEd.text.toString(), allDays = 7,
+                            fbName = firebaseHelper.getUserName(),
+                            startDate = Date()
+                        )
+
+                        viewModel.insert(model)
+                        viewModel.viewModelScope.launch {
+                            delay(200)
+                            viewModel.getLastHabit()
+                            observe()
+                        }
                     }
                 }
             }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
         android:layout_width="328dp"
@@ -18,34 +18,31 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/txt_title"
+                android:id="@+id/smileTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:fontFamily="@font/inter_medium"
-                android:text="@string/tv_delete"
-                android:textAlignment="center"
-                android:textColor="?attr/iconColor"
-                android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginTop="24dp"
+                android:textSize="24sp"
+                tools:text="🤔"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/txt_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="16dp"
                 android:fontFamily="@font/inter"
-                tools:text="Привычка “курение” будет удалена"
                 android:textAlignment="center"
                 android:textColor="?attr/iconColor"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@id/buttonsLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txt_title" />
+                app:layout_constraintTop_toBottomOf="@id/smileTv"
+                tools:text="Вы действительно сегодня  закрепили привычку   ?" />
 
             <LinearLayout
                 android:id="@+id/buttonsLayout"
@@ -79,6 +76,15 @@
                     android:text="@string/btn_yes"
                     android:textAllCaps="false"
                     android:textColor="?attr/textColor" />
+
+                <!--                <Button-->
+                <!--                    android:id="@+id/createBtn"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginTop="12dp"-->
+                <!--                    android:background="@drawable/rectangle_background"-->
+                <!--                    android:text="@string/tv_create"-->
+                <!--                    android:textColor="?attr/textColor"/>-->
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

@@ -61,7 +61,7 @@
     //Setting
     <string name="settings_display">Бул сиздин жөндөөлөрүңүздүн экраны</string>
     <string name="settings_display_singBtn">Баскычты басканда, сиз каттоодон өтсөңүз болот</string>
-    <string name="settings_display_shareBtn">Бул баскычты басканда, сиз досуңузга уникалдуу кодуңузду жөнөтө аласыз ("Ibra Kasymov:8EEgmDq90vQzrgQI3RGtlCO5pQ12"). Досуңуз бул кодду алгандан кийин, аны жазылуу экранына киргизип, үй экраныңызда көрүнүп турган күнүмдүк адаттарыңызды байкай алат.</string>
+    <string name="settings_display_shareBtn">Бул баскычты басканда, сиз досуңузга уникалдуу кодуңузду жөнөтө аласыз. Досуңуз бул кодду алгандан кийин, аны жазылуу экранына киргизип, үй экраныңызда көрүнүп турган күнүмдүк адаттарыңызды байкай алат.</string>
     <string name="settings_display_changeLang">Бул жерде тил өзгөртө аласыз</string>
     <string name="habit_clear">Адат нөлгө түшөт</string>
     <string name="sync">Синхрондоштуруу</string>
@@ -93,7 +93,17 @@
     <string name="want_pass_instruction">Сиз тренингден өтүүнү каалайсызбы?</string>
     <string name="follow_delete">Жазылуу алынып салынат</string>
     <string name="relapse_habit">Адаттын кайталанышы : %s</string>
-    <string name="subscribe">Подписаться</string>
-    <string name="exit_account">Выйти с аккаунта</string>
-    <string name="my_code">Мой код</string>
+    <string name="subscribe">Жазылуу</string>
+    <string name="exit_account">Чыгуу</string>
+    <string name="my_code">Менин кодум</string>
+    <string name="scan">Скандоо</string>
+    <string name="enter_code">Кодду жазуу</string>
+    <string name="habit_delete">Адат %s алынып салынат</string>
+    <string name="bad">Жаман</string>
+    <string name="good">Жакшы</string>
+    <string name="bad_habit">Жаман адаттар</string>
+    <string name="good_habit">Жакшы адаттар</string>
+    <string name="today_check">Бүгүн белгиленген</string>
+    <string name="you_sure">Сиз бүгүн чындыгында %s адатын бекемдедиңизби ?</string>
+    <string name="last_check">%s Адаттын акыркы белгиси \n\n %s</string>
 </resources>

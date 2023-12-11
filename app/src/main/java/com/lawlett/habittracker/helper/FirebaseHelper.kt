@@ -7,13 +7,14 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.lawlett.habittracker.ext.TAG
-import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.models.BadHabitModel
+import com.lawlett.habittracker.models.GoodHabitModel
 
 class FirebaseHelper {
     val db = Firebase.firestore
     var auth: FirebaseAuth = Firebase.auth
 
-    fun insertOrUpdateHabitFB(model: HabitModel) {
+    fun insertOrUpdateHabitFB(model: BadHabitModel) {
         if (isSigned()) {
             db.collection(getUserName())
                 .document(model.title.toString()).set(model)
@@ -23,6 +24,39 @@ class FirebaseHelper {
                 .addOnFailureListener { e ->
                     Log.e(TAG, "Error adding document", e)
                 }
+        }
+    }
+
+    fun insertOrUpdateGoodHabitFB(model: GoodHabitModel) {
+        if (isSigned()) {
+            db.collection(getUserName())
+                .document("${model.title} (good)").set(model)
+                .addOnSuccessListener { documentReference ->
+                    Log.e(TAG, "DocumentSnapshot added with ID: $documentReference")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error adding document", e)
+                }
+        }
+    }
+
+    fun delete(model: BadHabitModel) {
+        if (isSigned()) {
+            db.collection(getUserName())
+                .document(model.title.toString())
+                .delete()
+                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+                .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+        }
+    }
+
+    fun deleteGoodHabit(model: GoodHabitModel) {
+        if (isSigned()) {
+            db.collection(getUserName())
+                .document("${model.title} (good)")
+                .delete()
+                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+                .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
         }
     }
 
@@ -36,16 +70,6 @@ class FirebaseHelper {
     }
 
     fun getUserName() = "${auth.currentUser?.displayName}:${auth.currentUser?.uid}"
-
-    fun delete(model: HabitModel) {
-        if (isSigned()) {
-            db.collection(getUserName())
-                .document(model.title.toString())
-                .delete()
-                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
-                .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
-        }
-    }
 
     private fun deleteCollection(collection: CollectionReference, batchSize: Int) {
         try {

@@ -44,7 +44,7 @@
     <string name="follows_display">На этом экране вы можете наблюдать за успехом ваших подписчиков</string>
     <string name="follows_fab">При клике вы можете вставить код друга и наблюдать за его привычками</string>
     //Detail
-    <string name="detail_display">Здесь вы можете видеть подробную информацию о вашей привычки</string>
+    <string name="detail_display">Здесь вы можете видеть подробную информацию о вашей привычке</string>
     <string name="detail_habit_name_habit">Наименование вашей привычки</string>
     <string name="detail_habit_name">Ваше имя</string>
     <string name="detail_habit_progress">Это пометка следит за вашим прогресcом</string>
@@ -60,7 +60,7 @@
     //Setting
     <string name="settings_display">Это экран ваших настроек</string>
     <string name="settings_display_singBtn">При нажатии на кнопку вы можете пройти регистрацию</string>
-    <string name="settings_display_shareBtn">При нажатии на эту кнопку, вы можете отправить ваш уникальный код вашему другу(типо "Ibra Kasymov:8EEgmDq90vQzrgQI3RGtlCO5pQ12"). Ваш друг, получив этот код, сможет вставить его в свой экран подписок и наблюдать за вашими ежедневными привычками, которые отображаются на вашем главном экране.</string>
+    <string name="settings_display_shareBtn">При нажатии на эту кнопку, вы можете отправить ваш уникальный код вашему другу.Ваш друг, получив этот код, сможет вставить его в свой экран подписок и наблюдать за вашими ежедневными привычками, которые отображаются на вашем главном экране.</string>
     <string name="settings_display_changeLang">Здесь можно сменить язык</string>
     <string name="habit_clear">Привычка будет обнулена</string>
     <string name="sync">Синхронизироваться</string>
@@ -95,4 +95,14 @@
     <string name="subscribe">Подписаться</string>
     <string name="exit_account">Выйти с аккаунта</string>
     <string name="my_code">Мой код</string>
+    <string name="scan">Сканировать</string>
+    <string name="enter_code">Ввести код</string>
+    <string name="habit_delete">Привычка %s будет удалена</string>
+    <string name="bad">Плохие</string>
+    <string name="good">Хорошие</string>
+    <string name="bad_habit">Плохие привычки</string>
+    <string name="good_habit">Хорошие привычки</string>
+    <string name="today_check">Сегодня было отмечено</string>
+    <string name="you_sure">Вы действительно сегодня закрепили \n привычку %s ?</string>
+    <string name="last_check">Последняя отметка привычки \n %s была \n\n %s</string>
 </resources>

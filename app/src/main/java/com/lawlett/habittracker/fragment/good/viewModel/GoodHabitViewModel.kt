@@ -1,10 +1,11 @@
-package com.lawlett.habittracker.fragment.main.viewModel
+package com.lawlett.habittracker.fragment.good.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lawlett.habittracker.Repository
 import com.lawlett.habittracker.ext.getDays
-import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.models.BadHabitModel
+import com.lawlett.habittracker.models.GoodHabitModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,48 +13,44 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class GoodHabitViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
-    val habitFlow = MutableSharedFlow<List<HabitModel>>()
+    val habitFlow = MutableSharedFlow<List<GoodHabitModel>>()
 
-    val lastHabitFlow = MutableSharedFlow<HabitModel>()
-
-    fun insert(habitModel: HabitModel) {
+    fun insert(goodHabitModel: GoodHabitModel) {
         viewModelScope.launch {
-            repository.insert(habitModel)
+            repository.insertGoodHabit(goodHabitModel)
         }
     }
 
     fun updateAllDays(allDays: Int, id: Int) {
         viewModelScope.launch {
-            repository.updateAllDays(allDays, id)
+            repository.updateGoodHabitAllDays(allDays, id)
         }
     }
 
-    fun delete(habitModel: HabitModel) {
+    fun updateCurrentDay(currentDay: Int,lastDate:Date, id: Int) {
         viewModelScope.launch {
-            repository.delete(habitModel)
+            repository.updateGoodHabitCurrentDay(currentDay,lastDate, id)
         }
     }
 
-    fun getLastHabit() {
+    fun delete(goodHabitModel: GoodHabitModel) {
         viewModelScope.launch {
-            repository.getLastHabit().
-            flowOn(Dispatchers.IO).onEach {
-                lastHabitFlow.emit(it)
-            }.launchIn(viewModelScope)
+            repository.deleteGoodHabit(goodHabitModel)
         }
     }
 
     fun getHabits() {
         viewModelScope.launch {
-            repository.getHabits()
-                .flowOn(Dispatchers.IO).onEach {
+            repository.getGoodHabits()
+                .flowOn(Dispatchers.IO).onEach { it ->
                     it.forEach {
-                        var currentDays = it.startDate?.getDays()?.toInt()?:0
+                        var currentDays = it.currentDay?:0
                         val daysFromRoom = it.allDays
 
                         if (currentDays >= daysFromRoom){

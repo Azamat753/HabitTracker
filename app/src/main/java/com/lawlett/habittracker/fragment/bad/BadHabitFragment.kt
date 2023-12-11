@@ -1,4 +1,4 @@
-package com.lawlett.habittracker.fragment.main
+package com.lawlett.habittracker.fragment.bad
 
 
 import android.os.Bundle
@@ -16,22 +16,24 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.firebase.Timestamp
 import com.lawlett.habittracker.R
-import com.lawlett.habittracker.adapter.HabitAdapter
+import com.lawlett.habittracker.adapter.BadHabitAdapter
 import com.lawlett.habittracker.base.BaseAdapter
 import com.lawlett.habittracker.bottomsheet.ChooseLanguageBottomSheetDialog
 import com.lawlett.habittracker.bottomsheet.CreateHabitDialog
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
-import com.lawlett.habittracker.databinding.FragmentMainBinding
+import com.lawlett.habittracker.databinding.FragmentBadHabitBinding
 import com.lawlett.habittracker.ext.TAG
 import com.lawlett.habittracker.ext.createDialog
+import com.lawlett.habittracker.ext.isClickableScreen
 import com.lawlett.habittracker.ext.setSpotLightBuilder
 import com.lawlett.habittracker.ext.setSpotLightTarget
 import com.lawlett.habittracker.ext.toGone
 import com.lawlett.habittracker.ext.toVisible
-import com.lawlett.habittracker.fragment.main.viewModel.MainViewModel
+import com.lawlett.habittracker.fragment.bad.viewModel.BadHabitViewModel
 import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.helper.FirebaseHelper
-import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.helper.SpotlightEnd
+import com.lawlett.habittracker.models.BadHabitModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asSharedFlow
@@ -40,13 +42,13 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainFragment : Fragment(R.layout.fragment_main),
-    BaseAdapter.IBaseAdapterClickListener<HabitModel>,
-    BaseAdapter.IBaseAdapterLongClickListenerWithModel<HabitModel> {
+class BadHabitFragment : Fragment(R.layout.fragment_bad_habit),
+    BaseAdapter.IBaseAdapterClickListener<BadHabitModel>,
+    BaseAdapter.IBaseAdapterLongClickListenerWithModel<BadHabitModel>, SpotlightEnd {
 
-    private val binding: FragmentMainBinding by viewBinding()
-    private val viewModel: MainViewModel by viewModels()
-    private val adapter = HabitAdapter()
+    private val binding: FragmentBadHabitBinding by viewBinding()
+    private val viewModel: BadHabitViewModel by viewModels()
+    private val adapter = BadHabitAdapter()
 
     @Inject
     lateinit var firebaseHelper: FirebaseHelper
@@ -94,7 +96,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
         dialog.first.txtTitle.text = getString(R.string.want_pass_instruction)
         dialog.first.txtDescription.toGone()
         dialog.first.btnYes.setOnClickListener {
-            searchlight()
+            spotlight()
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener {
@@ -109,11 +111,11 @@ class MainFragment : Fragment(R.layout.fragment_main),
         bottomDialog.show(requireActivity().supportFragmentManager, "main")
     }
 
-    private fun searchlight() {
+    private fun spotlight() {
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target_main, root)
-
+        isClickableScreen(false, binding.fab)
         Handler().postDelayed({
             val views = setSpotLightTarget(
                 binding.mainDisplay,
@@ -136,7 +138,7 @@ class MainFragment : Fragment(R.layout.fragment_main),
             targets.add(views)
             targets.add(firstSpot)
             targets.add(secondSpot)
-            setSpotLightBuilder(requireActivity(), targets, first)
+            setSpotLightBuilder(requireActivity(), targets, first, this)
         }, 100)
     }
 
@@ -161,27 +163,27 @@ class MainFragment : Fragment(R.layout.fragment_main),
         binding.progressBar.toVisible()
         firebaseHelper.db.collection(firebaseHelper.getUserName()).get()
             .addOnCompleteListener { result ->
-                val listHabit = arrayListOf<HabitModel>()
+                val listHabit = arrayListOf<BadHabitModel>()
                 if (result.result.documents.size == 0) {
                     binding.progressBar.toGone()
                 }
                 for (document in result.result) {
                     val title = document.data["title"] as String?
-                    val attempts = (document.data["attempts"] as Long).toInt()
+                    val attempts = (document.data["attempts"] as Long?)?.toInt()
                     val icon = document.data["icon"] as String?
                     val record = document.data["record"] as String?
                     val currentDay = (document.data["currentDay"] as Long).toInt()
                     val allDays = (document.data["allDays"] as Long).toInt()
                     val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
                     val history = document.data["history"] as String?
-                    val model = HabitModel(
+                    val model = BadHabitModel(
                         title = title,
                         icon = icon,
                         currentDay = currentDay,
                         allDays = allDays,
                         startDate = startDate,
                         fbName = firebaseHelper.getUserName(),
-                        attempts = attempts,
+                        attempts = attempts ?: 0,
                         record = record,
                         history = history
                     )
@@ -192,9 +194,13 @@ class MainFragment : Fragment(R.layout.fragment_main),
                         adapter.data.forEach {
                             viewModel.insert(it)
                         }
-                        binding.progressBar.toGone()
+                        if (isAdded) {
+                            binding.progressBar.toGone()
+                        }
                     } else {
-                        binding.progressBar.toGone()
+                        if (isAdded) {
+                            binding.progressBar.toGone()
+                        }
                     }
                 }
             }.addOnFailureListener {
@@ -214,29 +220,32 @@ class MainFragment : Fragment(R.layout.fragment_main),
     }
 
     private fun checkOnEmpty() {
-        with(binding) {
-            if (adapter.data.isEmpty()) {
-                habitRecycler.toGone()
-                emptyLayout.toVisible()
-                if (firebaseHelper.isSigned()) {
-                    getHabitsFromFB()
+        if (view != null) {
+            with(binding) {
+                if (adapter.data.isEmpty()) {
+                    habitRecycler.toGone()
+                    emptyLayout.toVisible()
+                    if (firebaseHelper.isSigned()) {
+                        getHabitsFromFB()
+                    }
+                } else {
+                    binding.progressBar.toGone()
+                    habitRecycler.toVisible()
+                    emptyLayout.toGone()
                 }
-            } else {
-                binding.progressBar.toGone()
-                habitRecycler.toVisible()
-                emptyLayout.toGone()
             }
         }
     }
 
-    override fun onClick(model: HabitModel, position: Int) {
+    override fun onClick(model: BadHabitModel, position: Int) {
         val bundle = Bundle()
         bundle.putParcelable("key", model)
         findNavController().navigate(R.id.habitDetailFragment, bundle)
     }
 
-    override fun onLongClick(model: HabitModel, itemView: View, position: Int) {
+    override fun onLongClick(model: BadHabitModel, itemView: View, position: Int) {
         val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+        dialog.first.txtDescription.text = getString(R.string.habit_delete, model.title)
         dialog.first.btnYes.setOnClickListener {
             viewModel.delete(model)
             firebaseHelper.delete(model)
@@ -247,6 +256,10 @@ class MainFragment : Fragment(R.layout.fragment_main),
             dialog.second.dismiss()
         }
         dialog.first.btnNo.setOnClickListener { dialog.second.dismiss() }
+    }
+
+    override fun end() {
+        isClickableScreen(true, binding.fab)
     }
 
 }

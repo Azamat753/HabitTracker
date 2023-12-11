@@ -1,24 +1,23 @@
 package com.lawlett.habittracker.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.models.BadHabitModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface HabitDao {
+interface BadHabitDao {
 
     @Insert
-    suspend fun insert(model: HabitModel)
+    suspend fun insert(model: BadHabitModel)
 
     @Query("SELECT * FROM habit_table")
-    fun getAll(): Flow<List<HabitModel>>
+    fun getAll(): Flow<List<BadHabitModel>>
 
     @Update
-    suspend fun update(model: HabitModel)
+    suspend fun update(model: BadHabitModel)
 
     @Delete
-    suspend fun delete(model: HabitModel)
+    suspend fun delete(model: BadHabitModel)
 
     @Query("SELECT history FROM habit_table WHERE id = :id ")
     fun getHistory(id: Int): Flow<String>
@@ -36,5 +35,5 @@ interface HabitDao {
     suspend fun updateAttempts(attempts: Int, id: Int)
 
     @Query("SELECT * FROM habit_table WHERE id = (SELECT MAX(id) FROM habit_table)")
-    fun getLastHabit(): Flow<HabitModel>
+    fun getLastHabit(): Flow<BadHabitModel>
 }

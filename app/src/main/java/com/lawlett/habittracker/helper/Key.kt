@@ -14,4 +14,5 @@ object Key {
 
     const val LANGUAGE_PREFERENCE = "lounge_pref"
 
+    const val IS_GOOD = "isGood"
 }

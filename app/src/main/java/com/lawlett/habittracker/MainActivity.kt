@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -40,9 +41,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val binding: ActivityMainBinding by viewBinding()
     private lateinit var navController: NavController
-    @Inject lateinit var cacheManager: CacheManager
+
+    @Inject
+    lateinit var cacheManager: CacheManager
     var appUpdateManager: AppUpdateManager? = null
     private val UPDATE_CODE = 22
+
     override fun onCreate(savedInstanceState: Bundle?) {
         checkedTheme()
         changeLanguage()
@@ -53,6 +57,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         destinationListener()
         MyFirebaseMessagingService()
         askNotificationPermission()
+    }
+
+    fun isClickableBottom(isClickable: Boolean) {
+        binding.bottomNavigation.menu.forEach { it.isEnabled = isClickable }
     }
 
     private fun popUp() {
@@ -67,6 +75,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         snackbar.setTextColor(Color.parseColor("#FF0000"))
         snackbar.show()
     }
+
     val listener = InstallStateUpdatedListener { installState ->
         if (installState.installStatus() == InstallStatus.DOWNLOADED) {
             popUp()
@@ -114,7 +123,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         if (isGranted) {
             Toast.makeText(this, getString(R.string.success), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, getString(R.string.notification_not_come), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.notification_not_come), Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -142,14 +152,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 R.id.habitDetailFragment -> false
                 else -> true
             }
-            when(destination.id){
-                R.id.mainFragment->{
+            when (destination.id) {
+                R.id.badHabitFragment -> {
                     checkUpdate()
                 }
             }
 
             binding.toolbarMain.text = when (destination.id) {
-                R.id.mainFragment -> getString(R.string.tv_main)
+                R.id.badHabitFragment -> getString(R.string.bad_habit)
+                R.id.goodHabitFragment -> getString(R.string.good_habit)
                 R.id.followFragment -> getString(R.string.tv_subscriptions)
                 R.id.settingsFragment -> getString(R.string.tv_settings)
                 else -> getString(R.string.tv_main)

@@ -1,15 +1,15 @@
 package com.lawlett.habittracker.fragment.follow
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -18,22 +18,25 @@ import com.google.firebase.Timestamp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.adapter.FollowerAdapter
+import com.lawlett.habittracker.adapter.FollowerGoodHabitAdapter
 import com.lawlett.habittracker.adapter.NameAdapter
 import com.lawlett.habittracker.bottomsheet.FollowDialog
+import com.lawlett.habittracker.databinding.DialogCheckHabitBinding
 import com.lawlett.habittracker.databinding.DialogDeleteBinding
 import com.lawlett.habittracker.databinding.FragmentFollowBinding
 import com.lawlett.habittracker.ext.*
 import com.lawlett.habittracker.helper.*
 import com.lawlett.habittracker.helper.Key.KEY_SEARCH_FOLLOWS
+import com.lawlett.habittracker.models.BadHabitModel
+import com.lawlett.habittracker.models.GoodHabitModel
 import com.takusemba.spotlight.Target
-import com.lawlett.habittracker.models.HabitModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, TokenCallback {
+class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, TokenCallback,
+    SpotlightEnd {
     private val binding: FragmentFollowBinding by viewBinding()
     lateinit var multiTypeAdapter: MultiTypeAdapter
     lateinit var items: MutableList<Any>
@@ -46,6 +49,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
 
     @Inject
     lateinit var cacheManager: CacheManager
+    private val requestCodeCameraPermission = 1001
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,7 +64,7 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
 
     private fun getFromFb() {
         if (firebaseHelper.isSigned()) {
-            if (view!=null){
+            if (view != null) {
                 fetchFromFB()
             }
         }
@@ -74,13 +78,40 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
         }
     }
 
+    private fun askForCameraPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(android.Manifest.permission.CAMERA),
+            requestCodeCameraPermission
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == requestCodeCameraPermission && grantResults.isNotEmpty()) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showScanner()
+            } else {
+                showToast("Permission Denied")
+            }
+        }
+    }
+
     private fun initClickers() {
         with(binding) {
             cameraFab.setOnClickListener {
-                ScannerDialog(this@FollowsFragment).show(
-                    requireActivity().supportFragmentManager,
-                    ""
-                )
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(), android.Manifest.permission.CAMERA
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    askForCameraPermission()
+                } else {
+                    showScanner()
+                }
             }
             penFab.setOnClickListener {
                 FollowDialog(this@FollowsFragment).show(
@@ -92,6 +123,13 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
                 helper.signInGoogle()
             }
         }
+    }
+
+    private fun showScanner() {
+        ScannerDialog(this@FollowsFragment).show(
+            requireActivity().supportFragmentManager,
+            ""
+        )
     }
 
     private fun setupUI() {
@@ -113,7 +151,9 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
         val targets = ArrayList<Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target_follows, root)
-
+        with(binding) {
+            isClickableScreen(false, fab, signBtn)
+        }
         Handler().postDelayed({
             cacheManager.saveUserSeen(KEY_SEARCH_FOLLOWS)
             val vi = setSpotLightTarget(
@@ -121,12 +161,12 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
             )
 
             val firstStop = setSpotLightTarget(
-                binding.fab, first, getString(R.string.follows_fab)
+                binding.fabInvisible, first, getString(R.string.follows_fab)
             )
 
             targets.add(vi)
             targets.add(firstStop)
-            setSpotLightBuilder(requireActivity(), targets, first)
+            setSpotLightBuilder(requireActivity(), targets, first, this)
         }, 100)
     }
 
@@ -150,9 +190,9 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
         }
     }
 
-    private fun openDetail(habitModel: HabitModel) {
+    private fun openDetail(badHabitModel: BadHabitModel) {
         val bundle = Bundle()
-        bundle.putParcelable("key", habitModel)
+        bundle.putParcelable("key", badHabitModel)
         bundle.putBoolean("isFollow", true)
         findNavController().navigate(R.id.habitDetailFragment, bundle)
     }
@@ -161,11 +201,12 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
         multiTypeAdapter = MultiTypeAdapter()
         multiTypeAdapter.register(NameAdapter(click = ({ name -> removeFollower(name) })))
         multiTypeAdapter.register(FollowerAdapter(click = ({ model -> openDetail(model) })))
+        multiTypeAdapter.register(FollowerGoodHabitAdapter(click = ({ model -> showLastDate(model) })))
         val layoutManager = GridLayoutManager(requireContext(), 2)
         val spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 val item = items[position]
-                return if (item is HabitModel) 1 else 2
+                return if (item is BadHabitModel || item is GoodHabitModel) 1 else 2
             }
         }
         layoutManager.spanSizeLookup = spanSizeLookup
@@ -173,9 +214,21 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
         binding.recyclerFriends.adapter = multiTypeAdapter
     }
 
+    private fun showLastDate(goodHabitModel: GoodHabitModel) {
+        val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
+        dialog.first.txtDescription.text = getString(
+            R.string.last_check,
+            goodHabitModel.title,
+            goodHabitModel.lastDate?.formatDateToString()
+        )
+        dialog.first.txtTitle.text = goodHabitModel.icon
+        dialog.first.btnNo.toGone()
+        dialog.first.btnYes.toGone()
+    }
+
     @SuppressLint("SetTextI18n", "StringFormatInvalid")
     private fun removeFollower(name: String) {
-        val dialog = requireContext().  createDialog(DialogDeleteBinding::inflate)
+        val dialog = requireContext().createDialog(DialogDeleteBinding::inflate)
         dialog.first.txtDescription.text = getString(R.string.follow_delete, name.makeUserName())
         dialog.first.btnYes.setOnClickListener {
             val array = cacheManager.getFollowers()!!
@@ -190,50 +243,70 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
 
     @SuppressLint("NotifyDataSetChanged")
     private fun fetchFromFB() {
-        binding.progressBar.toVisible()
-        items = ArrayList()
-        var names = 0
+        if (activity != null && isAdded) {
 
-        cacheManager.getFollowers()?.distinct()?.let { array ->
-            array.forEach { userName ->
-                firebaseHelper.db.collection(userName!!).get().addOnCompleteListener { result ->
-                    if (result.result.size() != 0) {
-                        items.add(Pair(userName.makeUserName(), userName))
-                        ++names
-                    } else {
-                        binding.progressBar.toGone()
-                    }
-                    for (document in result.result) {
-                        val title = document.data["title"] as String?
-                        val attempts = (document.data["attempts"] as Long).toInt()
-                        val icon = document.data["icon"] as String?
-                        val record = document.data["record"] as String?
-                        val currentDay = (document.data["currentDay"] as Long).toInt()
-                        val allDays = (document.data["allDays"] as Long).toInt()
-                        val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
-                        val history = document.data["history"] as String?
-                        val model = HabitModel(
-                            title = title,
-                            icon = icon,
-                            currentDay = currentDay,
-                            allDays = allDays,
-                            startDate = startDate,
-                            fbName = userName,
-                            attempts = attempts,
-                            record = record,
-                            history = history
-                        )
-                        items.add(model)
-                        if (items.size == result.result.documents.size + names) {
-                            multiTypeAdapter.items = items
-                            multiTypeAdapter.notifyDataSetChanged()
-                            checkOnEmpty()
+            binding.progressBar.toVisible()
+            items = ArrayList()
+            var names = 0
+
+            cacheManager.getFollowers()?.distinct()?.let { array ->
+                array.forEach { userName ->
+                    firebaseHelper.db.collection(userName!!).get().addOnCompleteListener { result ->
+                        if (result.result.size() != 0) {
+                            items.add(Pair(userName.makeUserName(), userName))
+                            ++names
+                        } else {
+                            binding.progressBar.toGone()
                         }
+                        for (document in result.result) {
+                            val title = document.data["title"] as String?
+                            val attempts = (document.data["attempts"] as Long?)?.toInt()
+                            val icon = document.data["icon"] as String?
+                            val record = document.data["record"] as String?
+                            val currentDay = (document.data["currentDay"] as Long).toInt()
+                            val allDays = (document.data["allDays"] as Long).toInt()
+                            val startDate = (document.data["startDate"] as Timestamp?)?.toDate()
+                            val history = document.data["history"] as String?
+                            val lastDate = (document.data["lastDate"] as Timestamp?)?.toDate()
+                            if (lastDate != null) {
+                                val model = GoodHabitModel(
+                                    title = title,
+                                    icon = icon,
+                                    currentDay = currentDay,
+                                    allDays = allDays,
+                                    fbName = userName,
+                                    lastDate = lastDate
+                                )
+                                items.add(model)
+                            } else {
+                                val model = BadHabitModel(
+                                    title = title,
+                                    icon = icon,
+                                    currentDay = currentDay,
+                                    allDays = allDays,
+                                    startDate = startDate,
+                                    fbName = userName,
+                                    attempts = attempts ?: 0,
+                                    record = record,
+                                    history = history
+                                )
+                                items.add(model)
+                            }
+                            if (items.size == result.result.documents.size + names) {
+                                multiTypeAdapter.items = items
+                                multiTypeAdapter.notifyDataSetChanged()
+                                checkOnEmpty()
+                            }
+                        }
+                        if (isAdded) {
+                            binding.progressBar.toGone()
+                        }
+                    }.addOnFailureListener {
+                        if (isAdded) {
+                            binding.progressBar.toGone()
+                        }
+                        Log.e(TAG, "Error read document", it)
                     }
-                    binding.progressBar.toGone()
-                }.addOnFailureListener {
-                    binding.progressBar.toGone()
-                    Log.e(TAG, "Error read document", it)
                 }
             }
         }
@@ -249,11 +322,23 @@ class FollowsFragment : Fragment(R.layout.fragment_follow), EventCallback, Token
         checkOnEmpty()
     }
 
-    override fun newToken(authCode: String) {}
+    override fun newToken(authCode: String) {
+        successSign()
+    }
 
     override fun signSuccess() {
+        successSign()
+    }
+
+    private fun successSign() {
         showToast(getString(R.string.success))
-        binding.progressBar.toGone()
+        if (isAdded) {
+            binding.progressBar.toGone()
+        }
         reInitAdapter()
+    }
+
+    override fun end() {
+        isClickableScreen(true, binding.fab, binding.signBtn)
     }
 }

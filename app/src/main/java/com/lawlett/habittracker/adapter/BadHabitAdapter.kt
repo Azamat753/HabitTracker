@@ -1,25 +1,21 @@
 package com.lawlett.habittracker.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import com.lawlett.habittracker.R
 import com.lawlett.habittracker.base.BaseAdapter
-import com.lawlett.habittracker.databinding.ItemHabitBinding
+import com.lawlett.habittracker.databinding.ItemBadHabitBinding
 import com.lawlett.habittracker.ext.getDays
-import com.lawlett.habittracker.helper.DataHelper
-import com.lawlett.habittracker.helper.TimerManager
-import com.lawlett.habittracker.models.HabitModel
-import javax.inject.Inject
+import com.lawlett.habittracker.models.BadHabitModel
 
-class HabitAdapter : BaseAdapter<HabitModel, ItemHabitBinding>(
-    R.layout.item_habit,
+class BadHabitAdapter : BaseAdapter<BadHabitModel, ItemBadHabitBinding>(
+    R.layout.item_bad_habit,
     listOf(),
-    ItemHabitBinding::inflate
+    ItemBadHabitBinding::inflate
 ) {
 
 
     @SuppressLint("SetTextI18n", "StringFormatInvalid")
-    override fun onBind(binding: ItemHabitBinding, model: HabitModel) {
+    override fun onBind(binding: ItemBadHabitBinding, model: BadHabitModel) {
         val currentDay = model.startDate?.getDays()?.toInt() ?: 0
         val record = model.record?:"0"
         val attempts =model.attempts

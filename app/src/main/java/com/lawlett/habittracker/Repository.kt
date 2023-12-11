@@ -1,45 +1,65 @@
 package com.lawlett.habittracker
 
-import android.content.SharedPreferences
 import com.lawlett.habittracker.api.FirebaseApi
 import com.lawlett.habittracker.api.SignApi
-import com.lawlett.habittracker.helper.CacheManager
 import com.lawlett.habittracker.models.FirebaseResponse
-import com.lawlett.habittracker.models.HabitModel
+import com.lawlett.habittracker.models.BadHabitModel
+import com.lawlett.habittracker.models.GoodHabitModel
 import com.lawlett.habittracker.models.NotificationModel
-import com.lawlett.habittracker.room.HabitDao
+import com.lawlett.habittracker.room.BadHabitDao
+import com.lawlett.habittracker.room.GoodHabitDao
+import java.util.Date
 import javax.inject.Inject
 
 
 class Repository @Inject constructor(
-    private val dao: HabitDao,
+    private val badHabitDao: BadHabitDao,
+    private val goodHabitDao: GoodHabitDao,
     private val api: FirebaseApi,
     private val signApi: SignApi
 ) {
 
-    suspend fun insert(habitModel: HabitModel) {
-        dao.insert(habitModel)
+    suspend fun insertGoodHabit(goodHabitModel: GoodHabitModel) {
+        goodHabitDao.insert(goodHabitModel)
     }
 
-    suspend fun update(habitModel: HabitModel) {
-        dao.update(habitModel)
+    fun getGoodHabits() = (goodHabitDao.getAll())
+
+    suspend fun updateGoodHabitAllDays(allDays: Int, id: Int) {
+        goodHabitDao.updateAllDays(allDays, id)
     }
 
-    suspend fun delete(habitModel: HabitModel) {
-        dao.delete(habitModel)
+    suspend fun updateGoodHabitCurrentDay(currentDay: Int,lastDate: Date, id: Int) {
+        goodHabitDao.updateCurrentDay(currentDay, lastDate,id)
     }
 
-    fun getHabits() = (dao.getAll())
+    suspend fun deleteGoodHabit(goodHabitModel: GoodHabitModel) {
+        goodHabitDao.delete(goodHabitModel)
+    }
 
-    fun getLastHabit() = dao.getLastHabit()
+    suspend fun insert(badHabitModel: BadHabitModel) {
+        badHabitDao.insert(badHabitModel)
+    }
 
-    fun getHistory(id: Int) = dao.getHistory(id)
+    suspend fun update(badHabitModel: BadHabitModel) {
+        badHabitDao.update(badHabitModel)
+    }
+
+    suspend fun delete(badHabitModel: BadHabitModel) {
+        badHabitDao.delete(badHabitModel)
+    }
+
+    fun getHabits() = (badHabitDao.getAll())
+
+    fun getLastHabit() = badHabitDao.getLastHabit()
+
+    fun getHistory(id: Int) = badHabitDao.getHistory(id)
     suspend fun updateRecord(record: String, id: Int) {
-        dao.updateRecord(record, id)
+        badHabitDao.updateRecord(record, id)
     }
 
     suspend fun updateHistory(history: String, id: Int) {
-        dao.updateHistory(history, id)
+        badHabitDao.updateHistory(history, id)
     }
 
 
@@ -54,11 +74,11 @@ class Repository @Inject constructor(
         signApi.getToken(code = code)
 
     suspend fun updateAllDays(allDays: Int, id: Int) {
-        dao.updateAllDays(allDays, id)
+        badHabitDao.updateAllDays(allDays, id)
     }
 
     suspend fun updateAttempts(attempts: Int, id: Int) {
-        dao.updateAttempts(attempts, id)
+        badHabitDao.updateAttempts(attempts, id)
     }
 
 }
