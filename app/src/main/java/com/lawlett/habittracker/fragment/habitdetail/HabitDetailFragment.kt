@@ -99,7 +99,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         viewModel.sendRemoteNotification(notificationModel, token)
     }
 
-    private fun searchlight() {
+    private fun spotlight() {
         val targets = ArrayList<com.takusemba.spotlight.Target>()
         val root = FrameLayout(requireContext())
         val first = layoutInflater.inflate(R.layout.layout_target_detail, root)
@@ -296,7 +296,7 @@ class HabitDetailFragment : Fragment(R.layout.fragment_habit_detail), TokenCallb
         helper = GoogleSignInHelper(fragment = this, tokenCallback = this)
         if (!cacheManager.isPass()) {
             if (!cacheManager.isUserSeen(KEY_SEARCH_DETAIL)) {
-                searchlight()
+                spotlight()
             }
         }
         badHabitModelGlobal?.id?.let { id ->

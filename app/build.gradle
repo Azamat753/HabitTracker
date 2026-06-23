@@ -11,14 +11,14 @@ plugins {
 
 android {
     namespace 'com.lawlett.habittracker'
-    compileSdk 33
+    compileSdk 36
     packagingOptions {
         resources.excludes.add("META-INF/*")
     }
     defaultConfig {
         applicationId "com.lawlett.habittracker"
         minSdk 24
-        targetSdk 33
+        targetSdk 36
         versionCode 13
         versionName "1.0.12"
 
@@ -38,8 +38,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     bundle {
         language {
@@ -47,7 +47,7 @@ android {
         }
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
     buildFeatures{
         viewBinding true
@@ -75,12 +75,12 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
 
-    implementation "androidx.room:room-runtime:2.5.2"
-    implementation "androidx.room:room-ktx:2.5.2"
-    annotationProcessor "androidx.room:room-compiler:2.5.2"
-    kapt "androidx.room:room-compiler:2.5.2"
+    implementation "androidx.room:room-runtime:2.6.1"
+    implementation "androidx.room:room-ktx:2.6.1"
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
+    kapt "androidx.room:room-compiler:2.6.1"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.21"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.24"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"

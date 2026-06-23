@@ -105,5 +105,5 @@
     <string name="good_habit">Good habits</string>
     <string name="today_check">Today it was noted</string>
     <string name="you_sure">Have you really fixed the \n habit %s ?</string>
-    <string name="last_check">The last mark of the habit \n %s was \n\n %s</string>
+    <string name="last_check">The last mark of the habit \n %1$s was \n\n %2$s</string>
 </resources>

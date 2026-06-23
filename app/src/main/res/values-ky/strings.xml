@@ -105,5 +105,5 @@
     <string name="good_habit">Жакшы адаттар</string>
     <string name="today_check">Бүгүн белгиленген</string>
     <string name="you_sure">Сиз бүгүн чындыгында %s адатын бекемдедиңизби ?</string>
-    <string name="last_check">%s Адаттын акыркы белгиси \n\n %s</string>
+    <string name="last_check">%1$s Адаттын акыркы белгиси \n\n %2$s</string>
 </resources>

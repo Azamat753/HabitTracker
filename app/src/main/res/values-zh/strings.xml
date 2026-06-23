@@ -98,5 +98,5 @@
     <string name="good_habit">好的习惯</string>
     <string name="today_check">今天已标记</string>
     <string name="you_sure">您今天是否确定养成习惯 %s？</string>
-    <string name="last_check">上次标记习惯\n %s 是在\n\n %s</string>
+    <string name="last_check">上次标记习惯\n %1$s 是在\n\n %2$s</string>
 </resources>

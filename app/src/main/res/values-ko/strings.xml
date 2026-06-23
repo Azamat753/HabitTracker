@@ -99,5 +99,5 @@
     <string name="good_habit">좋은 습관</string>
     <string name="today_check">오늘 체크됨</string>
     <string name="you_sure">%s 습관을 정말로 오늘 체크했습니까?\n</string>
-    <string name="last_check">%s 습관의 마지막 체크\n%s\n\n%s</string>
+    <string name="last_check">%1$s 습관의 마지막 체크\n\n%2$s</string>
 </resources>

@@ -99,6 +99,6 @@
     <string name="good_habit">Хороші звички</string>
     <string name="today_check">Сьогодні було відзначено</string>
     <string name="you_sure">Ви дійсно сьогодні закріпили\nзвичку %s ?</string>
-    <string name="last_check">Остання відзначка звички\n%s була\n\n%s</string>
+    <string name="last_check">Остання відзначка звички\n%1$s була\n\n%2$s</string>
 
 </resources>

@@ -99,5 +99,5 @@
     <string name="good_habit">Bonnes habitudes</string>
     <string name="today_check">Aujourd\'hui, cela a été marqué</string>
     <string name="you_sure">Êtes-vous sûr d\'avoir consolidé l\'habitude %s aujourd\'hui ?</string>
-    <string name="last_check">La dernière vérification de l\'habitude\n%s a été le\n\n%s</string>
+    <string name="last_check">La dernière vérification de l\'habitude\n%1$s a été le\n\n%2$s</string>
 </resources>
